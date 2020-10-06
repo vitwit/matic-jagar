@@ -175,16 +175,26 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        GetUnconfimedTxns,
 			ScraperRate: cfg.Scraper.Rate,
 		},
-		// {
-		// 	ExecutionType: "http",
-		// 	Name:          "Get Validator status alerting",
-		// 	HTTPOptions: HTTPOptions{
-		// 		Endpoint: cfg.LCDEndpoint + "/staking/validators/",
-		// 		Method:   http.MethodGet,
-		// 	},
-		// 	Func:        ValidatorStatusAlert,
-		// 	ScraperRate: cfg.Scraper.ValidatorRate,
-		// },
+		{
+			ExecutionType: "http",
+			Name:          "Get Validator fee and gas",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.LCDEndpoint + "/auth/params",
+				Method:   http.MethodGet,
+			},
+			Func:        GetValidatorFeeAndGas,
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "http",
+			Name:          "Get Validator status alerting",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.LCDEndpoint + "/staking/signer/" + cfg.SignerAddress,
+				Method:   http.MethodGet,
+			},
+			Func:        ValidatorStatusAlert,
+			ScraperRate: cfg.Scraper.ValidatorRate,
+		},
 	}}
 }
 

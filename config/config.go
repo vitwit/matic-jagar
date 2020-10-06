@@ -61,6 +61,7 @@ type (
 		ValidatorName                  string   `mapstructure:"validator_name"`
 		EmergencyMissedBlocksThreshold int64    `mapstructure:"emergency_missed_blocks_threshold"`
 		PagerdutyEmail                 string   `mapstructure:"pagerduty_email"`
+		SignerAddress				   string   `mapstructure:"signer_address"`
 	}
 )
 

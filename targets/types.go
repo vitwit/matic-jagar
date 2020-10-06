@@ -178,4 +178,33 @@ type (
 			Go         string `json:"go"`
 		} `json:"application_version"`
 	}
+
+	AuthParams struct {
+		Height string `json:"height"`
+		Result struct {
+			MaxMemoCharacters      int    `json:"max_memo_characters"`
+			TxSigLimit             int    `json:"tx_sig_limit"`
+			TxSizeCostPerByte      int    `json:"tx_size_cost_per_byte"`
+			SigVerifyCostEd25519   int    `json:"sig_verify_cost_ed25519"`
+			SigVerifyCostSecp256K1 int    `json:"sig_verify_cost_secp256k1"`
+			MaxTxGas               int    `json:"max_tx_gas"`
+			TxFees                 string `json:"tx_fees"`
+		} `json:"result"`
+	}
+
+	ValStatusResp struct {
+		Height string `json:"height"`
+		Result struct {
+			ID          int    `json:"ID"`
+			StartEpoch  int    `json:"startEpoch"`
+			EndEpoch    int    `json:"endEpoch"`
+			Nonce       int    `json:"nonce"`
+			Power       int    `json:"power"`
+			PubKey      string `json:"pubKey"`
+			Signer      string `json:"signer"`
+			LastUpdated string `json:"last_updated"`
+			Jailed      bool   `json:"jailed"`
+			Accum       int    `json:"accum"`
+		} `json:"result"`
+	}
 )
