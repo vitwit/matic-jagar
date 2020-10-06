@@ -28,16 +28,6 @@ func (m targetRunner) Run(function func(ops HTTPOptions, cfg *config.Config, c c
 //can write all the endpoints here
 func InitTargets(cfg *config.Config) *Targets {
 	return &Targets{List: []Target{
-		// {
-		// 	ExecutionType: "http",
-		// 	Name:          "Base URL Endpoint",
-		// 	HTTPOptions: HTTPOptions{
-		// 		Endpoint: cfg.ValidatorRpcEndpoint + "/status?",
-		// 		Method:   http.MethodGet,
-		// 	},
-		// 	Func:        CheckGaiad,
-		// 	ScraperRate: cfg.Scraper.Rate,
-		// },
 		{
 			ExecutionType: "http",
 			Name:          "Net Info URL",
@@ -175,16 +165,16 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        GetMissedBlocks,
 			ScraperRate: cfg.Scraper.Rate,
 		},
-		// {
-		// 	ExecutionType: "http",
-		// 	Name:          "Get no of unconfirmed txns",
-		// 	HTTPOptions: HTTPOptions{
-		// 		Endpoint: cfg.ValidatorRpcEndpoint + "/num_unconfirmed_txs?",
-		// 		Method:   http.MethodGet,
-		// 	},
-		// 	Func:        GetUnconfimedTxns,
-		// 	ScraperRate: cfg.Scraper.Rate,
-		// },
+		{
+			ExecutionType: "http",
+			Name:          "Get no of unconfirmed txns",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.ValidatorRPCEndpoint + "/num_unconfirmed_txs?",
+				Method:   http.MethodGet,
+			},
+			Func:        GetUnconfimedTxns,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 		// {
 		// 	ExecutionType: "http",
 		// 	Name:          "Get Validator status alerting",

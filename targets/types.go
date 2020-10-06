@@ -154,4 +154,15 @@ type (
 			} `json:"block"`
 		} `json:"result"`
 	}
+
+	// UnconfirmedTxns struct which holds the parameters of unconfirmed txns
+	UnconfirmedTxns struct {
+		Jsonrpc string `json:"jsonrpc"`
+		Result  struct {
+			NTxs       string      `json:"n_txs"`
+			Total      string      `json:"total"`
+			TotalBytes string      `json:"total_bytes"`
+			Txs        interface{} `json:"txs"`
+		} `json:"result"`
+	}
 )

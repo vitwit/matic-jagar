@@ -83,7 +83,7 @@ func GetMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 		log.Println("address exists and height......", addrExists, cbh)
 
-		if addrExists {
+		if !addrExists {
 
 			// // Calling SendEmeregencyAlerts to send emeregency alerts
 			// err := SendEmeregencyAlerts(cfg, c, cbh)
