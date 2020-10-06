@@ -59,7 +59,7 @@ func InitTargets(cfg *config.Config) *Targets {
 		// 	ScraperRate: cfg.Scraper.Rate,
 		// },
 		{
-			ExecutionType: "http",
+			ExecutionType: "http",   // Confirmation about alerting
 			Name:          "Get Account balanace",
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.LCDEndpoint + "/bank/balances/" + cfg.SignerAddress,
@@ -78,37 +78,16 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        NodeVersion,
 			ScraperRate: cfg.Scraper.Rate,
 		},
-		// {
-		// 	ExecutionType: "http",
-		// 	Name:          "Proposals",
-		// 	HTTPOptions: HTTPOptions{
-		// 		Endpoint: cfg.LCDEndpoint + "/gov/proposals",
-		// 		Method:   http.MethodGet,
-		// 	},
-		// 	Func:        GetProposals,
-		// 	ScraperRate: cfg.Scraper.Rate,
-		// },
-		// {
-		// 	ExecutionType: "http",
-		// 	Name:          "Self Delegation",
-		// 	HTTPOptions: HTTPOptions{
-		// 		Endpoint: cfg.LCDEndpoint + "/staking/delegators/" + cfg.AccountAddress +
-		// 			"/delegations/" + cfg.ValOperatorAddress,
-		// 		Method: http.MethodGet,
-		// 	},
-		// 	Func:        GetSelfDelegation,
-		// 	ScraperRate: cfg.Scraper.Rate,
-		// },
-		// {
-		// 	ExecutionType: "http",
-		// 	Name:          "Current Rewards Amount",
-		// 	HTTPOptions: HTTPOptions{
-		// 		Endpoint: cfg.LCDEndpoint + "/distribution/validators/" + cfg.ValOperatorAddress + "/rewards",
-		// 		Method:   http.MethodGet,
-		// 	},
-		// 	Func:        GetCurrentRewardsAmount,
-		// 	ScraperRate: cfg.Scraper.Rate,
-		// },
+		{
+			ExecutionType: "http",
+			Name:          "Proposals",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.LCDEndpoint + "/gov/proposals",
+				Method:   http.MethodGet,
+			},
+			Func:        GetProposals,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 		{
 			ExecutionType: "http",
 			Name:          "Last proposed block and time",
@@ -119,12 +98,6 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        GetLatestProposedBlockAndTime,
 			ScraperRate: cfg.Scraper.Rate,
 		},
-		// {
-		// 	ExecutionType: "cmd",
-		// 	Name:          "Latency",
-		// 	Func:          GetLatency,
-		// 	ScraperRate:   cfg.Scraper.Rate,
-		// },
 		{
 			ExecutionType: "http",
 			Name:          "Network Latest Block",

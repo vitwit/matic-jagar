@@ -248,4 +248,48 @@ type (
 			Amount string `json:"amount"`
 		} `json:"result"`
 	}
+
+	Proposals struct {
+		Height string `json:"height"`
+		Result []struct {
+			Content struct {
+				Type  string `json:"type"`
+				Value struct {
+					Title       string      `json:"title"`
+					Description string      `json:"description"`
+					Changes     interface{} `json:"changes"`
+				} `json:"value"`
+			} `json:"content"`
+			ID               string        `json:"id"`
+			ProposalStatus   string        `json:"proposal_status"`
+			FinalTallyResult interface{}   `json:"final_tally_result"`
+			SubmitTime       string        `json:"submit_time"`
+			DepositEndTime   string        `json:"deposit_end_time"`
+			TotalDeposit     []interface{} `json:"total_deposit"`
+			VotingStartTime  string        `json:"voting_start_time"`
+			VotingEndTime    string        `json:"voting_end_time"`
+		} `json:"result"`
+	}
+
+	ProposalVoters struct {
+		Height string `json:"height"`
+		Result []struct {
+			ProposalID string `json:"proposal_id"`
+			Voter      string `json:"voter"`
+			Option     string `json:"option"`
+		} `json:"result"`
+	}
+
+	// Depositors struct which holds the parameters of depositors
+	Depositors struct {
+		Height string `json:"height"`
+		Result []struct {
+			ProposalID string `json:"proposal_id"`
+			Depositor  string `json:"depositor"`
+			Amount     []struct {
+				Denom  string `json:"denom"`
+				Amount string `json:"amount"`
+			} `json:"amount"`
+		} `json:"result"`
+	}
 )
