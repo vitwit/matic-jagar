@@ -240,4 +240,12 @@ type (
 			LastCommit interface{} `json:"last_commit"`
 		} `json:"block"`
 	}
+
+	AccountBalResp struct {
+		Height string `json:"height"`
+		Result []struct {
+			Denom  string `json:"denom"`
+			Amount string `json:"amount"`
+		} `json:"result"`
+	}
 )
