@@ -48,16 +48,6 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        GetNodeStatus,
 			ScraperRate: cfg.Scraper.Rate,
 		},
-		// {
-		// 	ExecutionType: "http",
-		// 	Name:          "Operator Information",
-		// 	HTTPOptions: HTTPOptions{
-		// 		Endpoint: cfg.LCDEndpoint + "/staking/validators/" + cfg.ValOperatorAddress,
-		// 		Method:   http.MethodGet,
-		// 	},
-		// 	Func:        GetOperatorInfo,
-		// 	ScraperRate: cfg.Scraper.Rate,
-		// },
 		{
 			ExecutionType: "http",   // Confirmation about alerting
 			Name:          "Get Account balanace",
@@ -167,6 +157,16 @@ func InitTargets(cfg *config.Config) *Targets {
 			},
 			Func:        ValidatorStatusAlert,
 			ScraperRate: cfg.Scraper.ValidatorRate,
+		},
+		{
+			ExecutionType: "http",
+			Name:          "Get bor params",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.LCDEndpoint + "/bor/params",
+				Method:   http.MethodGet,
+			},
+			Func:        GetBorParams,
+			ScraperRate: cfg.Scraper.Rate,
 		},
 	}}
 }

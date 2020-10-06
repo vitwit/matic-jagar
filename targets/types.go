@@ -292,4 +292,13 @@ type (
 			} `json:"amount"`
 		} `json:"result"`
 	}
+
+	BorParams struct {
+		Height string `json:"height"`
+		Result struct {
+			SprintDuration int `json:"sprint_duration"`
+			SpanDuration   int `json:"span_duration"`
+			ProducerCount  int `json:"producer_count"`
+		} `json:"result"`
+	}
 )
