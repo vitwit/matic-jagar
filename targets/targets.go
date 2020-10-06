@@ -155,16 +155,16 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        GetValidatorVotingPower,
 			ScraperRate: cfg.Scraper.Rate,
 		},
-		// {
-		// 	ExecutionType: "http",
-		// 	Name:          "Block Time Difference",
-		// 	HTTPOptions: HTTPOptions{
-		// 		Endpoint: cfg.ValidatorRpcEndpoint + "/block",
-		// 		Method:   http.MethodGet,
-		// 	},
-		// 	Func:        GetBlockTimeDifference,
-		// 	ScraperRate: cfg.Scraper.Rate,
-		// },
+		{
+			ExecutionType: "http",
+			Name:          "Block Time Difference",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.ValidatorRPCEndpoint + "/block",
+				Method:   http.MethodGet,
+			},
+			Func:        GetBlockTimeDifference,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 		// {
 		// 	ExecutionType: "http",
 		// 	Name:          "Get Current Block Height",

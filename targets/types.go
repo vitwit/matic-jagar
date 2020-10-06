@@ -58,11 +58,11 @@ type (
 				} `json:"other"`
 			} `json:"node_info"`
 			SyncInfo struct {
-				LatestBlockHash   string    `json:"latest_block_hash"`
-				LatestAppHash     string    `json:"latest_app_hash"`
-				LatestBlockHeight string    `json:"latest_block_height"`
-				LatestBlockTime   time.Time `json:"latest_block_time"`
-				CatchingUp        bool      `json:"catching_up"`
+				LatestBlockHash   string `json:"latest_block_hash"`
+				LatestAppHash     string `json:"latest_app_hash"`
+				LatestBlockHeight string `json:"latest_block_height"`
+				LatestBlockTime   string `json:"latest_block_time"`
+				CatchingUp        bool   `json:"catching_up"`
 			} `json:"sync_info"`
 			ValidatorInfo struct {
 				Address string `json:"address"`
@@ -119,6 +119,39 @@ type (
 				VotingPower      string `json:"voting_power"`
 				ProposerPriority string `json:"proposer_priority"`
 			} `json:"validators"`
+		} `json:"result"`
+	}
+
+	CurrentBlockWithHeight struct {
+		Jsonrpc string `json:"jsonrpc"`
+		Result  struct {
+			BlockMeta interface{} `json:"block_meta"`
+			Block     struct {
+				Header struct {
+					Height string `json:"height"`
+					Time   string `json:"time"`
+				} `json:"header"`
+				Data struct {
+					Txs interface{} `json:"txs"`
+				} `json:"data"`
+				Evidence struct {
+					Evidence interface{} `json:"evidence"`
+				} `json:"evidence"`
+				LastCommit struct {
+					BlockID    interface{} `json:"block_id"`
+					Precommits []struct {
+						Type             int         `json:"type"`
+						Height           string      `json:"height"`
+						Round            string      `json:"round"`
+						BlockID          interface{} `json:"block_id"`
+						Timestamp        time.Time   `json:"timestamp"`
+						ValidatorAddress string      `json:"validator_address"`
+						ValidatorIndex   string      `json:"validator_index"`
+						Signature        string      `json:"signature"`
+						SideTxResults    interface{} `json:"side_tx_results"`
+					} `json:"precommits"`
+				} `json:"last_commit"`
+			} `json:"block"`
 		} `json:"result"`
 	}
 )
