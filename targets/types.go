@@ -43,7 +43,6 @@ type (
 
 	Status struct {
 		Jsonrpc string `json:"jsonrpc"`
-		ID      string `json:"id"`
 		Result  struct {
 			NodeInfo struct {
 				ProtocolVersion interface{} `json:"protocol_version"`
@@ -78,7 +77,6 @@ type (
 
 	NetInfo struct {
 		Jsonrpc string `json:"jsonrpc"`
-		ID      string `json:"id"`
 		Result  struct {
 			Listening bool     `json:"listening"`
 			Listeners []string `json:"listeners"`
@@ -105,6 +103,22 @@ type (
 				ConnectionStatus interface{} `json:"connection_status"`
 				RemoteIP         string      `json:"remote_ip"`
 			} `json:"peers"`
+		} `json:"result"`
+	}
+
+	ValidatorsHeight struct {
+		Jsonrpc string `json:"jsonrpc"`
+		Result  struct {
+			BlockHeight string `json:"block_height"`
+			Validators  []struct {
+				Address string `json:"address"`
+				PubKey  struct {
+					Type  string `json:"type"`
+					Value string `json:"value"`
+				} `json:"pub_key"`
+				VotingPower      string `json:"voting_power"`
+				ProposerPriority string `json:"proposer_priority"`
+			} `json:"validators"`
 		} `json:"result"`
 	}
 )
