@@ -109,16 +109,16 @@ func InitTargets(cfg *config.Config) *Targets {
 		// 	Func:        GetCurrentRewardsAmount,
 		// 	ScraperRate: cfg.Scraper.Rate,
 		// },
-		// {
-		// 	ExecutionType: "http",
-		// 	Name:          "Last proposed block and time",
-		// 	HTTPOptions: HTTPOptions{
-		// 		Endpoint: cfg.LCDEndpoint + "/blocks/latest",
-		// 		Method:   http.MethodGet,
-		// 	},
-		// 	Func:        GetLatestProposedBlockAndTime,
-		// 	ScraperRate: cfg.Scraper.Rate,
-		// },
+		{
+			ExecutionType: "http",
+			Name:          "Last proposed block and time",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.LCDEndpoint + "/blocks/latest",
+				Method:   http.MethodGet,
+			},
+			Func:        GetLatestProposedBlockAndTime,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 		// {
 		// 	ExecutionType: "cmd",
 		// 	Name:          "Latency",
