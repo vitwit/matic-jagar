@@ -165,4 +165,17 @@ type (
 			Txs        interface{} `json:"txs"`
 		} `json:"result"`
 	}
+
+	ApplicationInfo struct {
+		NodeInfo           interface{} `json:"node_info"`
+		ApplicationVersion struct {
+			Name       string `json:"name"`
+			ServerName string `json:"server_name"`
+			ClientName string `json:"client_name"`
+			Version    string `json:"version"`
+			Commit     string `json:"commit"`
+			BuildTags  string `json:"build_tags"`
+			Go         string `json:"go"`
+		} `json:"application_version"`
+	}
 )

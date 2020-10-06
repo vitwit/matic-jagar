@@ -68,16 +68,16 @@ func InitTargets(cfg *config.Config) *Targets {
 		// 	Func:        GetAccountInfo,
 		// 	ScraperRate: cfg.Scraper.Rate,
 		// },
-		// {
-		// 	ExecutionType: "cmd",
-		// 	Name:          "Node Version",
-		// 	HTTPOptions: HTTPOptions{
-		// 		Endpoint: cfg.LCDEndpoint + "/node_info",
-		// 		Method:   http.MethodGet,
-		// 	},
-		// 	Func:        NodeVersion,
-		// 	ScraperRate: cfg.Scraper.Rate,
-		// },
+		{
+			ExecutionType: "http",
+			Name:          "Node Version",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.LCDEndpoint + "/node_info",
+				Method:   http.MethodGet,
+			},
+			Func:        NodeVersion,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 		// {
 		// 	ExecutionType: "http",
 		// 	Name:          "Proposals",
