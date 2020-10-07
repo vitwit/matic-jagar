@@ -190,6 +190,16 @@ func InitTargets(cfg *config.Config) *Targets {
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
+			ExecutionType: "http",
+			Name:          "Get Checkpoints Duration",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.LCDEndpoint + "/checkpoints/params",
+				Method:   http.MethodGet,
+			},
+			Func:        GetCheckpointsDuration,
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
 			ExecutionType: "curl cmd",
 			Name:          "Get Peers count of bor",
 			HTTPOptions: HTTPOptions{

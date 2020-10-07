@@ -61,3 +61,29 @@ func GetLatestCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client) 
 	_ = writeToInfluxDb(c, bp, "matic_latest_checkpoint", map[string]string{}, map[string]interface{}{"start_block": startBlock, "end_block": endBlock})
 	log.Printf("Latest checkpoint Start Block: %d and End Block: %d", startBlock, endBlock)
 }
+
+// GetCheckpointsDuration to get checkpoints duration
+func GetCheckpointsDuration(ops HTTPOptions, cfg *config.Config, c client.Client) {
+	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	if err != nil {
+		return
+	}
+
+	resp, err := HitHTTPTarget(ops)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
+	}
+
+	var cpd CheckpointsDuration
+	err = json.Unmarshal(resp.Body, &cpd)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
+	}
+
+	duration := cpd.Result.CheckpointBufferTime
+
+	_ = writeToInfluxDb(c, bp, "matic_checkpoint_duration", map[string]string{}, map[string]interface{}{"duration": duration})
+	log.Printf("Checkpoints Duration: %d", duration)
+}

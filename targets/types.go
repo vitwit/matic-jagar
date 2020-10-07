@@ -332,4 +332,14 @@ type (
 			Timestamp  int    `json:"timestamp"`
 		} `json:"result"`
 	}
+
+	CheckpointsDuration struct {
+		Height string `json:"height"`
+		Result struct {
+			CheckpointBufferTime    int64 `json:"checkpoint_buffer_time"`
+			AvgCheckpointLength     int   `json:"avg_checkpoint_length"`
+			MaxCheckpointLength     int   `json:"max_checkpoint_length"`
+			ChildChainBlockInterval int   `json:"child_chain_block_interval"`
+		} `json:"result"`
+	}
 )
