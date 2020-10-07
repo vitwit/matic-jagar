@@ -301,4 +301,11 @@ type (
 			ProducerCount  int `json:"producer_count"`
 		} `json:"result"`
 	}
+
+	TotalCheckpoints struct {
+		Height string `json:"height"`
+		Result struct {
+			Result int `json:"result"`
+		} `json:"result"`
+	}
 )
