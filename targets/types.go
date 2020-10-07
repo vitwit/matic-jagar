@@ -16,8 +16,15 @@ type (
 	HTTPOptions struct {
 		Endpoint    string
 		QueryParams QueryParams
-		Body        []byte
+		Body        Payload
 		Method      string
+	}
+
+	Payload struct {
+		Jsonrpc string        `json:"jsonrpc"`
+		Method  string        `json:"method"`
+		Params  []interface{} `json:"params"`
+		ID      int           `json:"id"`
 	}
 
 	// Target is a structure which holds all the parameters of a target
@@ -306,6 +313,23 @@ type (
 		Height string `json:"height"`
 		Result struct {
 			Result int `json:"result"`
+		} `json:"result"`
+	}
+
+	BorPeersInfo struct {
+		Result string `json:"result"`
+		ID     int    `json:"id"`
+	}
+
+	LatestCheckpoints struct {
+		Height string `json:"height"`
+		Result struct {
+			Proposer   string `json:"proposer"`
+			StartBlock int    `json:"start_block"`
+			EndBlock   int    `json:"end_block"`
+			RootHash   string `json:"root_hash"`
+			BorChainID string `json:"bor_chain_id"`
+			Timestamp  int    `json:"timestamp"`
 		} `json:"result"`
 	}
 )

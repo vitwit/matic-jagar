@@ -34,3 +34,30 @@ func GetTotalCheckPointsCount(ops HTTPOptions, cfg *config.Config, c client.Clie
 	_ = writeToInfluxDb(c, bp, "matic_total_checkpoints", map[string]string{}, map[string]interface{}{"total_count": count})
 	log.Printf("Checkpoints total count: %d", count)
 }
+
+// GetTotalCheckPointsCount to get latest check points details
+func GetLatestCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client) {
+	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	if err != nil {
+		return
+	}
+
+	resp, err := HitHTTPTarget(ops)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
+	}
+
+	var lcp LatestCheckpoints
+	err = json.Unmarshal(resp.Body, &lcp)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
+	}
+
+	startBlock := lcp.Result.StartBlock
+	endBlock := lcp.Result.EndBlock
+
+	_ = writeToInfluxDb(c, bp, "matic_latest_checkpoint", map[string]string{}, map[string]interface{}{"start_block": startBlock, "end_block": endBlock})
+	log.Printf("Latest checkpoint Start Block: %d and End Block: %d", startBlock, endBlock)
+}

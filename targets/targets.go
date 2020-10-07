@@ -2,6 +2,7 @@ package targets
 
 import (
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -178,6 +179,31 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        GetTotalCheckPointsCount,
 			ScraperRate: cfg.Scraper.Rate,
 		},
+		{
+			ExecutionType: "http",
+			Name:          "Get Latest Checkpoints",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.LCDEndpoint + "/checkpoints/latest",
+				Method:   http.MethodGet,
+			},
+			Func:        GetLatestCheckpoints,
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "curl cmd",
+			Name:          "Get Peers count of bor",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.BorEndPoint,
+				Method:   http.MethodPost,
+				Body: Payload{
+					Jsonrpc: "2.0",
+					Method:  "net_peerCount",
+					ID:      74,
+				},
+			},
+			Func:        BorPeersCount,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 	}}
 }
 
@@ -192,10 +218,13 @@ func addQueryParameters(req *http.Request, queryParams QueryParams) {
 //newHTTPRequest to make a new http request
 func newHTTPRequest(ops HTTPOptions) (*http.Request, error) {
 	// make new request
-	req, err := http.NewRequest(ops.Method, ops.Endpoint, bytes.NewBuffer(ops.Body))
+	payloadBytes, _ := json.Marshal(ops.Body)
+	req, err := http.NewRequest(ops.Method, ops.Endpoint, bytes.NewBuffer(payloadBytes))
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Set("Content-Type", "application/json")
 
 	// Add any query parameters to the URL.
 	if len(ops.QueryParams) != 0 {
