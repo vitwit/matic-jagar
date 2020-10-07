@@ -214,6 +214,36 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        BorPeersCount,
 			ScraperRate: cfg.Scraper.Rate,
 		},
+		{
+			ExecutionType: "curl cmd",
+			Name:          "Get Current Block Height",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.BorEndPoint,
+				Method:   http.MethodPost,
+				Body: Payload{
+					Jsonrpc: "2.0",
+					Method:  "eth_blockNumber",
+					ID:      83,
+				},
+			},
+			Func:        BorCurrentHeight,
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "curl cmd",
+			Name:          "Get Bor Balance",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.BorEndPoint,
+				Method:   http.MethodPost,
+				Body: Payload{
+					Jsonrpc: "2.0",
+					Method:  "eth_getBalance",
+					ID:      1,
+				},
+			},
+			Func:        BorLatestBalance, // clarity on wei to eth conversion
+			ScraperRate: cfg.Scraper.Rate,
+		},
 	}}
 }
 

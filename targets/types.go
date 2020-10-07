@@ -316,7 +316,7 @@ type (
 		} `json:"result"`
 	}
 
-	BorPeersInfo struct {
+	BorResult struct {
 		Result string `json:"result"`
 		ID     int    `json:"id"`
 	}

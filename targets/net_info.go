@@ -73,7 +73,7 @@ func BorPeersCount(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
-	var peerInfo BorPeersInfo
+	var peerInfo BorResult
 	err = json.Unmarshal(resp.Body, &peerInfo)
 	if err != nil {
 		log.Printf("Error: %v", err)

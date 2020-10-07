@@ -82,3 +82,31 @@ func GetValidatorBlock(cfg *config.Config, c client.Client) string {
 	}
 	return validatorHeight
 }
+
+func BorCurrentHeight(ops HTTPOptions, cfg *config.Config, c client.Client) {
+	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	if err != nil {
+		return
+	}
+
+	resp, err := HitHTTPTarget(ops)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
+	}
+
+	if resp.StatusCode == 200 || resp.StatusCode == 201 {
+		var cbh BorResult
+		err = json.Unmarshal(resp.Body, &cbh)
+		if err != nil {
+			log.Printf("Error: %v", err)
+			return
+		}
+
+		height := HexToIntConversion(cbh.Result)
+
+		_ = writeToInfluxDb(c, bp, "matic_bor_current_height", map[string]string{}, map[string]interface{}{"block_height": height})
+		log.Printf("Bor Current Block Height: %d", height)
+	}
+
+}
