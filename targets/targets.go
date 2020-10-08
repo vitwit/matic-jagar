@@ -244,6 +244,36 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        BorLatestBalance, // clarity on wei to eth conversion
 			ScraperRate: cfg.Scraper.Rate,
 		},
+		{
+			ExecutionType: "curl cmd",
+			Name:          "Eth Syncing",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.BorEndPoint,
+				Method:   http.MethodPost,
+				Body: Payload{
+					Jsonrpc: "2.0",
+					Method:  "eth_syncing",
+					ID:      1,
+				},
+			},
+			Func:        BorEthSyncing, // Clarity about metric
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "curl cmd",
+			Name:          "Bor Net Listening",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.BorEndPoint,
+				Method:   http.MethodPost,
+				Body: Payload{
+					Jsonrpc: "2.0",
+					Method:  "net_listening",
+					ID:      67,
+				},
+			},
+			Func:        BorNetListening, // Clarity about the metric and alerting
+			ScraperRate: cfg.Scraper.Rate,
+		},
 	}}
 }
 

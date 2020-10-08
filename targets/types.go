@@ -342,4 +342,9 @@ type (
 			ChildChainBlockInterval int   `json:"child_chain_block_interval"`
 		} `json:"result"`
 	}
+
+	NetListening struct {
+		Result bool `json:"result"`
+		ID     int  `json:"id"`
+	}
 )

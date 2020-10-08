@@ -93,7 +93,7 @@ func ConvertWeiToEth(num *big.Int) {
 	eth := f / math.Pow(10, 18)
 	ether := fmt.Sprintf("%.8f", eth)
 
-	log.Fatalf("eth..", ether)
+	log.Println("eth..", ether)
 }
 
 func HexToBigInt(hex string) (*big.Int, bool) {
