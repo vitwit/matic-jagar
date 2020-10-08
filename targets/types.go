@@ -343,7 +343,7 @@ type (
 		} `json:"result"`
 	}
 
-	NetListening struct {
+	BorBoolResp struct {
 		Result bool `json:"result"`
 		ID     int  `json:"id"`
 	}

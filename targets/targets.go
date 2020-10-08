@@ -205,11 +205,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.BorEndPoint,
 				Method:   http.MethodPost,
-				Body: Payload{
-					Jsonrpc: "2.0",
-					Method:  "net_peerCount",
-					ID:      74,
-				},
+				Body:     Payload{Jsonrpc: "2.0", Method: "net_peerCount", ID: 74},
 			},
 			Func:        BorPeersCount,
 			ScraperRate: cfg.Scraper.Rate,
@@ -220,11 +216,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.BorEndPoint,
 				Method:   http.MethodPost,
-				Body: Payload{
-					Jsonrpc: "2.0",
-					Method:  "eth_blockNumber",
-					ID:      83,
-				},
+				Body:     Payload{Jsonrpc: "2.0", Method: "eth_blockNumber", ID: 83},
 			},
 			Func:        BorCurrentHeight,
 			ScraperRate: cfg.Scraper.Rate,
@@ -235,11 +227,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.BorEndPoint,
 				Method:   http.MethodPost,
-				Body: Payload{
-					Jsonrpc: "2.0",
-					Method:  "eth_getBalance",
-					ID:      1,
-				},
+				Body:     Payload{Jsonrpc: "2.0", Method: "eth_getBalance", ID: 1},
 			},
 			Func:        BorLatestBalance, // clarity on wei to eth conversion
 			ScraperRate: cfg.Scraper.Rate,
@@ -250,11 +238,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.BorEndPoint,
 				Method:   http.MethodPost,
-				Body: Payload{
-					Jsonrpc: "2.0",
-					Method:  "eth_syncing",
-					ID:      1,
-				},
+				Body:     Payload{Jsonrpc: "2.0", Method: "eth_syncing", ID: 1},
 			},
 			Func:        BorEthSyncing, // Clarity about metric
 			ScraperRate: cfg.Scraper.Rate,
@@ -265,13 +249,20 @@ func InitTargets(cfg *config.Config) *Targets {
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.BorEndPoint,
 				Method:   http.MethodPost,
-				Body: Payload{
-					Jsonrpc: "2.0",
-					Method:  "net_listening",
-					ID:      67,
-				},
+				Body:     Payload{Jsonrpc: "2.0", Method: "net_listening", ID: 67},
 			},
 			Func:        BorNetListening, // Clarity about the metric and alerting
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "curl cmd",
+			Name:          "Bor Eth Mining",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.BorEndPoint,
+				Method:   http.MethodPost,
+				Body:     Payload{Jsonrpc: "2.0", Method: "eth_mining", ID: 71},
+			},
+			Func:        BorEthMining, // Clarity about the metric and alerting
 			ScraperRate: cfg.Scraper.Rate,
 		},
 	}}

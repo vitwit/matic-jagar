@@ -9,8 +9,8 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 )
 
-// BorNetListening checks if client is actively listening for network connections
-func BorNetListening(ops HTTPOptions, cfg *config.Config, c client.Client) {
+// BorEthMining checks if client is actively mining new blocks or not
+func BorEthMining(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -30,9 +30,9 @@ func BorNetListening(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			return
 		}
 
-		netListen := bnl.Result
+		mining := bnl.Result
 
-		_ = writeToInfluxDb(c, bp, "matic_bot_net_listening", map[string]string{}, map[string]interface{}{"net_listen": netListen})
-		log.Println("Bor Net Listening: ", netListen)
+		_ = writeToInfluxDb(c, bp, "matic_bot_eth_mining", map[string]string{}, map[string]interface{}{"eth_mining": mining})
+		log.Println("Bor Eth Mining: ", mining)
 	}
 }
