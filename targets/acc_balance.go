@@ -38,10 +38,20 @@ func GetHeimdallCurrentBal(ops HTTPOptions, cfg *config.Config, c client.Client)
 	}
 
 	if len(accResp.Result) > 0 {
-		addressBalance := convertToCommaSeparated(accResp.Result[0].Amount) + accResp.Result[0].Denom
+		addressBalance := convertToCommaSeparated(ConvertToMatic(accResp.Result[0].Amount)) + accResp.Result[0].Denom
 		_ = writeToInfluxDb(c, bp, "matic_heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": addressBalance})
 		log.Printf("Address Balance: %s", addressBalance)
 	}
+}
+
+func ConvertToMatic(amount string) string {
+	f, _ := strconv.ParseFloat(amount, 64)
+	d := f * math.Pow(10, -18)
+	bal := fmt.Sprintf("%.6f", d)
+
+	log.Println("heimdall bal : ", bal)
+
+	return bal
 }
 
 func convertToCommaSeparated(amt string) string {
