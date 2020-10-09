@@ -265,6 +265,17 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        BorEthMining, // Clarity about the metric and alerting
 			ScraperRate: cfg.Scraper.Rate,
 		},
+		{
+			ExecutionType: "curl cmd",
+			Name:          "Get Eth Balance",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.EthRPCEndPoint,
+				Method:   http.MethodPost,
+				Body:     Payload{Jsonrpc: "2.0", Method: "eth_getBalance", ID: 1},
+			},
+			Func:        GetEthBalance,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 	}}
 }
 

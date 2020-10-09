@@ -52,31 +52,15 @@ type (
 		Jsonrpc string `json:"jsonrpc"`
 		Result  struct {
 			NodeInfo struct {
-				ProtocolVersion interface{} `json:"protocol_version"`
-				ID              string      `json:"id"`
-				ListenAddr      string      `json:"listen_addr"`
-				Network         string      `json:"network"`
-				Version         string      `json:"version"`
-				Channels        string      `json:"channels"`
-				Moniker         string      `json:"moniker"`
-				Other           struct {
-					TxIndex    string `json:"tx_index"`
-					RPCAddress string `json:"rpc_address"`
-				} `json:"other"`
+				Moniker string `json:"moniker"`
 			} `json:"node_info"`
 			SyncInfo struct {
-				LatestBlockHash   string `json:"latest_block_hash"`
-				LatestAppHash     string `json:"latest_app_hash"`
 				LatestBlockHeight string `json:"latest_block_height"`
 				LatestBlockTime   string `json:"latest_block_time"`
 				CatchingUp        bool   `json:"catching_up"`
 			} `json:"sync_info"`
 			ValidatorInfo struct {
-				Address string `json:"address"`
-				PubKey  struct {
-					Type  string `json:"type"`
-					Value string `json:"value"`
-				} `json:"pub_key"`
+				Address     string `json:"address"`
 				VotingPower string `json:"voting_power"`
 			} `json:"validator_info"`
 		} `json:"result"`
@@ -99,16 +83,9 @@ type (
 					ListenAddr string `json:"listen_addr"`
 					Network    string `json:"network"`
 					Version    string `json:"version"`
-					Channels   string `json:"channels"`
 					Moniker    string `json:"moniker"`
-					Other      struct {
-						TxIndex    string `json:"tx_index"`
-						RPCAddress string `json:"rpc_address"`
-					} `json:"other"`
 				} `json:"node_info"`
-				IsOutbound       bool        `json:"is_outbound"`
-				ConnectionStatus interface{} `json:"connection_status"`
-				RemoteIP         string      `json:"remote_ip"`
+				RemoteIP string `json:"remote_ip"`
 			} `json:"peers"`
 		} `json:"result"`
 	}
@@ -138,12 +115,6 @@ type (
 					Height string `json:"height"`
 					Time   string `json:"time"`
 				} `json:"header"`
-				Data struct {
-					Txs interface{} `json:"txs"`
-				} `json:"data"`
-				Evidence struct {
-					Evidence interface{} `json:"evidence"`
-				} `json:"evidence"`
 				LastCommit struct {
 					BlockID    interface{} `json:"block_id"`
 					Precommits []struct {
@@ -155,7 +126,6 @@ type (
 						ValidatorAddress string      `json:"validator_address"`
 						ValidatorIndex   string      `json:"validator_index"`
 						Signature        string      `json:"signature"`
-						SideTxResults    interface{} `json:"side_tx_results"`
 					} `json:"precommits"`
 				} `json:"last_commit"`
 			} `json:"block"`
@@ -219,32 +189,14 @@ type (
 		BlockMeta interface{} `json:"block_meta"`
 		Block     struct {
 			Header struct {
-				Version struct {
-					Block string `json:"block"`
-					App   string `json:"app"`
-				} `json:"version"`
-				ChainID            string `json:"chain_id"`
-				Height             string `json:"height"`
-				Time               string `json:"time"`
-				NumTxs             string `json:"num_txs"`
-				TotalTxs           string `json:"total_txs"`
-				LastCommitHash     string `json:"last_commit_hash"`
-				DataHash           string `json:"data_hash"`
-				ValidatorsHash     string `json:"validators_hash"`
-				NextValidatorsHash string `json:"next_validators_hash"`
-				ConsensusHash      string `json:"consensus_hash"`
-				AppHash            string `json:"app_hash"`
-				LastResultsHash    string `json:"last_results_hash"`
-				EvidenceHash       string `json:"evidence_hash"`
-				ProposerAddress    string `json:"proposer_address"`
+				ChainID         string `json:"chain_id"`
+				Height          string `json:"height"`
+				Time            string `json:"time"`
+				NumTxs          string `json:"num_txs"`
+				TotalTxs        string `json:"total_txs"`
+				LastCommitHash  string `json:"last_commit_hash"`
+				ProposerAddress string `json:"proposer_address"`
 			} `json:"header"`
-			Data struct {
-				Txs interface{} `json:"txs"`
-			} `json:"data"`
-			Evidence struct {
-				Evidence interface{} `json:"evidence"`
-			} `json:"evidence"`
-			LastCommit interface{} `json:"last_commit"`
 		} `json:"block"`
 	}
 
@@ -346,5 +298,10 @@ type (
 	BorBoolResp struct {
 		Result bool `json:"result"`
 		ID     int  `json:"id"`
+	}
+
+	EthResult struct {
+		Result string `json:"result"`
+		ID     int    `json:"id"`
 	}
 )

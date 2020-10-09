@@ -86,14 +86,16 @@ func BorLatestBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 }
 
-func ConvertWeiToEth(num *big.Int) {
+func ConvertWeiToEth(num *big.Int) string {
 	wei := num.String()
 
 	f, _ := strconv.ParseFloat(wei, 64)
-	eth := f / math.Pow(10, 18)
+	eth := f * math.Pow(10, -18)
 	ether := fmt.Sprintf("%.8f", eth)
 
 	log.Println("eth..", ether)
+
+	return ether
 }
 
 func HexToBigInt(hex string) (*big.Int, bool) {
