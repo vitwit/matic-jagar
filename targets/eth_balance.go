@@ -2,6 +2,7 @@ package targets
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 
 	client "github.com/influxdata/influxdb1-client/v2"
@@ -37,9 +38,14 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			return
 		}
 
-		ethBalance := ConvertWeiToEth(bal) + "ETH"
+		ethBalance := ConvertWeiToEth(bal)
 
-		_ = writeToInfluxDb(c, bp, "matic_eth_balance", map[string]string{}, map[string]interface{}{"balance": ethBalance})
+		if ethBalance < cfg.EthBalanceThreshold {
+			_ = SendTelegramAlert(fmt.Sprintf("Your Eth current balance has dropped below %s", cfg.EthBalanceThreshold), cfg)
+			_ = SendEmailAlert(fmt.Sprintf("Your Eth current balance has dropped below %s", cfg.EthBalanceThreshold), cfg)
+		}
+
+		_ = writeToInfluxDb(c, bp, "matic_eth_balance", map[string]string{}, map[string]interface{}{"balance": ethBalance + "ETH"})
 		log.Printf("Eth Current Balance: %s", ethBalance)
 	}
 

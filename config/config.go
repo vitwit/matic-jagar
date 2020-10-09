@@ -64,6 +64,7 @@ type (
 		SignerAddress                  string   `mapstructure:"signer_address"`
 		BorEndPoint                    string   `mapstructure:"bor_end_point"`
 		EthRPCEndPoint                 string   `mapstructure:"eth_rpc_endpoint"`
+		EthBalanceThreshold            string   `mapstructure:"eth_bal_threshold"`
 	}
 )
 
