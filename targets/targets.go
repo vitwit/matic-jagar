@@ -51,12 +51,12 @@ func InitTargets(cfg *config.Config) *Targets {
 		},
 		{
 			ExecutionType: "http", // Confirmation about alerting
-			Name:          "Get Account balanace",
+			Name:          "Get Heimdall Current Balanace",
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.LCDEndpoint + "/bank/balances/" + cfg.SignerAddress,
 				Method:   http.MethodGet,
 			},
-			Func:        GetAccountBal,
+			Func:        GetHeimdallCurrentBal,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{

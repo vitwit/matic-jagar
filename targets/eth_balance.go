@@ -23,7 +23,7 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
-	if resp.StatusCode == 200 || resp.StatusCode == 201 {
+	if resp != nil {
 		var balance EthResult
 		err = json.Unmarshal(resp.Body, &balance)
 		if err != nil {
@@ -40,7 +40,7 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		ethBalance := ConvertWeiToEth(bal) + "ETH"
 
 		_ = writeToInfluxDb(c, bp, "matic_eth_balance", map[string]string{}, map[string]interface{}{"balance": ethBalance})
-		log.Printf("Eth Current Balance: %d", ethBalance)
+		log.Printf("Eth Current Balance: %s", ethBalance)
 	}
 
 }

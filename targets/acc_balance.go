@@ -15,8 +15,8 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 )
 
-// GetAccountBal to get account balance information using signer address
-func GetAccountBal(ops HTTPOptions, cfg *config.Config, c client.Client) {
+// GetHeimdallCurrentBal to get current balance information using signer address
+func GetHeimdallCurrentBal(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -25,7 +25,7 @@ func GetAccountBal(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	resp, err := HitHTTPTarget(ops)
 	if err != nil {
 		log.Printf("Error: %v", err)
-		_ = writeToInfluxDb(c, bp, "matic_account_balance", map[string]string{}, map[string]interface{}{"balance": "NA"})
+		_ = writeToInfluxDb(c, bp, "matic_heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": "NA"})
 		return
 	}
 
@@ -33,13 +33,13 @@ func GetAccountBal(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	err = json.Unmarshal(resp.Body, &accResp)
 	if err != nil {
 		log.Printf("Error: %v", err)
-		_ = writeToInfluxDb(c, bp, "matic_account_balance", map[string]string{}, map[string]interface{}{"balance": "NA"})
+		_ = writeToInfluxDb(c, bp, "matic_heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": "NA"})
 		return
 	}
 
 	if len(accResp.Result) > 0 {
 		addressBalance := convertToCommaSeparated(accResp.Result[0].Amount) + accResp.Result[0].Denom
-		_ = writeToInfluxDb(c, bp, "matic_account_balance", map[string]string{}, map[string]interface{}{"balance": addressBalance})
+		_ = writeToInfluxDb(c, bp, "matic_heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": addressBalance})
 		log.Printf("Address Balance: %s", addressBalance)
 	}
 }
