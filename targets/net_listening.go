@@ -32,7 +32,7 @@ func BorNetListening(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 		netListen := bnl.Result
 
-		_ = writeToInfluxDb(c, bp, "matic_bot_net_listening", map[string]string{}, map[string]interface{}{"net_listen": netListen})
+		_ = writeToInfluxDb(c, bp, "matic_bor_net_listening", map[string]string{}, map[string]interface{}{"net_listen": netListen})
 		log.Println("Bor Net Listening: ", netListen)
 	}
 }

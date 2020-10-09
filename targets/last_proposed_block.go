@@ -43,6 +43,11 @@ func GetLatestProposedBlockAndTime(ops HTTPOptions, cfg *config.Config, c client
 		}
 		_ = writeToInfluxDb(c, bp, "matic_last_proposed_block", map[string]string{}, fields)
 	}
+
+	// Store chainID in database
+	chainID := blockResp.Block.Header.ChainID
+	_ = writeToInfluxDb(c, bp, "matic_chain_id", map[string]string{}, map[string]interface{}{"chain_id": chainID})
+	log.Printf("Chain ID : %s ", chainID)
 }
 
 // GetUserDateFormat to which returns date in a user friendly

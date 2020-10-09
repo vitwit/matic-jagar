@@ -61,6 +61,14 @@ func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	_ = writeBatchPoints(c, bp)
 	log.Printf("\nCurrent Block Height: %s \nCaught Up? %t \n",
 		currentBlockHeight, caughtUp)
+
+	// Store validator details such as moniker, signer address and hex address
+	moniker := status.Result.NodeInfo.Moniker
+	hexAddress := status.Result.ValidatorInfo.Address
+	signerAddress := cfg.SignerAddress
+	_ = writeToInfluxDb(c, bp, "matic_val_desc", map[string]string{}, map[string]interface{}{"moniker": moniker, "hex_address": hexAddress, "signer_address": signerAddress})
+
+	log.Printf("Moniker:%s ", moniker)
 }
 
 // GetValidatorBlock returns validator current block height
