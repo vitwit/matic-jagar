@@ -212,13 +212,35 @@ func InitTargets(cfg *config.Config) *Targets {
 		},
 		{
 			ExecutionType: "curl cmd",
-			Name:          "Get Current Block Height",
+			Name:          "Get Current Block Height of Bor Node",
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.BorEndPoint,
 				Method:   http.MethodPost,
 				Body:     Payload{Jsonrpc: "2.0", Method: "eth_blockNumber", ID: 83},
 			},
 			Func:        BorCurrentHeight,
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "curl cmd",
+			Name:          "Get Current Block Height of Bor Node",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.BorEndPoint,
+				Method:   http.MethodPost,
+				Body:     Payload{Jsonrpc: "2.0", Method: "eth_blockNumber", ID: 83},
+			},
+			Func:        BorCurrentHeight,
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "curl cmd",
+			Name:          "Get Missed Blocks",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.BorEndPoint,
+				Method:   http.MethodPost,
+				Body:     Payload{Jsonrpc: "2.0", Method: "bor_getSigners", ID: 1},
+			},
+			Func:        GetBorMissedBlocks,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{

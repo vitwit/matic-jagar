@@ -304,4 +304,9 @@ type (
 		Result string `json:"result"`
 		ID     int    `json:"id"`
 	}
+
+	BorSignersRes struct {
+		Result []string `json:"result"`
+		ID     int      `json:"id"`
+	}
 )
