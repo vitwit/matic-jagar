@@ -63,39 +63,6 @@ func convertToCommaSeparated(amt string) string {
 	return p.Sprintf("%d", a)
 }
 
-func BorLatestBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
-	if err != nil {
-		return
-	}
-
-	ops.Body.Params = append(ops.Body.Params, cfg.SignerAddress, "latest")
-	resp, err := HitHTTPTarget(ops)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	if resp.StatusCode == 200 || resp.StatusCode == 201 {
-		var balance BorResult
-		err = json.Unmarshal(resp.Body, &balance)
-		if err != nil {
-			log.Printf("Error: %v", err)
-			return
-		}
-
-		bal, er := HexToBigInt(balance.Result)
-		if !er {
-			log.Printf("Error conversion from hex to big int : %v", er)
-			return
-		}
-
-		_ = writeToInfluxDb(c, bp, "matic_bor_balance", map[string]string{}, map[string]interface{}{"current_balance": bal})
-		log.Printf("Bor Current Balance: %d", bal)
-	}
-
-}
-
 func ConvertWeiToEth(num *big.Int) string {
 	wei := num.String()
 

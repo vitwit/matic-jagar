@@ -255,50 +255,6 @@ func InitTargets(cfg *config.Config) *Targets {
 		},
 		{
 			ExecutionType: "curl cmd",
-			Name:          "Get Bor Balance",
-			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.BorEndPoint,
-				Method:   http.MethodPost,
-				Body:     Payload{Jsonrpc: "2.0", Method: "eth_getBalance", ID: 1},
-			},
-			Func:        BorLatestBalance, // clarity on wei to eth conversion
-			ScraperRate: cfg.Scraper.Rate,
-		},
-		{
-			ExecutionType: "curl cmd",
-			Name:          "Eth Syncing",
-			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.BorEndPoint,
-				Method:   http.MethodPost,
-				Body:     Payload{Jsonrpc: "2.0", Method: "eth_syncing", ID: 1},
-			},
-			Func:        BorEthSyncing, // Clarity about metric
-			ScraperRate: cfg.Scraper.Rate,
-		},
-		{
-			ExecutionType: "curl cmd",
-			Name:          "Bor Net Listening",
-			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.BorEndPoint,
-				Method:   http.MethodPost,
-				Body:     Payload{Jsonrpc: "2.0", Method: "net_listening", ID: 67},
-			},
-			Func:        BorNetListening, // Clarity about the metric and alerting
-			ScraperRate: cfg.Scraper.Rate,
-		},
-		{
-			ExecutionType: "curl cmd",
-			Name:          "Bor Eth Mining",
-			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.BorEndPoint,
-				Method:   http.MethodPost,
-				Body:     Payload{Jsonrpc: "2.0", Method: "eth_mining", ID: 71},
-			},
-			Func:        BorEthMining, // Clarity about the metric and alerting
-			ScraperRate: cfg.Scraper.Rate,
-		},
-		{
-			ExecutionType: "curl cmd",
 			Name:          "Get Eth Balance",
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.EthRPCEndPoint,
@@ -306,6 +262,17 @@ func InitTargets(cfg *config.Config) *Targets {
 				Body:     Payload{Jsonrpc: "2.0", Method: "eth_getBalance", ID: 1},
 			},
 			Func:        GetEthBalance,
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "curl cmd",
+			Name:          "Get Bor Current Proposer",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.BorEndPoint,
+				Method:   http.MethodPost,
+				Body:     Payload{Jsonrpc: "2.0", Method: "bor_getCurrentProposer", ID: 1},
+			},
+			Func:        GetBorCurrentProposer,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 	}}
