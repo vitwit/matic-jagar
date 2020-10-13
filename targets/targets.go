@@ -161,16 +161,6 @@ func InitTargets(cfg *config.Config) *Targets {
 		},
 		{
 			ExecutionType: "http",
-			Name:          "Get bor params",
-			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/bor/params",
-				Method:   http.MethodGet,
-			},
-			Func:        GetBorParams,
-			ScraperRate: cfg.Scraper.Rate,
-		},
-		{
-			ExecutionType: "http",
 			Name:          "Get total no of checkpoints",
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.LCDEndpoint + "/checkpoints/count",
@@ -197,6 +187,26 @@ func InitTargets(cfg *config.Config) *Targets {
 				Method:   http.MethodGet,
 			},
 			Func:        GetCheckpointsDuration,
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "http",
+			Name:          "Get bor params",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.LCDEndpoint + "/bor/params",
+				Method:   http.MethodGet,
+			},
+			Func:        GetBorParams,
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "http",
+			Name:          "Get bor latest span",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.LCDEndpoint + "/bor/latest-span",
+				Method:   http.MethodGet,
+			},
+			Func:        GetBorLatestSpan,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{

@@ -309,4 +309,16 @@ type (
 		Result []string `json:"result"`
 		ID     int      `json:"id"`
 	}
+
+	BorLatestSpan struct {
+		Height string `json:"height"`
+		Result struct {
+			SpanID            int           `json:"span_id"`
+			StartBlock        int           `json:"start_block"`
+			EndBlock          int           `json:"end_block"`
+			ValidatorSet      interface{}   `json:"validator_set"`
+			SelectedProducers []interface{} `json:"selected_producers"`
+			BorChainID        string        `json:"bor_chain_id"`
+		} `json:"result"`
+	}
 )
