@@ -6,9 +6,11 @@ import (
 	"log"
 
 	client "github.com/influxdata/influxdb1-client/v2"
+
 	"github.com/vitwit/matic-jagar/config"
 )
 
+// BorCurrentHeight which returns the current height of bor validator
 func BorCurrentHeight(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -22,7 +24,7 @@ func BorCurrentHeight(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	if resp.StatusCode == 200 || resp.StatusCode == 201 {
-		var cbh BorResult
+		var cbh BorValHeight
 		err = json.Unmarshal(resp.Body, &cbh)
 		if err != nil {
 			log.Printf("Error: %v", err)

@@ -20,6 +20,7 @@ type (
 		Method      string
 	}
 
+	// Payload is a structure which holds all the curl payload parameters
 	Payload struct {
 		Jsonrpc string        `json:"jsonrpc"`
 		Method  string        `json:"method"`
@@ -48,6 +49,7 @@ type (
 		Body       []byte
 	}
 
+	// Status is a struct which holds the parameter of status response
 	Status struct {
 		Jsonrpc string `json:"jsonrpc"`
 		Result  struct {
@@ -66,6 +68,7 @@ type (
 		} `json:"result"`
 	}
 
+	// NetInfo is a structre which holds the parameters of net info
 	NetInfo struct {
 		Jsonrpc string `json:"jsonrpc"`
 		Result  struct {
@@ -74,22 +77,19 @@ type (
 			NPeers    string   `json:"n_peers"`
 			Peers     []struct {
 				NodeInfo struct {
-					ProtocolVersion struct {
-						P2P   string `json:"p2p"`
-						Block string `json:"block"`
-						App   string `json:"app"`
-					} `json:"protocol_version"`
-					ID         string `json:"id"`
-					ListenAddr string `json:"listen_addr"`
-					Network    string `json:"network"`
-					Version    string `json:"version"`
-					Moniker    string `json:"moniker"`
+					ProtocolVersion interface{} `json:"protocol_version"`
+					ID              string      `json:"id"`
+					ListenAddr      string      `json:"listen_addr"`
+					Network         string      `json:"network"`
+					Version         string      `json:"version"`
+					Moniker         string      `json:"moniker"`
 				} `json:"node_info"`
 				RemoteIP string `json:"remote_ip"`
 			} `json:"peers"`
 		} `json:"result"`
 	}
 
+	// ValidatorsHeight is a struct which holds the details of vaidator height response
 	ValidatorsHeight struct {
 		Jsonrpc string `json:"jsonrpc"`
 		Result  struct {
@@ -106,6 +106,7 @@ type (
 		} `json:"result"`
 	}
 
+	// CurrentBlockWithHeight is a struct which holds the parameters of block height response
 	CurrentBlockWithHeight struct {
 		Jsonrpc string `json:"jsonrpc"`
 		Result  struct {
@@ -132,7 +133,7 @@ type (
 		} `json:"result"`
 	}
 
-	// UnconfirmedTxns struct which holds the parameters of unconfirmed txns
+	// UnconfirmedTxns is a struct which holds the parameters of unconfirmed txns
 	UnconfirmedTxns struct {
 		Jsonrpc string `json:"jsonrpc"`
 		Result  struct {
@@ -143,6 +144,7 @@ type (
 		} `json:"result"`
 	}
 
+	// ApplicationInfo is a struct which holds the details app
 	ApplicationInfo struct {
 		NodeInfo           interface{} `json:"node_info"`
 		ApplicationVersion struct {
@@ -156,6 +158,7 @@ type (
 		} `json:"application_version"`
 	}
 
+	// AuthParams is a struct which holds the parameters of auth params resposne
 	AuthParams struct {
 		Height string `json:"height"`
 		Result struct {
@@ -169,6 +172,7 @@ type (
 		} `json:"result"`
 	}
 
+	// ValStatusResp is a struct which holds the parameters of validator status response
 	ValStatusResp struct {
 		Height string `json:"height"`
 		Result struct {
@@ -185,9 +189,11 @@ type (
 		} `json:"result"`
 	}
 
+	// LastProposedBlockAndTime is a struct which holds the parameters of last proposed block response
 	LastProposedBlockAndTime struct {
 		BlockMeta interface{} `json:"block_meta"`
-		Block     struct {
+
+		Block struct {
 			Header struct {
 				ChainID         string `json:"chain_id"`
 				Height          string `json:"height"`
@@ -200,6 +206,7 @@ type (
 		} `json:"block"`
 	}
 
+	// AccountBalResp is a struct which holds the parameters of account balance response
 	AccountBalResp struct {
 		Height string `json:"height"`
 		Result []struct {
@@ -208,6 +215,7 @@ type (
 		} `json:"result"`
 	}
 
+	// Proposals is a struct which holds the parameters of proposals response
 	Proposals struct {
 		Height string `json:"height"`
 		Result []struct {
@@ -230,6 +238,7 @@ type (
 		} `json:"result"`
 	}
 
+	// ProposalVoters is a struct which holds the parameters of proposal voters response
 	ProposalVoters struct {
 		Height string `json:"height"`
 		Result []struct {
@@ -239,7 +248,7 @@ type (
 		} `json:"result"`
 	}
 
-	// Depositors struct which holds the parameters of depositors
+	// Depositors struct which holds the parameters of depositors response
 	Depositors struct {
 		Height string `json:"height"`
 		Result []struct {
@@ -252,6 +261,7 @@ type (
 		} `json:"result"`
 	}
 
+	// BorParams struct which holds the parameters of bor
 	BorParams struct {
 		Height string `json:"height"`
 		Result struct {
@@ -261,6 +271,7 @@ type (
 		} `json:"result"`
 	}
 
+	// TotalCheckpoints struct which holds the parameters of toatl checkpoint response
 	TotalCheckpoints struct {
 		Height string `json:"height"`
 		Result struct {
@@ -268,11 +279,13 @@ type (
 		} `json:"result"`
 	}
 
-	BorResult struct {
+	// BorValHeight is a struct which holds the parameters of validator height
+	BorValHeight struct {
 		Result string `json:"result"`
 		ID     int    `json:"id"`
 	}
 
+	// LatestCheckpoints is a struct which holds the parameters of latest checkpoints
 	LatestCheckpoints struct {
 		Height string `json:"height"`
 		Result struct {
@@ -285,6 +298,7 @@ type (
 		} `json:"result"`
 	}
 
+	// CheckpointsDuration struct which holds the parameter of checkpoint duration
 	CheckpointsDuration struct {
 		Height string `json:"height"`
 		Result struct {
@@ -295,21 +309,19 @@ type (
 		} `json:"result"`
 	}
 
-	BorBoolResp struct {
-		Result bool `json:"result"`
-		ID     int  `json:"id"`
-	}
-
+	// EthResult is a struct which holds the paramters of eth bal response
 	EthResult struct {
 		Result string `json:"result"`
 		ID     int    `json:"id"`
 	}
 
+	// BorSignersRes which holds the parameters of signers response
 	BorSignersRes struct {
 		Result []string `json:"result"`
 		ID     int      `json:"id"`
 	}
 
+	// BorLatestSpan is a struct which holds the parameters of latest span response
 	BorLatestSpan struct {
 		Height string `json:"height"`
 		Result struct {
@@ -318,12 +330,6 @@ type (
 			EndBlock     int `json:"end_block"`
 			ValidatorSet struct {
 				Validators []struct {
-					ID          int    `json:"ID"`
-					StartEpoch  int    `json:"startEpoch"`
-					EndEpoch    int    `json:"endEpoch"`
-					Nonce       int    `json:"nonce"`
-					Power       int    `json:"power"`
-					PubKey      string `json:"pubKey"`
 					Signer      string `json:"signer"`
 					LastUpdated string `json:"last_updated"`
 					Jailed      bool   `json:"jailed"`

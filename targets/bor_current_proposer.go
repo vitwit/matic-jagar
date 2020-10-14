@@ -11,7 +11,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 )
 
-// GetBorCurrentProposer to get current proposer
+// GetBorCurrentProposer to get current proposer and calculate no of blocks produced
 func GetBorCurrentProposer(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -45,7 +45,7 @@ func GetBorCurrentProposer(ops HTTPOptions, cfg *config.Config, c client.Client)
 	log.Printf("No of Blocks Proposed: %d", count)
 }
 
-// GetBlocksProducedCountFromDB returns the no of blocks produxed from db
+// GetBlocksProducedCountFromDB returns the no of blocks produced from db
 func GetBlocksProducedCountFromDB(cfg *config.Config, c client.Client) string {
 	var count string
 	q := client.NewQuery("SELECT last(blocks_produced) FROM matic_current_proposer", cfg.InfluxDB.Database, "")

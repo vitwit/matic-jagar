@@ -143,7 +143,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Get Validator fee and gas",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/auth/params",
+				Endpoint: cfg.LCDEndpoint + "/auth/params", //take confirmation about validator fee
 				Method:   http.MethodGet,
 			},
 			Func:        GetValidatorFeeAndGas,

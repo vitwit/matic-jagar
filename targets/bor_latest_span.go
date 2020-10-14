@@ -11,7 +11,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 )
 
-// GetBorLatestSpan to get latest span id
+// GetBorLatestSpan to get latest span id and also calcualte span validator count
 func GetBorLatestSpan(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -79,6 +79,7 @@ func GetBorSpanIDFromDb(cfg *config.Config, c client.Client) string {
 	return spanID
 }
 
+// GetBorSpanValidatorCountFromDb returns the span val count from the db
 func GetBorSpanValidatorCountFromDb(cfg *config.Config, c client.Client) string {
 	var count string
 	q := client.NewQuery("SELECT last(span_val_count) FROM matic_bor_latest_span", cfg.InfluxDB.Database, "")
