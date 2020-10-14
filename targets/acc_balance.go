@@ -2,15 +2,9 @@ package targets
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
-	"math"
-	"math/big"
-	"strconv"
 
 	client "github.com/influxdata/influxdb1-client/v2"
-	"golang.org/x/text/language"
-	"golang.org/x/text/message"
 
 	"github.com/vitwit/matic-jagar/config"
 )
@@ -42,42 +36,4 @@ func GetHeimdallCurrentBal(ops HTTPOptions, cfg *config.Config, c client.Client)
 		_ = writeToInfluxDb(c, bp, "matic_heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": addressBalance})
 		log.Printf("Address Balance: %s", addressBalance)
 	}
-}
-
-func ConvertToMatic(amount string) string {
-	f, _ := strconv.ParseFloat(amount, 64)
-	d := f * math.Pow(10, -18)
-	bal := fmt.Sprintf("%.6f", d)
-
-	log.Println("heimdall bal : ", bal)
-
-	return bal
-}
-
-func convertToCommaSeparated(amt string) string {
-	a, err := strconv.Atoi(amt)
-	if err != nil {
-		return amt
-	}
-	p := message.NewPrinter(language.English)
-	return p.Sprintf("%d", a)
-}
-
-func ConvertWeiToEth(num *big.Int) string {
-	wei := num.String()
-
-	f, _ := strconv.ParseFloat(wei, 64)
-	eth := f * math.Pow(10, -18)
-	ether := fmt.Sprintf("%.8f", eth)
-
-	log.Println("eth..", ether)
-
-	return ether
-}
-
-func HexToBigInt(hex string) (*big.Int, bool) {
-	n := new(big.Int)
-	n2, err := n.SetString(hex[2:], 16)
-
-	return n2, err
 }

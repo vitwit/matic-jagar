@@ -90,34 +90,3 @@ func GetValidatorBlock(cfg *config.Config, c client.Client) string {
 	}
 	return validatorHeight
 }
-
-func BorEthSyncing(ops HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
-	if err != nil {
-		return
-	}
-
-	resp, err := HitHTTPTarget(ops)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	// log.Fatalf("resp..", resp)
-
-	if resp.StatusCode == 200 || resp.StatusCode == 201 {
-		var sync BorResult
-		err = json.Unmarshal(resp.Body, &sync)
-		if err != nil {
-			log.Printf("Error: %v", err)
-			return
-		}
-
-		// log.Fatalf("result..", resp.Body)
-
-		var synced int
-
-		_ = writeToInfluxDb(c, bp, "matic_bor_node_synced", map[string]string{}, map[string]interface{}{"status": synced})
-		log.Printf("Bor Syncing Status: %d", synced)
-	}
-}
