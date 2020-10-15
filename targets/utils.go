@@ -60,3 +60,10 @@ func HexToIntConversion(hex string) int {
 
 	return n2
 }
+
+func ConvertNanoSecToMinutes(nanoSec int64) int64 {
+	sec := nanoSec / 1e9
+	minutes := sec / 60
+
+	return minutes
+}

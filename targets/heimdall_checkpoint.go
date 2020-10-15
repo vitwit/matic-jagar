@@ -83,7 +83,8 @@ func GetCheckpointsDuration(ops HTTPOptions, cfg *config.Config, c client.Client
 	}
 
 	duration := cpd.Result.CheckpointBufferTime
+	minutes := ConvertNanoSecToMinutes(duration)
 
-	_ = writeToInfluxDb(c, bp, "matic_checkpoint_duration", map[string]string{}, map[string]interface{}{"duration": duration})
-	log.Printf("Checkpoints Duration: %d", duration)
+	_ = writeToInfluxDb(c, bp, "matic_checkpoint_duration", map[string]string{}, map[string]interface{}{"duration": minutes})
+	log.Printf("Checkpoints Duration in nano seconds: %d", duration)
 }
