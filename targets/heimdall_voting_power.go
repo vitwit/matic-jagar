@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
@@ -31,13 +32,16 @@ func GetValidatorVotingPower(ops HTTPOptions, cfg *config.Config, c client.Clien
 	}
 
 	vp := validatorResp.Result.Power
+	prevVotingPower := GetVotingPowerFromDb(cfg, c)
+	previousVP, _ := strconv.Atoi(prevVotingPower)
+
+	if previousVP != vp {
+		_ = SendTelegramAlert(fmt.Sprintf("Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
+		_ = SendEmailAlert(fmt.Sprintf("Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
+	}
+
 	_ = writeToInfluxDb(c, bp, "matic_voting_power", map[string]string{}, map[string]interface{}{"power": vp})
 	log.Println("Voting Power \n", vp)
-
-	if int64(vp) <= cfg.VotingPowerThreshold {
-		_ = SendTelegramAlert(fmt.Sprintf("Your validator %s voting power has dropped below %d", cfg.ValidatorName, cfg.VotingPowerThreshold), cfg)
-		_ = SendEmailAlert(fmt.Sprintf("Your validator %s voting power has dropped below %d", cfg.ValidatorName, cfg.VotingPowerThreshold), cfg)
-	}
 }
 
 // GetVotingPowerFromDb returns voting power of a validator from db
