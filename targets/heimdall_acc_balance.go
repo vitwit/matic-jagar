@@ -69,3 +69,23 @@ func GetAccountBalFromDb(cfg *config.Config, c client.Client) string {
 	}
 	return balance
 }
+
+// GetAccountBalWithDenomFromdb returns account balance from db
+func GetAccountBalWithDenomFromdb(cfg *config.Config, c client.Client) string {
+	var balance string
+	q := client.NewQuery("SELECT last(current_balance) FROM matic_heimdall_current_balance", cfg.InfluxDB.Database, "")
+	if response, err := c.Query(q); err == nil && response.Error() == nil {
+		for _, r := range response.Results {
+			if len(r.Series) != 0 {
+				for idx, col := range r.Series[0].Columns {
+					if col == "last" {
+						amount := r.Series[0].Values[0][idx]
+						balance = fmt.Sprintf("%v", amount)
+						break
+					}
+				}
+			}
+		}
+	}
+	return balance
+}

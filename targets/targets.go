@@ -253,6 +253,12 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        GetBorCurrentProposer,
 			ScraperRate: cfg.Scraper.Rate,
 		},
+		{
+			ExecutionType: "Telegram command",
+			Name:          "command based alerts",
+			Func:          TelegramAlerting,
+			ScraperRate:   "2s",
+		},
 	}}
 }
 

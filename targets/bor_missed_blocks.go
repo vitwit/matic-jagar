@@ -46,7 +46,7 @@ func GetBorMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
-	borHeight := GetBorCurrentBlokHeight(cfg, c)
+	borHeight := GetBorCurrentBlokHeightInHex(cfg, c)
 
 	ops.Body.Params = append(ops.Body.Params, borHeight)
 

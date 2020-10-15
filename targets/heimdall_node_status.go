@@ -90,3 +90,30 @@ func GetValidatorBlock(cfg *config.Config, c client.Client) string {
 	}
 	return validatorHeight
 }
+
+// GetNodeSync returns the syncing status of a node
+func GetNodeSync(cfg *config.Config, c client.Client) string {
+	var status, sync string
+	q := client.NewQuery("SELECT last(status) FROM matic_node_synced", cfg.InfluxDB.Database, "")
+	if response, err := c.Query(q); err == nil && response.Error() == nil {
+		for _, r := range response.Results {
+			if len(r.Series) != 0 {
+				for idx, col := range r.Series[0].Columns {
+					if col == "last" {
+						s := r.Series[0].Values[0][idx]
+						sync = fmt.Sprintf("%v", s)
+						break
+					}
+				}
+			}
+		}
+	}
+
+	if sync == "1" {
+		status = "synced"
+	} else {
+		status = "not synced"
+	}
+
+	return status
+}

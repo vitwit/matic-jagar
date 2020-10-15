@@ -40,7 +40,7 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		}
 
 		ethBalance := ConvertWeiToEth(bal)     // current balance
-		prevBal := GetBorBalanceFRomDB(cfg, c) // previous balance from db
+		prevBal := GetBorBalanceFromDB(cfg, c) // previous balance from db
 
 		if prevBal != ethBalance {
 			if strings.ToUpper(cfg.BalanceChangeAlerts) == "YES" {
@@ -57,7 +57,7 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 }
 
 // GetBorBalanceFRomDB returns bor validator balance from db
-func GetBorBalanceFRomDB(cfg *config.Config, c client.Client) string {
+func GetBorBalanceFromDB(cfg *config.Config, c client.Client) string {
 	var balance string
 	q := client.NewQuery("SELECT last(amount) FROM matic_eth_balance", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {

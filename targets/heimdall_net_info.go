@@ -60,3 +60,24 @@ func GetNetInfo(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	_ = writeBatchPoints(c, bp)
 	log.Printf("No. of peers: %d \n", numPeers)
 }
+
+// GetPeersCount returns count of peer addresses from db
+func GetPeersCount(cfg *config.Config, c client.Client) string {
+	var count string
+	q := client.NewQuery("SELECT last(count) FROM matic_num_peers", cfg.InfluxDB.Database, "")
+	if response, err := c.Query(q); err == nil && response.Error() == nil {
+		for _, r := range response.Results {
+			if len(r.Series) != 0 {
+				for idx, col := range r.Series[0].Columns {
+					if col == "last" {
+						c := r.Series[0].Values[0][idx]
+						count = fmt.Sprintf("%v", c)
+						break
+					}
+				}
+			}
+		}
+	}
+
+	return count
+}

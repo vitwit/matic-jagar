@@ -63,3 +63,24 @@ func GetNetworkLatestBlock(ops HTTPOptions, cfg *config.Config, c client.Client)
 		}
 	}
 }
+
+// GetNetworkBlock returns network current block height
+func GetNetworkBlock(cfg *config.Config, c client.Client) string {
+	var networkHeight string
+	q := client.NewQuery("SELECT last(block_height) FROM matic_network_latest_block", cfg.InfluxDB.Database, "")
+	if response, err := c.Query(q); err == nil && response.Error() == nil {
+		for _, r := range response.Results {
+			if len(r.Series) != 0 {
+				for idx, col := range r.Series[0].Columns {
+					if col == "last" {
+						heightValue := r.Series[0].Values[0][idx]
+						networkHeight = fmt.Sprintf("%v", heightValue)
+						break
+					}
+				}
+			}
+		}
+	}
+
+	return networkHeight
+}

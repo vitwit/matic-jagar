@@ -85,3 +85,23 @@ func GetValID(cfg *config.Config, c client.Client) string {
 	}
 	return ID
 }
+
+// GetValStatusFromDB returns latest current height from db
+func GetValStatusFromDB(cfg *config.Config, c client.Client) string {
+	var valStatus string
+	q := client.NewQuery("SELECT last(status) FROM matic_val_status", cfg.InfluxDB.Database, "")
+	if response, err := c.Query(q); err == nil && response.Error() == nil {
+		for _, r := range response.Results {
+			if len(r.Series) != 0 {
+				for idx, col := range r.Series[0].Columns {
+					if col == "last" {
+						status := r.Series[0].Values[0][idx]
+						valStatus = fmt.Sprintf("%v", status)
+						break
+					}
+				}
+			}
+		}
+	}
+	return valStatus
+}
