@@ -18,7 +18,7 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
-	ops.Body.Params = append(ops.Body.Params, cfg.SignerAddress, "latest")
+	ops.Body.Params = append(ops.Body.Params, cfg.ValDetails.SignerAddress, "latest")
 	resp, err := HitHTTPTarget(ops)
 	if err != nil {
 		log.Printf("Error: %v", err)
@@ -43,7 +43,7 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		prevBal := GetBorBalanceFromDB(cfg, c) // previous balance from db
 
 		if prevBal != ethBalance {
-			if strings.ToUpper(cfg.BalanceChangeAlerts) == "YES" {
+			if strings.ToUpper(cfg.ChooseAlerts.BalanceChangeAlerts) == "YES" {
 				_ = SendTelegramAlert(fmt.Sprintf("Bor Balance Change Alert : Your account balance has changed from  %s to %s", prevBal, ethBalance), cfg)
 				_ = SendEmailAlert(fmt.Sprintf("Bor Balance Change Alert : Your Bor account balance has changed from  %s to %s", prevBal, ethBalance), cfg)
 			}

@@ -37,7 +37,7 @@ func GetBorCurrentProposer(ops HTTPOptions, cfg *config.Config, c client.Client)
 
 	proposer := currentProposer.Result
 
-	if proposer == cfg.SignerAddress {
+	if proposer == cfg.ValDetails.SignerAddress {
 		count = count + 1
 	}
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
@@ -56,9 +57,9 @@ func GetNetworkLatestBlock(ops HTTPOptions, cfg *config.Config, c client.Client)
 		log.Printf("Network height: %d and Validator Height: %d", networkBlockHeight, vaidatorBlockHeight)
 
 		// Send alert
-		if int64(heightDiff) >= cfg.BlockDiffThreshold {
-			_ = SendTelegramAlert(fmt.Sprintf("Block difference between network and validator has exceeded %d", cfg.BlockDiffThreshold), cfg)
-			_ = SendEmailAlert(fmt.Sprintf("Block difference between network and validator has exceeded %d", cfg.BlockDiffThreshold), cfg)
+		if int64(heightDiff) >= cfg.AlertingThresholds.BlockDiffThreshold && strings.ToUpper(cfg.ChooseAlerts.BlockDiffAlerts) == "YES" {
+			_ = SendTelegramAlert(fmt.Sprintf("Block difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
+			_ = SendEmailAlert(fmt.Sprintf("Block difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
 			log.Println("Sent alert of block height difference")
 		}
 	}

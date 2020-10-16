@@ -1,8 +1,6 @@
 package config
 
 import (
-	"os"
-
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gopkg.in/go-playground/validator.v9"
@@ -36,35 +34,64 @@ type (
 		Password string `mapstructure:"password"`
 	}
 
+	// Endpoints is RPC and LCD endpoints struct
+	Endpoints struct {
+		EthRPCEndpoint   string `mapstructure:"eth_rpc_endpoint"`
+		BorRPCEndpoint   string `mapstructure:"bor_rpc_end_point"`
+		MaticRPCEndpoint string `mapstructure:"matic_rpc_endpoint"`
+		MaticLCDEndpoint string `mapstructure:"matic_lcd_endpoint"`
+		MaticExternalRPC string `mapstructure:"matic_external_rpc"`
+	}
+
+	// ValDetails struct
+	ValDetails struct {
+		ValidatorHexAddress string `mapstructure:"validator_hex_addr"`
+		SignerAddress       string `mapstructure:"signer_address"`
+		ValidatorName       string `mapstructure:"validator_name"`
+	}
+
+	// EnableAlerts struct which holds options to enalbe/disable alerts
+	EnableAlerts struct {
+		EnableTelegramAlerts string `mapstructure:"enable_telegram_alerts"`
+		EnableEmailAlerts    string `mapstructure:"enable_email_alerts"`
+	}
+
+	// DailyAlert which holds parameters to send validator statu alerts(twice a day)
+	DailyAlert struct {
+		AlertTime1 string `mapstructure:"alert_time1"`
+		AlertTime2 string `mapstructure:"alert_time2"`
+	}
+
+	// ChooseAlerts struct
+	ChooseAlerts struct {
+		BalanceChangeAlerts string `mapstructure:"balance_change_alerts"`
+		VotingPowerAlerts   string `mapstructure:"voting_power_alerts"`
+		ProposalAlerts      string `mapstructure:"proposal_alerts"`
+		BlockDiffAlerts     string `mapstructure:"block_diff_alerts"`
+		MissedBlockAlerts   string `mapstructure:"missed_block_alerts"`
+		NumPeersAlerts      string `mapstructure:"num_peers_alerts"`
+	}
+
+	// AlertingThreshold
+	AlertingThreshold struct {
+		NumPeersThreshold     int64 `mapstructure:"num_peers_threshold"`
+		MissedBlocksThreshold int64 `mapstructure:"missed_blocks_threshold"`
+		BlockDiffThreshold    int64 `mapstructure:"block_diff_threshold"`
+	}
+
 	//Config
 	Config struct {
-		ValidatorRPCEndpoint           string   `mapstructure:"validator_rpc_endpoint"`
-		ValOperatorAddress             string   `mapstructure:"val_operator_addr"`
-		AccountAddress                 string   `mapstructure:"account_addr"`
-		ValidatorHexAddress            string   `mapstructure:"validator_hex_addr"`
-		LCDEndpoint                    string   `mapstructure:"lcd_endpoint"`
-		VotingPowerThreshold           int64    `mapstructure:"voting_power_threshold"`
-		NumPeersThreshold              int64    `mapstructure:"num_peers_threshold"`
-		Scraper                        Scraper  `mapstructure:"scraper"`
-		Telegram                       Telegram `mapstructure:"telegram"`
-		SendGrid                       SendGrid `mapstructure:"sendgrid"`
-		InfluxDB                       InfluxDB `mapstructure:"influxdb"`
-		RPCEndpoint                    string   `mapstructure:"rpc_endpoint"`
-		ExternalRPC                    string   `mapstructure:"external_rpc"`
-		MissedBlocksThreshold          int64    `mapstructure:"missed_blocks_threshold"`
-		AlertTime1                     string   `mapstructure:"alert_time1"`
-		AlertTime2                     string   `mapstructure:"alert_time2"`
-		BlockDiffThreshold             int64    `mapstructure:"block_diff_threshold"`
-		EnableTelegramAlerts           string   `mapstructure:"enable_telegram_alerts"`
-		EnableEmailAlerts              string   `mapstructure:"enable_email_alerts"`
-		StakingDemon                   string   `mapstructure:"staking_denom"`
-		ValidatorName                  string   `mapstructure:"validator_name"`
-		EmergencyMissedBlocksThreshold int64    `mapstructure:"emergency_missed_blocks_threshold"`
-		PagerdutyEmail                 string   `mapstructure:"pagerduty_email"`
-		SignerAddress                  string   `mapstructure:"signer_address"`
-		BorEndPoint                    string   `mapstructure:"bor_end_point"`
-		EthRPCEndPoint                 string   `mapstructure:"eth_rpc_endpoint"`
-		BalanceChangeAlerts            string   `mapstructure:"balance_change_alert"`
+		Endpoints          Endpoints         `mapstructure:"rpc_and_lcd_endpoints"`
+		ValDetails         ValDetails        `mapstructure:"validator_details"`
+		EnableAlerts       EnableAlerts      `mapstructure:"enable_alerts"`
+		DailyAlert         DailyAlert        `mapstructure:"daily_alert"`
+		ChooseAlerts       ChooseAlerts      `mapstructure:"choose_alerts"`
+		AlertingThresholds AlertingThreshold `mapstructure:"alerting_threholds"`
+		Scraper            Scraper           `mapstructure:"scraper"`
+		Telegram           Telegram          `mapstructure:"telegram"`
+		SendGrid           SendGrid          `mapstructure:"sendgrid"`
+		InfluxDB           InfluxDB          `mapstructure:"influxdb"`
+		PagerdutyEmail     string            `mapstructure:"pagerduty_email"`
 	}
 )
 
@@ -88,15 +115,6 @@ func ReadFromFile() (*Config, error) {
 	}
 
 	return &cfg, nil
-}
-
-func getEnv(key string, defaultVal string) string {
-	if value, exists := os.LookupEnv(key); exists {
-		return value
-	} else if defaultVal == "" {
-		log.Fatalf("environment variable %s cannot have a nil value", key)
-	}
-	return defaultVal
 }
 
 //Validate config struct

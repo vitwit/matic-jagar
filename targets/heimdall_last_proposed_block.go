@@ -36,7 +36,7 @@ func GetLatestProposedBlockAndTime(ops HTTPOptions, cfg *config.Config, c client
 	blockHeight := blockResp.Block.Header.Height
 	log.Printf("last proposed block time : %s,  height : %s", blockTime, blockHeight)
 
-	if cfg.ValidatorHexAddress == blockResp.Block.Header.ProposerAddress {
+	if cfg.ValDetails.ValidatorHexAddress == blockResp.Block.Header.ProposerAddress {
 		fields := map[string]interface{}{
 			"height":     blockResp.Block.Header.Height,
 			"block_time": blockTime,

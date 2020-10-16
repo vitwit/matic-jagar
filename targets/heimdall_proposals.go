@@ -122,7 +122,7 @@ func GetProposals(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 // GetValidatorVoted to check validator voted for the proposal or not
 func GetValidatorVoted(proposalID string, cfg *config.Config, c client.Client) string {
-	proposalURL := cfg.LCDEndpoint + "/gov/proposals/" + proposalID + "/votes"
+	proposalURL := cfg.Endpoints.MaticLCDEndpoint + "/gov/proposals/" + proposalID + "/votes"
 	res, err := http.Get(proposalURL)
 	if err != nil {
 		log.Printf("Error: %v", err)
@@ -151,7 +151,7 @@ func GetValidatorVoted(proposalID string, cfg *config.Config, c client.Client) s
 
 // SendVotingPeriodProposalAlerts which send alerts of voting period proposals
 func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
-	proposalURL := cfg.LCDEndpoint + "/gov/proposals?status=voting_period"
+	proposalURL := cfg.Endpoints.MaticLCDEndpoint + "/gov/proposals?status=voting_period"
 	res, err := http.Get(proposalURL)
 	if err != nil {
 		log.Printf("Error: %v", err)
@@ -169,7 +169,7 @@ func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
 	}
 
 	for _, proposal := range p.Result {
-		proposalVotesURL := cfg.LCDEndpoint + "/gov/proposals/" + proposal.ID + "/votes"
+		proposalVotesURL := cfg.Endpoints.MaticLCDEndpoint + "/gov/proposals/" + proposal.ID + "/votes"
 		res, err := http.Get(proposalVotesURL)
 		if err != nil {
 			log.Printf("Error: %v", err)
@@ -203,8 +203,8 @@ func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
 			log.Println("timeDiff...", timeDiff.Hours())
 
 			if timeDiff.Hours() <= 24 {
-				_ = SendTelegramAlert(fmt.Sprintf("%s validator has not voted on proposal = %s", cfg.ValidatorName, proposal.ID), cfg)
-				_ = SendEmailAlert(fmt.Sprintf("%s validator has not voted on proposal = %s", cfg.ValidatorName, proposal.ID), cfg)
+				_ = SendTelegramAlert(fmt.Sprintf("%s validator has not voted on proposal = %s", cfg.ValDetails.ValidatorName, proposal.ID), cfg)
+				_ = SendEmailAlert(fmt.Sprintf("%s validator has not voted on proposal = %s", cfg.ValDetails.ValidatorName, proposal.ID), cfg)
 
 				log.Println("Sent alert of voting period proposals")
 			}
@@ -215,7 +215,7 @@ func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
 
 // GetValidatorDeposited to check validator deposited for the proposal or not
 func GetValidatorDeposited(proposalID string, cfg *config.Config, c client.Client) string {
-	proposalURL := cfg.LCDEndpoint + "/gov/proposals/" + proposalID + "/deposits"
+	proposalURL := cfg.Endpoints.MaticLCDEndpoint + "/gov/proposals/" + proposalID + "/deposits"
 	res, err := http.Get(proposalURL)
 	if err != nil {
 		log.Printf("Error: %v", err)

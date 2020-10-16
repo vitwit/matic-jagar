@@ -65,7 +65,7 @@ func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	// Store validator details such as moniker, signer address and hex address
 	moniker := status.Result.NodeInfo.Moniker
 	hexAddress := status.Result.ValidatorInfo.Address
-	signerAddress := cfg.SignerAddress
+	signerAddress := cfg.ValDetails.SignerAddress
 	_ = writeToInfluxDb(c, bp, "matic_val_desc", map[string]string{}, map[string]interface{}{"moniker": moniker, "hex_address": hexAddress, "signer_address": signerAddress})
 
 	log.Printf("Moniker:%s ", moniker)

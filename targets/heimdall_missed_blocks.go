@@ -19,9 +19,9 @@ func SendSingleMissedBlockAlert(ops HTTPOptions, cfg *config.Config, c client.Cl
 		return err
 	}
 
-	if cfg.MissedBlocksThreshold == 1 {
-		err = SendTelegramAlert(fmt.Sprintf("%s validator missed a block at block height %s", cfg.ValidatorName, cbh), cfg)
-		err = SendEmailAlert(fmt.Sprintf("%s validator missed a block at block height %s", cfg.ValidatorName, cbh), cfg)
+	if cfg.AlertingThresholds.MissedBlocksThreshold == 1 && strings.ToUpper(cfg.ChooseAlerts.MissedBlockAlerts) == "YES" {
+		err = SendTelegramAlert(fmt.Sprintf("%s validator missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
+		err = SendEmailAlert(fmt.Sprintf("%s validator missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
 		err = writeToInfluxDb(c, bp, "matic_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": cbh, "range": cbh})
 		err = writeToInfluxDb(c, bp, "matic_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
 		err = writeToInfluxDb(c, bp, "matic_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
@@ -59,7 +59,7 @@ func GetMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	cbh := networkLatestBlock.Result.SyncInfo.LatestBlockHeight
 
 	resp, err = HitHTTPTarget(HTTPOptions{
-		Endpoint:    cfg.ExternalRPC + "/block",
+		Endpoint:    cfg.Endpoints.MaticExternalRPC + "/block",
 		QueryParams: QueryParams{"height": cbh},
 		Method:      "GET",
 	})
@@ -78,7 +78,7 @@ func GetMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	if &b != nil {
 		addrExists := false
 		for _, c := range b.Result.Block.LastCommit.Precommits {
-			if c.ValidatorAddress == cfg.ValidatorHexAddress {
+			if c.ValidatorAddress == cfg.ValDetails.ValidatorHexAddress {
 				addrExists = true
 			}
 		}
@@ -103,11 +103,11 @@ func GetMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 				log.Printf("Error while sending missed block alert: %v", err)
 
 			}
-			if cfg.MissedBlocksThreshold > 1 {
-				if int64(len(blocksArray))-1 >= cfg.MissedBlocksThreshold {
+			if cfg.AlertingThresholds.MissedBlocksThreshold > 1 && strings.ToUpper(cfg.ChooseAlerts.MissedBlockAlerts) == "YES" {
+				if int64(len(blocksArray))-1 >= cfg.AlertingThresholds.MissedBlocksThreshold {
 					missedBlocks := strings.Split(blocks, ",")
-					_ = SendTelegramAlert(fmt.Sprintf("%s validator missed blocks from height %s to %s", cfg.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
-					_ = SendEmailAlert(fmt.Sprintf("%s validator missed blocks from height %s to %s", cfg.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
+					_ = SendTelegramAlert(fmt.Sprintf("%s validator missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
+					_ = SendEmailAlert(fmt.Sprintf("%s validator missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
 					_ = writeToInfluxDb(c, bp, "matic_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": blocks, "range": missedBlocks[0] + " - " + missedBlocks[len(missedBlocks)-2]})
 					_ = writeToInfluxDb(c, bp, "matic_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": "", "current_height": cbh})
 					return

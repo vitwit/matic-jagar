@@ -31,8 +31,8 @@ func ValidatorStatusAlert(ops HTTPOptions, cfg *config.Config, c client.Client) 
 		return
 	}
 
-	alertTime1 := cfg.AlertTime1
-	alertTime2 := cfg.AlertTime2
+	alertTime1 := cfg.DailyAlert.AlertTime1
+	alertTime2 := cfg.DailyAlert.AlertTime2
 
 	t1, _ := time.Parse(time.Kitchen, alertTime1)
 	t2, _ := time.Parse(time.Kitchen, alertTime2)
@@ -51,14 +51,14 @@ func ValidatorStatusAlert(ops HTTPOptions, cfg *config.Config, c client.Client) 
 
 	if !validatorStatus {
 		if t == a1 || t == a2 {
-			_ = SendTelegramAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValidatorName), cfg)
-			_ = SendEmailAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValidatorName), cfg)
+			_ = SendTelegramAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValDetails.ValidatorName), cfg)
+			_ = SendEmailAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValDetails.ValidatorName), cfg)
 			log.Println("Sent validator status alert")
 		}
 		_ = writeToInfluxDb(c, bp, "matic_val_status", map[string]string{}, map[string]interface{}{"status": 1, "val_id": valID})
 	} else {
-		_ = SendTelegramAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValidatorName), cfg)
-		_ = SendEmailAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValidatorName), cfg)
+		_ = SendTelegramAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValDetails.ValidatorName), cfg)
+		_ = SendEmailAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValDetails.ValidatorName), cfg)
 		log.Println("Sent validator status alert")
 
 		_ = writeToInfluxDb(c, bp, "matic_val_status", map[string]string{}, map[string]interface{}{"status": 0, "val_id": valID})

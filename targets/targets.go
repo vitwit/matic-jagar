@@ -33,7 +33,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Net Info URL",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.ValidatorRPCEndpoint + "/net_info?",
+				Endpoint: cfg.Endpoints.MaticRPCEndpoint + "/net_info?",
 				Method:   http.MethodGet,
 			},
 			Func:        GetNetInfo,
@@ -43,7 +43,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "cmd",
 			Name:          "Get Node Status",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.ValidatorRPCEndpoint + "/status?",
+				Endpoint: cfg.Endpoints.MaticRPCEndpoint + "/status?",
 				Method:   http.MethodGet,
 			},
 			Func:        GetNodeStatus,
@@ -53,7 +53,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http", // Confirmation about alerting
 			Name:          "Get Heimdall Current Balanace",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/bank/balances/" + cfg.SignerAddress,
+				Endpoint: cfg.Endpoints.MaticLCDEndpoint + "/bank/balances/" + cfg.ValDetails.SignerAddress,
 				Method:   http.MethodGet,
 			},
 			Func:        GetHeimdallCurrentBal,
@@ -63,7 +63,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Node Version",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/node_info",
+				Endpoint: cfg.Endpoints.MaticLCDEndpoint + "/node_info",
 				Method:   http.MethodGet,
 			},
 			Func:        NodeVersion,
@@ -73,7 +73,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Proposals",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/gov/proposals",
+				Endpoint: cfg.Endpoints.MaticLCDEndpoint + "/gov/proposals",
 				Method:   http.MethodGet,
 			},
 			Func:        GetProposals,
@@ -83,7 +83,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Last proposed block and time",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/blocks/latest",
+				Endpoint: cfg.Endpoints.MaticLCDEndpoint + "/blocks/latest",
 				Method:   http.MethodGet,
 			},
 			Func:        GetLatestProposedBlockAndTime,
@@ -93,7 +93,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Network Latest Block",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.ExternalRPC + "/status?",
+				Endpoint: cfg.Endpoints.MaticExternalRPC + "/status?",
 				Method:   http.MethodGet,
 			},
 			Func:        GetNetworkLatestBlock,
@@ -103,7 +103,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Validator Voting Power",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/staking/signer/" + cfg.SignerAddress,
+				Endpoint: cfg.Endpoints.MaticLCDEndpoint + "/staking/signer/" + cfg.ValDetails.SignerAddress,
 				Method:   http.MethodGet,
 			},
 			Func:        GetValidatorVotingPower,
@@ -113,7 +113,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Block Time Difference",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.ValidatorRPCEndpoint + "/block",
+				Endpoint: cfg.Endpoints.MaticRPCEndpoint + "/block",
 				Method:   http.MethodGet,
 			},
 			Func:        GetBlockTimeDifference,
@@ -123,7 +123,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Get Current Block Height",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.ExternalRPC + "/status",
+				Endpoint: cfg.Endpoints.MaticExternalRPC + "/status",
 				Method:   http.MethodGet,
 			},
 			Func:        GetMissedBlocks,
@@ -133,7 +133,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Get no of unconfirmed txns",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.ValidatorRPCEndpoint + "/num_unconfirmed_txs?",
+				Endpoint: cfg.Endpoints.MaticRPCEndpoint + "/num_unconfirmed_txs?",
 				Method:   http.MethodGet,
 			},
 			Func:        GetUnconfimedTxns,
@@ -143,7 +143,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Get Validator fee and gas",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/auth/params", //take confirmation about validator fee
+				Endpoint: cfg.Endpoints.MaticLCDEndpoint + "/auth/params", //take confirmation about validator fee
 				Method:   http.MethodGet,
 			},
 			Func:        GetValidatorFeeAndGas,
@@ -153,7 +153,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Get Validator status",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/staking/signer/" + cfg.SignerAddress,
+				Endpoint: cfg.Endpoints.MaticLCDEndpoint + "/staking/signer/" + cfg.ValDetails.SignerAddress,
 				Method:   http.MethodGet,
 			},
 			Func:        ValidatorStatusAlert,
@@ -163,7 +163,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Get total no of checkpoints",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/checkpoints/count",
+				Endpoint: cfg.Endpoints.MaticLCDEndpoint + "/checkpoints/count",
 				Method:   http.MethodGet,
 			},
 			Func:        GetTotalCheckPointsCount,
@@ -173,7 +173,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Get Latest Checkpoints",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/checkpoints/latest",
+				Endpoint: cfg.Endpoints.MaticLCDEndpoint + "/checkpoints/latest",
 				Method:   http.MethodGet,
 			},
 			Func:        GetLatestCheckpoints,
@@ -183,7 +183,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Get Checkpoints Duration",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/checkpoints/params",
+				Endpoint: cfg.Endpoints.MaticLCDEndpoint + "/checkpoints/params",
 				Method:   http.MethodGet,
 			},
 			Func:        GetCheckpointsDuration,
@@ -193,7 +193,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Get bor params",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/bor/params",
+				Endpoint: cfg.Endpoints.MaticLCDEndpoint + "/bor/params",
 				Method:   http.MethodGet,
 			},
 			Func:        GetBorParams,
@@ -203,7 +203,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Get bor latest span",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.LCDEndpoint + "/bor/latest-span",
+				Endpoint: cfg.Endpoints.MaticLCDEndpoint + "/bor/latest-span",
 				Method:   http.MethodGet,
 			},
 			Func:        GetBorLatestSpan,
@@ -213,7 +213,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "curl cmd",
 			Name:          "Get Current Block Height of Bor Node",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.BorEndPoint,
+				Endpoint: cfg.Endpoints.BorRPCEndpoint,
 				Method:   http.MethodPost,
 				Body:     Payload{Jsonrpc: "2.0", Method: "eth_blockNumber", ID: 83},
 			},
@@ -224,7 +224,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "curl cmd",
 			Name:          "Get Missed Blocks",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.BorEndPoint,
+				Endpoint: cfg.Endpoints.BorRPCEndpoint,
 				Method:   http.MethodPost,
 				Body:     Payload{Jsonrpc: "2.0", Method: "bor_getSigners", ID: 1},
 			},
@@ -235,7 +235,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "curl cmd",
 			Name:          "Get Eth Balance",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.EthRPCEndPoint,
+				Endpoint: cfg.Endpoints.EthRPCEndpoint,
 				Method:   http.MethodPost,
 				Body:     Payload{Jsonrpc: "2.0", Method: "eth_getBalance", ID: 1},
 			},
@@ -246,7 +246,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "curl cmd",
 			Name:          "Get Bor Current Proposer",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.BorEndPoint,
+				Endpoint: cfg.Endpoints.BorRPCEndpoint,
 				Method:   http.MethodPost,
 				Body:     Payload{Jsonrpc: "2.0", Method: "bor_getCurrentProposer", ID: 1},
 			},

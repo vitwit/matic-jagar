@@ -48,7 +48,7 @@ func GetBlockTimeDifference(ops HTTPOptions, cfg *config.Config, c client.Client
 	}
 
 	prevHeight := currentHeight - 1
-	ops.Endpoint = cfg.ValidatorRPCEndpoint + "/block"
+	ops.Endpoint = cfg.Endpoints.MaticRPCEndpoint + "/block"
 	ops.Endpoint = ops.Endpoint + "?height=" + strconv.Itoa(prevHeight)
 
 	resp, err := HitHTTPTarget(ops)
