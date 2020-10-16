@@ -36,11 +36,11 @@ type (
 
 	// Endpoints is RPC and LCD endpoints struct
 	Endpoints struct {
-		EthRPCEndpoint   string `mapstructure:"eth_rpc_endpoint"`
-		BorRPCEndpoint   string `mapstructure:"bor_rpc_end_point"`
-		MaticRPCEndpoint string `mapstructure:"matic_rpc_endpoint"`
-		MaticLCDEndpoint string `mapstructure:"matic_lcd_endpoint"`
-		MaticExternalRPC string `mapstructure:"matic_external_rpc"`
+		EthRPCEndpoint      string `mapstructure:"eth_rpc_endpoint"`
+		BorRPCEndpoint      string `mapstructure:"bor_rpc_end_point"`
+		HeimdallRPCEndpoint string `mapstructure:"heimdall_rpc_endpoint"`
+		HeimdallLCDEndpoint string `mapstructure:"heimdall_lcd_endpoint"`
+		HeimdallExternalRPC string `mapstructure:"heimdall_external_rpc"`
 	}
 
 	// ValDetails struct

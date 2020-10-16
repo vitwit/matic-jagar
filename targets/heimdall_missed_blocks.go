@@ -59,7 +59,7 @@ func GetMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	cbh := networkLatestBlock.Result.SyncInfo.LatestBlockHeight
 
 	resp, err = HitHTTPTarget(HTTPOptions{
-		Endpoint:    cfg.Endpoints.MaticExternalRPC + "/block",
+		Endpoint:    cfg.Endpoints.HeimdallExternalRPC + "/block",
 		QueryParams: QueryParams{"height": cbh},
 		Method:      "GET",
 	})
