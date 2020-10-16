@@ -11,6 +11,7 @@ import (
 	"golang.org/x/text/message"
 )
 
+// ConvertToMatic converts amount into matic and returns
 func ConvertToMatic(amount string) string {
 	f, _ := strconv.ParseFloat(amount, 64)
 	d := f * math.Pow(10, -18)
@@ -21,6 +22,8 @@ func ConvertToMatic(amount string) string {
 	return bal
 }
 
+// convertToCommaSeparated converts value into comma seperated
+//for user friendly
 func convertToCommaSeparated(amt string) string {
 	a, err := strconv.Atoi(amt)
 	if err != nil {
@@ -30,6 +33,7 @@ func convertToCommaSeparated(amt string) string {
 	return p.Sprintf("%d", a)
 }
 
+// ConvertWeiToEth converts wei into eth value
 func ConvertWeiToEth(num *big.Int) string {
 	wei := num.String()
 
@@ -42,6 +46,7 @@ func ConvertWeiToEth(num *big.Int) string {
 	return ether
 }
 
+// HexToBigInt convert hex value into big int
 func HexToBigInt(hex string) (*big.Int, bool) {
 	n := new(big.Int)
 	n2, err := n.SetString(hex[2:], 16)
@@ -49,6 +54,7 @@ func HexToBigInt(hex string) (*big.Int, bool) {
 	return n2, err
 }
 
+// HexToIntConversion converts hex into int format
 func HexToIntConversion(hex string) int {
 	val := hex[2:]
 
@@ -61,6 +67,7 @@ func HexToIntConversion(hex string) int {
 	return n2
 }
 
+// ConvertNanoSecToMinutes converts nano seconds into minutes
 func ConvertNanoSecToMinutes(nanoSec int64) int64 {
 	sec := nanoSec / 1e9
 	minutes := sec / 60
