@@ -1,0 +1,51 @@
+[rpc_and_lcd_endpoints]
+eth_rpc_endpoint = "https://goerli.prylabs.net"
+bor_rpc_end_point = "http://localhost:8545"
+heimdall_rpc_endpoint = "http://localhost:26657"
+heimdall_lcd_endpoint = "http://localhost:1317"
+heimdall_external_rpc = "http://localhost:26657"
+
+[validator_details]
+validator_hex_addr = "E4B332ZX704401AD16D4D826732953DAF07C7E2"
+signer_address = "0xE4b8e9243214401aD16d4d826732953DAf07C7E2"
+validator_name = "Matic"
+token_address = "0x0010980eA4Ee292E253E6Ca07dBA5EdC07c8Aa37A3"
+
+[enable_alerts]
+enable_telegram_alerts = "yes"
+enable_email_alerts = "yes"
+
+[daily_alert]
+alert_time1 = "02:30PM"
+alert_time2 = "02:30AM"
+
+[choose_alerts]
+balance_change_alerts = "yes"
+voting_power_alerts = "yes"
+proposal_alerts = "yes"
+block_diff_alerts = "yes"
+missed_block_alerts = "yes"
+num_peers_alerts = "yes"
+
+[alerting_threholds]
+num_peers_threshold = 10
+missed_blocks_threshold = 4
+block_diff_threshold = 3
+
+[scraper]
+rate = "2s"
+port = ":8080"
+validator_rate = "60s"
+
+[telegram]
+tg_chat_id = 22812898205
+tg_bot_token = "1117273891:AAEtr3ZU5x4JYSF4LBeu1fPF0T4xj-UI"
+
+[sendgrid]
+sendgrid_token = "SG.J4dl16RST9OM9Nc2Tbvh6A.L_FPSzlqvBesPPQ06XGhVTTEt5Hs8TUzo9k"
+email_address = "xyz@domain.com"
+
+[influxdb]
+port = "8086"
+database = "matic"
+username = "vitwit"
