@@ -48,6 +48,7 @@ type (
 		ValidatorHexAddress string `mapstructure:"validator_hex_addr"`
 		SignerAddress       string `mapstructure:"signer_address"`
 		ValidatorName       string `mapstructure:"validator_name"`
+		ContractAddress     string `mapstructure:"contract_address"`
 	}
 
 	// EnableAlerts struct which holds options to enalbe/disable alerts

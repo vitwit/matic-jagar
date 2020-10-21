@@ -259,6 +259,33 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:          TelegramAlerting,
 			ScraperRate:   "2s",
 		},
+		{
+			ExecutionType: "curl",
+			Name:          "Get Contract Address",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.Endpoints.EthRPCEndpoint,
+			},
+			Func:        GetContractAddress,
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "curl",
+			Name:          "Get Commission Rate",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.Endpoints.EthRPCEndpoint,
+			},
+			Func:        GetCommissionRate,
+			ScraperRate: cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "curl",
+			Name:          "Get Validator Rewards",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.Endpoints.EthRPCEndpoint,
+			},
+			Func:        GetValidatorRewards,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 	}}
 }
 

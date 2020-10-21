@@ -28,6 +28,11 @@ type (
 		ID      int           `json:"id"`
 	}
 
+	Params struct {
+		To   string `json:"to"`
+		Data string `json:"data"`
+	}
+
 	// Target is a structure which holds all the parameters of a target
 	//this could be used to write endpoints for each functionality
 	Target struct {
@@ -311,8 +316,9 @@ type (
 
 	// EthResult is a struct which holds the paramters of eth bal response
 	EthResult struct {
-		Result string `json:"result"`
-		ID     int    `json:"id"`
+		Result string      `json:"result"`
+		ID     int         `json:"id"`
+		Error  interface{} `json:"error"`
 	}
 
 	// BorSignersRes which holds the parameters of signers response

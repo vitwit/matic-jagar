@@ -1,6 +1,7 @@
 package targets
 
 import (
+	"encoding/hex"
 	"fmt"
 	"log"
 	"math"
@@ -58,7 +59,7 @@ func HexToBigInt(hex string) (*big.Int, bool) {
 func HexToIntConversion(hex string) int {
 	val := hex[2:]
 
-	n, err := strconv.ParseUint(val, 16, 32)
+	n, err := strconv.ParseUint(val, 16, 64)
 	if err != nil {
 		panic(err)
 	}
@@ -73,4 +74,36 @@ func ConvertNanoSecToMinutes(nanoSec int64) int64 {
 	minutes := sec / 60
 
 	return minutes
+}
+
+// EncodeToHex encodes b as a hex string with 0x prefix.
+func EncodeToHex(b []byte) string {
+
+	return Encode(b)
+}
+
+// Encode encodes b as a hex string with 0x prefix.
+func Encode(b []byte) string {
+	enc := make([]byte, len(b)*2+2)
+	copy(enc, "0x")
+	hex.Encode(enc[2:], b)
+	return string(enc)
+}
+
+func DecodeEthCallResult(resp string) []string {
+	s := resp[2:]
+	n := len(resp) / 64
+	index := 0
+
+	var SubArray []string
+
+	for i := 0; i < n; i++ {
+		startIndex := index
+		end := startIndex + 64
+		sub := s[startIndex:end]
+		SubArray = append(SubArray, sub)
+		index = end
+	}
+
+	return SubArray
 }
