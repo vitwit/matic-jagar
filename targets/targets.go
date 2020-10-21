@@ -288,13 +288,13 @@ func InitTargets(cfg *config.Config) *Targets {
 		},
 		{
 			ExecutionType: "curl cmd",
-			Name:          "Get Pending Transactions", // confirmation weather heimdall or bor
+			Name:          "Get Bor Pending Transactions",
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.Endpoints.BorRPCEndpoint,
 				Method:   http.MethodPost,
 				Body:     Payload{Jsonrpc: "2.0", Method: "eth_pendingTransactions", ID: 64},
 			},
-			Func:        GetPendingTransactions,
+			Func:        GetBorPendingTransactions,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 	}}

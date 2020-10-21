@@ -9,7 +9,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 )
 
-func GetPendingTransactions(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetBorPendingTransactions(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -31,7 +31,7 @@ func GetPendingTransactions(ops HTTPOptions, cfg *config.Config, c client.Client
 
 		pendingTxns := len(txs.Result)
 
-		_ = writeToInfluxDb(c, bp, "matic_eth_pending_txns", map[string]string{}, map[string]interface{}{"pending_txns": pendingTxns})
+		_ = writeToInfluxDb(c, bp, "matic_bor_pending_txns", map[string]string{}, map[string]interface{}{"pending_txns": pendingTxns})
 		log.Printf("Pending Transactions: %d", pendingTxns)
 	}
 }
