@@ -47,6 +47,16 @@ func ConvertWeiToEth(num *big.Int) string {
 	return ether
 }
 
+// ConvertWeiToEth converts wei into eth value
+func ConvertValueToEth(num int64) float64 {
+	wei := strconv.FormatInt(num, 10)
+
+	f, _ := strconv.ParseFloat(wei, 64)
+	eth := f * math.Pow(10, -18)
+
+	return eth
+}
+
 // HexToBigInt convert hex value into big int
 func HexToBigInt(hex string) (*big.Int, bool) {
 	n := new(big.Int)

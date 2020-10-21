@@ -90,11 +90,14 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 		valResp := DecodeEthCallResult(hexData.Result)
 
-		stakeAmount, _ := strconv.ParseInt(valResp[0], 16, 64)
 		contractAddress := "0x" + valResp[6][24:]
 
-		_ = writeToInfluxDb(c, bp, "matic_contract_details", map[string]string{}, map[string]interface{}{"self_stake": stakeAmount, "contract_address": contractAddress})
-		log.Printf("Contract Address: %s and Self Stake Amount : %d", contractAddress, stakeAmount)
+		stakeAmount, _ := strconv.ParseInt(valResp[0], 16, 64)
+		value := ConvertValueToEth(stakeAmount)
+		amount := fmt.Sprintf("%.6f", value) + "ETH"
+
+		_ = writeToInfluxDb(c, bp, "matic_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
+		log.Printf("Contract Address: %s and Self Stake Amount : %d", contractAddress, amount)
 
 	}
 }
@@ -142,10 +145,14 @@ func GetCommissionRate(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	dataHash := GetEncodedData(ops, cfg, c, "commissionRate()")
 	if dataHash != "" {
 		result := EthCall(ops, cfg, c, dataHash)
+		if result.Result != "" {
+			commissionRate, _ := strconv.ParseInt(result.Result[2:], 16, 64)
+			value := ConvertValueToEth(commissionRate)
+			rate := fmt.Sprintf("%.2f", value)
 
-		commissionRate := HexToIntConversion(result.Result)
-		_ = writeToInfluxDb(c, bp, "matic_commission_rate", map[string]string{}, map[string]interface{}{"commission_rate": commissionRate})
-		log.Printf("Contract Rate: %d", commissionRate)
+			_ = writeToInfluxDb(c, bp, "matic_commission_rate", map[string]string{}, map[string]interface{}{"commission_rate": rate})
+			log.Printf("Contract Rate: %d", rate)
+		}
 	}
 
 }
@@ -161,10 +168,15 @@ func GetValidatorRewards(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 		result := EthCall(ops, cfg, c, dataHash)
 
-		rewards, _ := strconv.ParseInt(result.Result[2:], 16, 64)
+		if result.Result != "" {
+			rewards, _ := strconv.ParseInt(result.Result[2:], 16, 64)
 
-		_ = writeToInfluxDb(c, bp, "matic_validator_rewards", map[string]string{}, map[string]interface{}{"val_rewards": rewards})
-		log.Printf("Validator Rewards: %d", rewards)
+			rewardsEth := ConvertValueToEth(rewards)
+			ether := fmt.Sprintf("%.8f", rewardsEth) + "ETH"
+
+			_ = writeToInfluxDb(c, bp, "matic_validator_rewards", map[string]string{}, map[string]interface{}{"val_rewards": ether})
+			log.Printf("Validator Rewards: %s", ether)
+		}
 	}
 }
 

@@ -50,6 +50,10 @@ func GetBorMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 	borHeight := GetBorCurrentBlokHeightInHex(cfg, c)
 
+	if borHeight == "" {
+		return
+	}
+
 	ops.Body.Params = append(ops.Body.Params, borHeight)
 
 	resp, err := HitHTTPTarget(ops)
