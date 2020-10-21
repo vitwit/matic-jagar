@@ -347,4 +347,18 @@ type (
 			BorChainID        string        `json:"bor_chain_id"`
 		} `json:"result"`
 	}
+
+	// EthPendingTransactions which holds parameters of pending transaction response
+	EthPendingTransactions struct {
+		Result []struct {
+			BlockHash        string `json:"blockHash"`
+			BlockNumber      string `json:"blockNumber"`
+			From             string `json:"from"`
+			Hash             string `json:"hash"`
+			Input            string `json:"input"`
+			To               string `json:"to"`
+			TransactionIndex string `json:"transactionIndex"`
+			Value            string `json:"value"`
+		} `json:"result"`
+	}
 )

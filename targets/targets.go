@@ -286,6 +286,17 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        GetValidatorRewards,
 			ScraperRate: cfg.Scraper.Rate,
 		},
+		{
+			ExecutionType: "curl cmd",
+			Name:          "Get Pending Transactions", // confirmation weather heimdall or bor
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.Endpoints.BorRPCEndpoint,
+				Method:   http.MethodPost,
+				Body:     Payload{Jsonrpc: "2.0", Method: "eth_pendingTransactions", ID: 64},
+			},
+			Func:        GetPendingTransactions,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 	}}
 }
 

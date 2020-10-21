@@ -23,7 +23,7 @@ func BorCurrentHeight(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
-	if resp.StatusCode == 200 || resp.StatusCode == 201 {
+	if resp.Body != nil {
 		var cbh BorValHeight
 		err = json.Unmarshal(resp.Body, &cbh)
 		if err != nil {
