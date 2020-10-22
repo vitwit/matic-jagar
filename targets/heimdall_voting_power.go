@@ -36,8 +36,8 @@ func GetValidatorVotingPower(ops HTTPOptions, cfg *config.Config, c client.Clien
 	previousVP, _ := strconv.Atoi(prevVotingPower)
 
 	if previousVP != vp {
-		_ = SendTelegramAlert(fmt.Sprintf("Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
-		_ = SendEmailAlert(fmt.Sprintf("Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
+		_ = SendTelegramAlert(fmt.Sprintf("Voting Power Alert : Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
+		_ = SendEmailAlert(fmt.Sprintf("Voting Power Alert : Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
 	}
 
 	_ = writeToInfluxDb(c, bp, "matic_voting_power", map[string]string{}, map[string]interface{}{"power": vp})

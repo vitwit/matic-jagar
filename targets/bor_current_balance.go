@@ -39,17 +39,19 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			return
 		}
 
-		ethBalance := ConvertWeiToEth(bal)     // current balance
-		prevBal := GetBorBalanceFromDB(cfg, c) // previous balance from db
-
+		ethBalance := ConvertWeiToEth(bal) + "ETH" // current balance
+		prevBal := GetBorBalanceFromDB(cfg, c)     // previous balance from db
+		if prevBal == "" {
+			prevBal = "0"
+		}
 		if prevBal != ethBalance {
 			if strings.ToUpper(cfg.ChooseAlerts.BalanceChangeAlerts) == "YES" {
-				_ = SendTelegramAlert(fmt.Sprintf("Bor Balance Change Alert : Your account balance has changed from  %s to %s", prevBal, ethBalance), cfg)
-				_ = SendEmailAlert(fmt.Sprintf("Bor Balance Change Alert : Your Bor account balance has changed from  %s to %s", prevBal, ethBalance), cfg)
+				_ = SendTelegramAlert(fmt.Sprintf("Bor Balance Change Alert : Your account balance has changed from  %s to %s", prevBal+"ETH", ethBalance), cfg)
+				_ = SendEmailAlert(fmt.Sprintf("Bor Balance Change Alert : Your Bor account balance has changed from  %s to %s", prevBal+"ETH", ethBalance), cfg)
 			}
 		}
 
-		balWithDenom := ethBalance + "ETH"
+		balWithDenom := ethBalance
 		_ = writeToInfluxDb(c, bp, "matic_eth_balance", map[string]string{}, map[string]interface{}{"balance": balWithDenom, "amount": ethBalance})
 		log.Printf("Eth Current Balance: %s", ethBalance)
 	}

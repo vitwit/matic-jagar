@@ -37,6 +37,10 @@ func GetHeimdallCurrentBal(ops HTTPOptions, cfg *config.Config, c client.Client)
 		amount := ConvertToMatic(accResp.Result[0].Amount) // curent amount
 		prevAmount := GetAccountBalFromDb(cfg, c)          // amount from db
 
+		if prevAmount == "" {
+			prevAmount = "0"
+		}
+
 		if prevAmount != amount {
 			if strings.ToUpper(cfg.ChooseAlerts.BalanceChangeAlerts) == "YES" {
 				_ = SendTelegramAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount, amount), cfg)
