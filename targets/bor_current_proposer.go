@@ -41,7 +41,7 @@ func GetBorCurrentProposer(ops HTTPOptions, cfg *config.Config, c client.Client)
 		count = count + 1
 	}
 
-	_ = writeToInfluxDb(c, bp, "matic_current_proposer", map[string]string{}, map[string]interface{}{"blocks_produced": count, "current_proposer": proposer})
+	_ = writeToInfluxDb(c, bp, "matic_current_proposer", map[string]string{}, map[string]interface{}{"blocks_produced": count, "current_proposer": proposer, "proposer": proposer[2:]})
 	log.Printf("No of Blocks Proposed: %d", count)
 }
 

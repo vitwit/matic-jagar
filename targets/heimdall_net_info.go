@@ -59,6 +59,9 @@ func GetNetInfo(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp.AddPoints(pts)
 	_ = writeBatchPoints(c, bp)
 	log.Printf("No. of peers: %d \n", numPeers)
+
+	// Calling funtion to get peer latency
+	GetLatency(ops, cfg, c)
 }
 
 // GetPeersCount returns count of peer addresses from db
