@@ -18,7 +18,7 @@ func GetLatency(_ HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
-	q := client.NewQuery(fmt.Sprintf("SELECT * FROM matic_peer_addresses"), cfg.InfluxDB.Database, "")
+	q := client.NewQuery(fmt.Sprintf("SELECT * FROM heimdall_peer_addresses"), cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		var addresses []string
 		for _, r := range response.Results {

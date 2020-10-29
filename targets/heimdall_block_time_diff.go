@@ -70,6 +70,6 @@ func GetBlockTimeDifference(ops HTTPOptions, cfg *config.Config, c client.Client
 	timeDiff := convertedCurrentTime.Sub(conevrtedPrevBlockTime)
 	diffSeconds := fmt.Sprintf("%.2f", timeDiff.Seconds())
 
-	_ = writeToInfluxDb(c, bp, "matic_block_time_diff", map[string]string{}, map[string]interface{}{"time_diff": diffSeconds})
+	_ = writeToInfluxDb(c, bp, "heimdall_block_time_diff", map[string]string{}, map[string]interface{}{"time_diff": diffSeconds})
 	log.Printf("time diff: %s", diffSeconds)
 }

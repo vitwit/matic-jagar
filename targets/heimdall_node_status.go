@@ -37,7 +37,7 @@ func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	currentBlockHeight := status.Result.SyncInfo.LatestBlockHeight
 	if currentBlockHeight != "" {
 		bh, _ = strconv.Atoi(currentBlockHeight)
-		p2, err := createDataPoint("matic_current_block_height", map[string]string{}, map[string]interface{}{"height": bh})
+		p2, err := createDataPoint("heimdall_current_block_height", map[string]string{}, map[string]interface{}{"height": bh})
 		if err == nil {
 			pts = append(pts, p2)
 		}
@@ -53,7 +53,7 @@ func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		synced = 1
 	}
 
-	p3, err := createDataPoint("matic_node_synced", map[string]string{}, map[string]interface{}{"status": synced})
+	p3, err := createDataPoint("heimdall_node_synced", map[string]string{}, map[string]interface{}{"status": synced})
 	if err == nil {
 		pts = append(pts, p3)
 	}
@@ -75,7 +75,7 @@ func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
 // GetValidatorBlock returns validator current block height
 func GetValidatorBlock(cfg *config.Config, c client.Client) string {
 	var validatorHeight string
-	q := client.NewQuery("SELECT last(height) FROM matic_current_block_height", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(height) FROM heimdall_current_block_height", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {
@@ -95,7 +95,7 @@ func GetValidatorBlock(cfg *config.Config, c client.Client) string {
 // GetNodeSync returns the syncing status of a node
 func GetNodeSync(cfg *config.Config, c client.Client) string {
 	var status, sync string
-	q := client.NewQuery("SELECT last(status) FROM matic_node_synced", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(status) FROM heimdall_node_synced", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {

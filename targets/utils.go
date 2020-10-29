@@ -7,6 +7,7 @@ import (
 	"math"
 	"math/big"
 	"strconv"
+	"time"
 
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -116,6 +117,17 @@ func DecodeEthCallResult(resp string) []string {
 	}
 
 	return SubArray
+}
+
+// GetUserDateFormat to which returns date in a user friendly
+func GetUserDateFormat(timeToConvert string) string {
+	time, err := time.Parse(time.RFC3339, timeToConvert)
+	if err != nil {
+		fmt.Println("Error while converting date ", err)
+	}
+	date := time.Format("Mon Jan _2 15:04:05 2006")
+	fmt.Println("Converted time into date format : ", date)
+	return date
 }
 
 var (

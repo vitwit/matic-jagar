@@ -55,14 +55,14 @@ func GetBorLatestSpan(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		}
 	}
 
-	_ = writeToInfluxDb(c, bp, "matic_bor_latest_span", map[string]string{}, map[string]interface{}{"span_id": spanID, "span_val_count": spanValCount})
+	_ = writeToInfluxDb(c, bp, "bor_latest_span", map[string]string{}, map[string]interface{}{"span_id": spanID, "span_val_count": spanValCount})
 	log.Printf("Bor Latest Span ID: %d and Span Val Count : %d", spanID, spanValCount)
 }
 
 // GetBorSpanIDFromDb returns the span ID from db
 func GetBorSpanIDFromDb(cfg *config.Config, c client.Client) string {
 	var spanID string
-	q := client.NewQuery("SELECT last(span_id) FROM matic_bor_latest_span", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(span_id) FROM bor_latest_span", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {
@@ -82,7 +82,7 @@ func GetBorSpanIDFromDb(cfg *config.Config, c client.Client) string {
 // GetBorSpanValidatorCountFromDb returns the span val count from the db
 func GetBorSpanValidatorCountFromDb(cfg *config.Config, c client.Client) string {
 	var count string
-	q := client.NewQuery("SELECT last(span_val_count) FROM matic_bor_latest_span", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(span_val_count) FROM bor_latest_span", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {

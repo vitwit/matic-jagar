@@ -31,6 +31,6 @@ func NodeVersion(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 	appVersion := applicationInfo.ApplicationVersion.Version
 
-	_ = writeToInfluxDb(c, bp, "matic_version", map[string]string{}, map[string]interface{}{"v": appVersion})
+	_ = writeToInfluxDb(c, bp, "heimdall_version", map[string]string{}, map[string]interface{}{"v": appVersion})
 	log.Printf("Version: %s", appVersion)
 }

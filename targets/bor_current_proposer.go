@@ -41,14 +41,14 @@ func GetBorCurrentProposer(ops HTTPOptions, cfg *config.Config, c client.Client)
 		count = count + 1
 	}
 
-	_ = writeToInfluxDb(c, bp, "matic_current_proposer", map[string]string{}, map[string]interface{}{"blocks_produced": count, "current_proposer": proposer, "proposer": proposer[2:]})
+	_ = writeToInfluxDb(c, bp, "bor_current_proposer", map[string]string{}, map[string]interface{}{"blocks_produced": count, "current_proposer": proposer, "proposer": proposer[2:]})
 	log.Printf("No of Blocks Proposed: %d", count)
 }
 
 // GetBlocksProducedCountFromDB returns the no of blocks produced from db
 func GetBlocksProducedCountFromDB(cfg *config.Config, c client.Client) string {
 	var count string
-	q := client.NewQuery("SELECT last(blocks_produced) FROM matic_current_proposer", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(blocks_produced) FROM bor_current_proposer", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {

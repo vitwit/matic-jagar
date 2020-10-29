@@ -33,7 +33,7 @@ func BorCurrentHeight(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 		height := HexToIntConversion(cbh.Result)
 
-		_ = writeToInfluxDb(c, bp, "matic_bor_current_height", map[string]string{}, map[string]interface{}{"block_height": height, "height_in_hex": cbh.Result})
+		_ = writeToInfluxDb(c, bp, "bor_current_height", map[string]string{}, map[string]interface{}{"block_height": height, "height_in_hex": cbh.Result})
 		log.Printf("Bor Current Block Height: %d", height)
 	}
 
@@ -42,7 +42,7 @@ func BorCurrentHeight(ops HTTPOptions, cfg *config.Config, c client.Client) {
 // GetBorCurrentBlokHeightInHex returns current block height of bor from db
 func GetBorCurrentBlokHeightInHex(cfg *config.Config, c client.Client) string {
 	var validatorHeight string
-	q := client.NewQuery("SELECT last(height_in_hex) FROM matic_bor_current_height", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(height_in_hex) FROM bor_current_height", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {
@@ -62,7 +62,7 @@ func GetBorCurrentBlokHeightInHex(cfg *config.Config, c client.Client) string {
 // GetBorCurrentBlokHeight returns current block height of bor from db
 func GetBorCurrentBlokHeight(cfg *config.Config, c client.Client) string {
 	var validatorHeight string
-	q := client.NewQuery("SELECT last(block_height) FROM matic_bor_current_height", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(block_height) FROM bor_current_height", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {

@@ -32,6 +32,6 @@ func GetBorParams(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	spanDuration := params.Result.SpanDuration
 	producerCount := params.Result.ProducerCount
 
-	_ = writeToInfluxDb(c, bp, "matic_bor_params", map[string]string{}, map[string]interface{}{"span_duration": spanDuration, "producer_count": producerCount})
+	_ = writeToInfluxDb(c, bp, "bor_params", map[string]string{}, map[string]interface{}{"span_duration": spanDuration, "producer_count": producerCount})
 	log.Printf("Span Duration: %d and Producer Count: %d", spanDuration, producerCount)
 }

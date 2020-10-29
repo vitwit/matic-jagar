@@ -55,13 +55,13 @@ func ValidatorStatusAlert(ops HTTPOptions, cfg *config.Config, c client.Client) 
 			_ = SendEmailAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValDetails.ValidatorName), cfg)
 			log.Println("Sent validator status alert")
 		}
-		_ = writeToInfluxDb(c, bp, "matic_val_status", map[string]string{}, map[string]interface{}{"status": 1, "val_id": valID})
+		_ = writeToInfluxDb(c, bp, "heimdall_val_status", map[string]string{}, map[string]interface{}{"status": 1, "val_id": valID})
 	} else {
 		_ = SendTelegramAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValDetails.ValidatorName), cfg)
 		_ = SendEmailAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValDetails.ValidatorName), cfg)
 		log.Println("Sent validator status alert")
 
-		_ = writeToInfluxDb(c, bp, "matic_val_status", map[string]string{}, map[string]interface{}{"status": 0, "val_id": valID})
+		_ = writeToInfluxDb(c, bp, "heimdall_val_status", map[string]string{}, map[string]interface{}{"status": 0, "val_id": valID})
 	}
 	return
 }
@@ -69,7 +69,7 @@ func ValidatorStatusAlert(ops HTTPOptions, cfg *config.Config, c client.Client) 
 // GetValID returns ID of the validator from db
 func GetValID(cfg *config.Config, c client.Client) string {
 	var ID string
-	q := client.NewQuery("SELECT last(val_id) FROM matic_val_status", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(val_id) FROM heimdall_val_status", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {
@@ -89,7 +89,7 @@ func GetValID(cfg *config.Config, c client.Client) string {
 // GetValStatusFromDB returns latest current height from db
 func GetValStatusFromDB(cfg *config.Config, c client.Client) string {
 	var valStatus string
-	q := client.NewQuery("SELECT last(status) FROM matic_val_status", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(status) FROM heimdall_val_status", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {

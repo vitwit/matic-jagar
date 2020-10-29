@@ -21,7 +21,7 @@ func GetHeimdallCurrentBal(ops HTTPOptions, cfg *config.Config, c client.Client)
 	resp, err := HitHTTPTarget(ops)
 	if err != nil {
 		log.Printf("Error: %v", err)
-		_ = writeToInfluxDb(c, bp, "matic_heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": "NA"})
+		_ = writeToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": "NA"})
 		return
 	}
 
@@ -29,7 +29,7 @@ func GetHeimdallCurrentBal(ops HTTPOptions, cfg *config.Config, c client.Client)
 	err = json.Unmarshal(resp.Body, &accResp)
 	if err != nil {
 		log.Printf("Error: %v", err)
-		_ = writeToInfluxDb(c, bp, "matic_heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": "NA"})
+		_ = writeToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": "NA"})
 		return
 	}
 
@@ -49,7 +49,7 @@ func GetHeimdallCurrentBal(ops HTTPOptions, cfg *config.Config, c client.Client)
 		}
 
 		addressBalance := convertToCommaSeparated(amount) + strings.ToUpper(accResp.Result[0].Denom)
-		_ = writeToInfluxDb(c, bp, "matic_heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": addressBalance, "balance": amount})
+		_ = writeToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": addressBalance, "balance": amount})
 		log.Printf("Address Balance: %s", addressBalance)
 	}
 }
@@ -57,7 +57,7 @@ func GetHeimdallCurrentBal(ops HTTPOptions, cfg *config.Config, c client.Client)
 // GetAccountBalFromDb returns account balance from db
 func GetAccountBalFromDb(cfg *config.Config, c client.Client) string {
 	var balance string
-	q := client.NewQuery("SELECT last(balance) FROM matic_heimdall_current_balance", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(balance) FROM heimdall_current_balance", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {
@@ -77,7 +77,7 @@ func GetAccountBalFromDb(cfg *config.Config, c client.Client) string {
 // GetAccountBalWithDenomFromdb returns account balance from db
 func GetAccountBalWithDenomFromdb(cfg *config.Config, c client.Client) string {
 	var balance string
-	q := client.NewQuery("SELECT last(current_balance) FROM matic_heimdall_current_balance", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(current_balance) FROM heimdall_current_balance", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {

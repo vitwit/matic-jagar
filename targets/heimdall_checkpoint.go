@@ -31,7 +31,7 @@ func GetTotalCheckPointsCount(ops HTTPOptions, cfg *config.Config, c client.Clie
 
 	count := cp.Result.Result
 
-	_ = writeToInfluxDb(c, bp, "matic_total_checkpoints", map[string]string{}, map[string]interface{}{"total_count": count})
+	_ = writeToInfluxDb(c, bp, "heimdall_total_checkpoints", map[string]string{}, map[string]interface{}{"total_count": count})
 	log.Printf("Checkpoints total count: %d", count)
 }
 
@@ -58,7 +58,7 @@ func GetLatestCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client) 
 	startBlock := lcp.Result.StartBlock
 	endBlock := lcp.Result.EndBlock
 
-	_ = writeToInfluxDb(c, bp, "matic_latest_checkpoint", map[string]string{}, map[string]interface{}{"start_block": startBlock, "end_block": endBlock})
+	_ = writeToInfluxDb(c, bp, "heimdall_latest_checkpoint", map[string]string{}, map[string]interface{}{"start_block": startBlock, "end_block": endBlock})
 	log.Printf("Latest checkpoint Start Block: %d and End Block: %d", startBlock, endBlock)
 }
 
@@ -85,6 +85,6 @@ func GetCheckpointsDuration(ops HTTPOptions, cfg *config.Config, c client.Client
 	duration := cpd.Result.CheckpointBufferTime
 	minutes := ConvertNanoSecToMinutes(duration)
 
-	_ = writeToInfluxDb(c, bp, "matic_checkpoint_duration", map[string]string{}, map[string]interface{}{"duration": minutes})
+	_ = writeToInfluxDb(c, bp, "heimdall_checkpoint_duration", map[string]string{}, map[string]interface{}{"duration": minutes})
 	log.Printf("Checkpoints Duration in nano seconds: %d", duration)
 }

@@ -59,7 +59,7 @@ func GetProposals(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		}
 		newProposal := false
 		proposalStatus := ""
-		q := client.NewQuery(fmt.Sprintf("SELECT * FROM matic_proposals WHERE proposal_id = '%s'", proposal.ID), cfg.InfluxDB.Database, "")
+		q := client.NewQuery(fmt.Sprintf("SELECT * FROM heimdall_proposals WHERE proposal_id = '%s'", proposal.ID), cfg.InfluxDB.Database, "")
 		if response, err := c.Query(q); err == nil && response.Error() == nil {
 			for _, r := range response.Results {
 				if len(r.Series) == 0 {
@@ -77,7 +77,7 @@ func GetProposals(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 			if newProposal {
 				log.Printf("New Proposal Came: %s", proposal.ID)
-				_ = writeToInfluxDb(c, bp, "matic_proposals", tag, fields)
+				_ = writeToInfluxDb(c, bp, "heimdall_proposals", tag, fields)
 
 				if proposal.ProposalStatus == "Rejected" || proposal.ProposalStatus == "Passed" {
 					_ = SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been %s", proposal.ID, proposal.ProposalStatus), cfg)
@@ -90,15 +90,15 @@ func GetProposals(ops HTTPOptions, cfg *config.Config, c client.Client) {
 					_ = SendEmailAlert(fmt.Sprintf("A new proposal "+proposal.Content.Type+" has been added to "+proposal.ProposalStatus+" with proposal id = %s", proposal.ID), cfg)
 				}
 			} else {
-				q := client.NewQuery(fmt.Sprintf("DELETE FROM matic_proposals WHERE id = '%s'", proposal.ID), cfg.InfluxDB.Database, "")
+				q := client.NewQuery(fmt.Sprintf("DELETE FROM heimdall_proposals WHERE id = '%s'", proposal.ID), cfg.InfluxDB.Database, "")
 				if response, err := c.Query(q); err == nil && response.Error() == nil {
-					log.Printf("Delete proposal %s from matic_proposals", proposal.ID)
+					log.Printf("Delete proposal %s from heimdall_proposals", proposal.ID)
 				} else {
-					log.Printf("Failed to delete proposal %s from matic_proposals", proposal.ID)
+					log.Printf("Failed to delete proposal %s from heimdall_proposals", proposal.ID)
 					log.Printf("Reason for proposal deletion failure %v", response)
 				}
 				log.Printf("Writing the proposal: %s", proposal.ID)
-				_ = writeToInfluxDb(c, bp, "matic_proposals", tag, fields)
+				_ = writeToInfluxDb(c, bp, "heimdall_proposals", tag, fields)
 				if proposal.ProposalStatus != proposalStatus {
 					if proposal.ProposalStatus == "Rejected" || proposal.ProposalStatus == "Passed" {
 						_ = SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been %s", proposal.ID, proposal.ProposalStatus), cfg)
@@ -247,7 +247,7 @@ func GetValidatorDeposited(proposalID string, cfg *config.Config, c client.Clien
 func DeleteDepoitEndProposals(cfg *config.Config, c client.Client, p Proposals) error {
 	var ID string
 	found := false
-	q := client.NewQuery("SELECT * FROM matic_proposals where proposal_status='DepositPeriod'", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT * FROM heimdall_proposals where proposal_status='DepositPeriod'", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {
@@ -264,12 +264,12 @@ func DeleteDepoitEndProposals(cfg *config.Config, c client.Client, p Proposals) 
 						}
 					}
 					if !found {
-						q := client.NewQuery(fmt.Sprintf("DELETE FROM matic_proposals WHERE id = '%s'", ID), cfg.InfluxDB.Database, "")
+						q := client.NewQuery(fmt.Sprintf("DELETE FROM heimdall_proposals WHERE id = '%s'", ID), cfg.InfluxDB.Database, "")
 						if response, err := c.Query(q); err == nil && response.Error() == nil {
-							log.Printf("Delete proposal %s from matic_proposals", ID)
+							log.Printf("Delete proposal %s from heimdall_proposals", ID)
 							return err
 						}
-						log.Printf("Failed to delete proposal %s from matic_proposals", ID)
+						log.Printf("Failed to delete proposal %s from heimdall_proposals", ID)
 						log.Printf("Reason for proposal deletion failure %v", response)
 					}
 				}

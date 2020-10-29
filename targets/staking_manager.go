@@ -96,7 +96,7 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		value := ConvertValueToEth(stakeAmount)
 		amount := fmt.Sprintf("%.6f", value) + MaticDenom
 
-		_ = writeToInfluxDb(c, bp, "matic_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
+		_ = writeToInfluxDb(c, bp, "heimdall_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
 		log.Printf("Contract Address: %s and Self Stake Amount : %d", contractAddress, amount)
 
 	}
@@ -150,7 +150,7 @@ func GetCommissionRate(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			value := ConvertValueToEth(commissionRate)
 			rate := fmt.Sprintf("%.2f", value)
 
-			_ = writeToInfluxDb(c, bp, "matic_commission_rate", map[string]string{}, map[string]interface{}{"commission_rate": rate})
+			_ = writeToInfluxDb(c, bp, "heimdall_commission_rate", map[string]string{}, map[string]interface{}{"commission_rate": rate})
 			log.Printf("Contract Rate: %d", rate)
 		}
 	}
@@ -174,7 +174,7 @@ func GetValidatorRewards(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			rewardsEth := ConvertValueToEth(rewards)
 			ether := fmt.Sprintf("%.8f", rewardsEth) + MaticDenom
 
-			_ = writeToInfluxDb(c, bp, "matic_validator_rewards", map[string]string{}, map[string]interface{}{"val_rewards": ether})
+			_ = writeToInfluxDb(c, bp, "heimdall_validator_rewards", map[string]string{}, map[string]interface{}{"val_rewards": ether})
 			log.Printf("Validator Rewards: %s", ether)
 		}
 	}
@@ -182,7 +182,7 @@ func GetValidatorRewards(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 func GetValContractAddress(cfg *config.Config, c client.Client) string {
 	var address string
-	q := client.NewQuery("SELECT last(contract_address) FROM matic_contract_details", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(contract_address) FROM heimdall_contract_details", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {
