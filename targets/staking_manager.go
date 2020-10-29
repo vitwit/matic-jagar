@@ -94,7 +94,7 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 		stakeAmount, _ := strconv.ParseInt(valResp[0], 16, 64)
 		value := ConvertValueToEth(stakeAmount)
-		amount := fmt.Sprintf("%.6f", value) + "ETH"
+		amount := fmt.Sprintf("%.6f", value) + MaticDenom
 
 		_ = writeToInfluxDb(c, bp, "matic_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
 		log.Printf("Contract Address: %s and Self Stake Amount : %d", contractAddress, amount)
@@ -172,7 +172,7 @@ func GetValidatorRewards(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			rewards, _ := strconv.ParseInt(result.Result[2:], 16, 64)
 
 			rewardsEth := ConvertValueToEth(rewards)
-			ether := fmt.Sprintf("%.8f", rewardsEth) + "ETH"
+			ether := fmt.Sprintf("%.8f", rewardsEth) + MaticDenom
 
 			_ = writeToInfluxDb(c, bp, "matic_validator_rewards", map[string]string{}, map[string]interface{}{"val_rewards": ether})
 			log.Printf("Validator Rewards: %s", ether)

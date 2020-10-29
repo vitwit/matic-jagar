@@ -43,12 +43,12 @@ func GetHeimdallCurrentBal(ops HTTPOptions, cfg *config.Config, c client.Client)
 
 		if prevAmount != amount {
 			if strings.ToUpper(cfg.ChooseAlerts.BalanceChangeAlerts) == "YES" {
-				_ = SendTelegramAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount, amount), cfg)
-				_ = SendEmailAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount, amount), cfg)
+				_ = SendTelegramAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+MaticDenom, amount+MaticDenom), cfg)
+				_ = SendEmailAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+MaticDenom, amount+MaticDenom), cfg)
 			}
 		}
 
-		addressBalance := convertToCommaSeparated(amount) + accResp.Result[0].Denom
+		addressBalance := convertToCommaSeparated(amount) + strings.ToUpper(accResp.Result[0].Denom)
 		_ = writeToInfluxDb(c, bp, "matic_heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": addressBalance, "balance": amount})
 		log.Printf("Address Balance: %s", addressBalance)
 	}

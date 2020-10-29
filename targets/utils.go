@@ -16,7 +16,7 @@ import (
 func ConvertToMatic(amount string) string {
 	f, _ := strconv.ParseFloat(amount, 64)
 	d := f * math.Pow(10, -18)
-	bal := fmt.Sprintf("%.6f", d)
+	bal := fmt.Sprintf("%.4f", d)
 
 	log.Println("heimdall bal : ", bal)
 
@@ -117,3 +117,8 @@ func DecodeEthCallResult(resp string) []string {
 
 	return SubArray
 }
+
+var (
+	// Denom of matic
+	MaticDenom = "MATIC"
+)

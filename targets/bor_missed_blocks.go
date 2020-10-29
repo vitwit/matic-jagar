@@ -32,6 +32,7 @@ func SendBorSingleMissedBlockAlert(ops HTTPOptions, cfg *config.Config, c client
 		}
 
 	} else {
+		err = writeToInfluxDb(c, bp, "bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh})
 		err = writeToInfluxDb(c, bp, "matic_bor_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
 		if err != nil {
 			return err

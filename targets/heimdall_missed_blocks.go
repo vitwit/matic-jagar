@@ -28,6 +28,7 @@ func SendSingleMissedBlockAlert(ops HTTPOptions, cfg *config.Config, c client.Cl
 
 		return err
 	}
+	err = writeToInfluxDb(c, bp, "heimdall_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh})
 	err = writeToInfluxDb(c, bp, "matic_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
 	if err != nil {
 		return err
