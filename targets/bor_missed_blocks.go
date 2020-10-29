@@ -129,7 +129,7 @@ func GetBorMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 			}
 		} else {
-			_ = writeToInfluxDb(c, bp, "matic_bor_val_signed_blocks", map[string]string{}, map[string]interface{}{"signed_block_height": cbh})
+			_ = writeToInfluxDb(c, bp, "bor_val_signed_blocks", map[string]string{}, map[string]interface{}{"signed_block_height": cbh})
 		}
 	} else {
 		log.Println("Got an empty response from the rpc...")

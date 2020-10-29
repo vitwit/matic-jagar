@@ -44,6 +44,6 @@ func GetLatestProposedBlockAndTime(ops HTTPOptions, cfg *config.Config, c client
 
 	// Store chainID in database
 	chainID := blockResp.Block.Header.ChainID
-	_ = writeToInfluxDb(c, bp, "matic_chain_id", map[string]string{}, map[string]interface{}{"chain_id": chainID})
+	_ = writeToInfluxDb(c, bp, "heimdall_chain_id", map[string]string{}, map[string]interface{}{"chain_id": chainID})
 	log.Printf("Chain ID : %s ", chainID)
 }
