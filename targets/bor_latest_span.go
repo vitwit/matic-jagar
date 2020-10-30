@@ -98,3 +98,39 @@ func GetBorSpanValidatorCountFromDb(cfg *config.Config, c client.Client) string 
 	}
 	return count
 }
+
+func GetBlockProducer(ops HTTPOptions, cfg *config.Config, c client.Client) {
+	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	if err != nil {
+		return
+	}
+
+	currentSpan := GetBorSpanIDFromDb(cfg, c)
+
+	ops.Endpoint = ops.Endpoint + currentSpan
+
+	resp, err := HitHTTPTarget(ops)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
+	}
+
+	var spanProducers BorSpanProducers
+	err = json.Unmarshal(resp.Body, &spanProducers)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
+	}
+
+	addrExists := "No"
+
+	for _, value := range spanProducers.Result.SelectedProducers {
+		if value.Signer == cfg.ValDetails.SignerAddress {
+			addrExists = "Yes"
+		}
+	}
+
+	producerCount := len(spanProducers.Result.SelectedProducers)
+	_ = writeToInfluxDb(c, bp, "bor_block_producer", map[string]string{}, map[string]interface{}{"val_part_of_block_producer": addrExists, "producer_count": producerCount})
+	log.Printf("Validator is part of block producer : %s\n and Producer Count: %d", addrExists, producerCount)
+}

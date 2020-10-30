@@ -297,6 +297,16 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        GetBorPendingTransactions,
 			ScraperRate: cfg.Scraper.Rate,
 		},
+		{
+			ExecutionType: "http",
+			Name:          "Check weather validator is part of block producer",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/bor/span/",
+				Method:   http.MethodGet,
+			},
+			Func:        GetBlockProducer,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 	}}
 }
 

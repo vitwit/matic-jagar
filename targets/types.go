@@ -361,4 +361,27 @@ type (
 			Value            string `json:"value"`
 		} `json:"result"`
 	}
+
+	BorSpanProducers struct {
+		Height string `json:"height"`
+		Result struct {
+			SpanID int `json:"span_id"`
+			// StartBlock        int         `json:"start_block"`
+			// EndBlock          int         `json:"end_block"`
+			ValidatorSet      interface{} `json:"validator_set"`
+			SelectedProducers []struct {
+				// ID          int    `json:"ID"`
+				// StartEpoch  int    `json:"startEpoch"`
+				// EndEpoch    int    `json:"endEpoch"`
+				// Nonce       int    `json:"nonce"`
+				// Power       int    `json:"power"`
+				// PubKey      string `json:"pubKey"`
+				Signer string `json:"signer"`
+				// LastUpdated string `json:"last_updated"`
+				// Jailed      bool   `json:"jailed"`
+				// Accum       int    `json:"accum"`
+			} `json:"selected_producers"`
+			BorChainID string `json:"bor_chain_id"`
+		} `json:"result"`
+	}
 )
