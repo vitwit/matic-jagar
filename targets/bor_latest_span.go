@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
@@ -125,7 +126,7 @@ func GetBlockProducer(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	addrExists := "No"
 
 	for _, value := range spanProducers.Result.SelectedProducers {
-		if value.Signer == cfg.ValDetails.SignerAddress {
+		if value.Signer == strings.ToLower(cfg.ValDetails.SignerAddress) {
 			addrExists = "Yes"
 		}
 	}
