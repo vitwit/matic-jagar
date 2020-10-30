@@ -97,7 +97,7 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		amount := fmt.Sprintf("%.6f", value) + MaticDenom
 
 		_ = writeToInfluxDb(c, bp, "heimdall_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
-		log.Printf("Contract Address: %s and Self Stake Amount : %d", contractAddress, amount)
+		log.Printf("Contract Address: %s and Self Stake Amount : %s", contractAddress, amount)
 
 	}
 }

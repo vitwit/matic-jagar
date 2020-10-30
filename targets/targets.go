@@ -307,6 +307,16 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        GetBlockProducer,
 			ScraperRate: cfg.Scraper.Rate,
 		},
+		{
+			ExecutionType: "http",
+			Name:          "Get proposed checkpoints",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/checkpoints/",
+				Method:   http.MethodGet,
+			},
+			Func:        GetProposedCheckpoints,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 	}}
 }
 

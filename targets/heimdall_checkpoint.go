@@ -2,7 +2,9 @@ package targets
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"strconv"
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
@@ -87,4 +89,95 @@ func GetCheckpointsDuration(ops HTTPOptions, cfg *config.Config, c client.Client
 
 	_ = writeToInfluxDb(c, bp, "heimdall_checkpoint_duration", map[string]string{}, map[string]interface{}{"duration": minutes})
 	log.Printf("Checkpoints Duration in nano seconds: %d", duration)
+}
+
+// GetLatestCheckPoint returns the latest checkpoint from db
+func GetLatestCheckPoint(cfg *config.Config, c client.Client) string {
+	var count string
+	q := client.NewQuery("SELECT last(total_count) FROM heimdall_total_checkpoints", cfg.InfluxDB.Database, "")
+	if response, err := c.Query(q); err == nil && response.Error() == nil {
+		for _, r := range response.Results {
+			if len(r.Series) != 0 {
+				for idx, col := range r.Series[0].Columns {
+					if col == "last" {
+						value := r.Series[0].Values[0][idx]
+						count = fmt.Sprintf("%v", value)
+						break
+					}
+				}
+			}
+		}
+	}
+	return count
+}
+
+// GetProposedCheckpoints to get proposed checkpoint and count
+func GetProposedCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client) {
+	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	if err != nil {
+		return
+	}
+
+	resp, err := HitHTTPTarget(HTTPOptions{
+		Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/checkpoints/count",
+		Method:   "GET",
+	})
+
+	var cp TotalCheckpoints
+	err = json.Unmarshal(resp.Body, &cp)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
+	}
+
+	checkpoint := cp.Result.Result
+	latestCP := strconv.Itoa(checkpoint)
+
+	ops.Endpoint = ops.Endpoint + latestCP
+
+	resp, err = HitHTTPTarget(ops)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
+	}
+
+	var proposedCP ProposedCheckpoints
+	err = json.Unmarshal(resp.Body, &proposedCP)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
+	}
+
+	latestCPFromDB := GetLatestCheckPoint(cfg, c)
+
+	if proposedCP.Result.Proposer == cfg.ValDetails.SignerAddress {
+		count := 0
+		if latestCP != latestCPFromDB {
+			c := GetProposedCount(cfg, c)
+			count, _ = strconv.Atoi(c)
+			count++
+		}
+		_ = writeToInfluxDb(c, bp, "heimdall_proposed_checkpoint", map[string]string{}, map[string]interface{}{"last_proposed_cp": latestCP, "proposed_count": count})
+		log.Printf("Latest Proposed Checkpoint : %s Proposed Count : %d", latestCP, count)
+	}
+}
+
+// GetProposedCount returns the count of proposed checkpoints
+func GetProposedCount(cfg *config.Config, c client.Client) string {
+	var count string
+	q := client.NewQuery("SELECT last(proposed_count) FROM heimdall_proposed_checkpoint", cfg.InfluxDB.Database, "")
+	if response, err := c.Query(q); err == nil && response.Error() == nil {
+		for _, r := range response.Results {
+			if len(r.Series) != 0 {
+				for idx, col := range r.Series[0].Columns {
+					if col == "last" {
+						value := r.Series[0].Values[0][idx]
+						count = fmt.Sprintf("%v", value)
+						break
+					}
+				}
+			}
+		}
+	}
+	return count
 }

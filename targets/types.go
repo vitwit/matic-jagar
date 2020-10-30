@@ -28,6 +28,7 @@ type (
 		ID      int           `json:"id"`
 	}
 
+	// Params struct
 	Params struct {
 		To   string `json:"to"`
 		Data string `json:"data"`
@@ -362,26 +363,24 @@ type (
 		} `json:"result"`
 	}
 
+	// BorSpanProducers is a struct which holds the fields of span producers
 	BorSpanProducers struct {
 		Height string `json:"height"`
 		Result struct {
-			SpanID int `json:"span_id"`
-			// StartBlock        int         `json:"start_block"`
-			// EndBlock          int         `json:"end_block"`
+			SpanID            int         `json:"span_id"`
 			ValidatorSet      interface{} `json:"validator_set"`
 			SelectedProducers []struct {
-				// ID          int    `json:"ID"`
-				// StartEpoch  int    `json:"startEpoch"`
-				// EndEpoch    int    `json:"endEpoch"`
-				// Nonce       int    `json:"nonce"`
-				// Power       int    `json:"power"`
-				// PubKey      string `json:"pubKey"`
 				Signer string `json:"signer"`
-				// LastUpdated string `json:"last_updated"`
-				// Jailed      bool   `json:"jailed"`
-				// Accum       int    `json:"accum"`
 			} `json:"selected_producers"`
 			BorChainID string `json:"bor_chain_id"`
+		} `json:"result"`
+	}
+
+	// ProposedCheckpoints is a struct which holds the fileds of proposed checkpoints
+	ProposedCheckpoints struct {
+		Height string `json:"height"`
+		Result struct {
+			Proposer string `json:"proposer"`
 		} `json:"result"`
 	}
 )

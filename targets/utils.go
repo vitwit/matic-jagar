@@ -101,6 +101,7 @@ func Encode(b []byte) string {
 	return string(enc)
 }
 
+// DecodeEthCallResult decodes the eth_call result and resturns the array
 func DecodeEthCallResult(resp string) []string {
 	s := resp[2:]
 	n := len(resp) / 64
