@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
@@ -150,7 +151,7 @@ func GetProposedCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client
 
 	latestCPFromDB := GetLatestCheckPoint(cfg, c)
 
-	if proposedCP.Result.Proposer == cfg.ValDetails.SignerAddress {
+	if proposedCP.Result.Proposer == strings.ToLower(cfg.ValDetails.SignerAddress) {
 		count := 0
 		if latestCP != latestCPFromDB {
 			c := GetProposedCount(cfg, c)
