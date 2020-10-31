@@ -119,24 +119,12 @@ func GetProposedCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client
 		return
 	}
 
-	resp, err := HitHTTPTarget(HTTPOptions{
-		Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/checkpoints/count",
-		Method:   "GET",
-	})
-
-	var cp TotalCheckpoints
-	err = json.Unmarshal(resp.Body, &cp)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	checkpoint := cp.Result.Result
-	latestCP := strconv.Itoa(checkpoint)
+	// Get latest checkpoint from db
+	latestCP := GetLatestCheckPoint(cfg, c)
 
 	ops.Endpoint = ops.Endpoint + latestCP
 
-	resp, err = HitHTTPTarget(ops)
+	resp, err := HitHTTPTarget(ops)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
@@ -149,11 +137,12 @@ func GetProposedCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client
 		return
 	}
 
-	latestCPFromDB := GetLatestCheckPoint(cfg, c)
+	// Get last proposed checkpoint from db
+	lastProposedCheckpoint := GetLastProposedCheckpoint(cfg, c)
 
 	if proposedCP.Result.Proposer == strings.ToLower(cfg.ValDetails.SignerAddress) {
 		count := 0
-		if latestCP != latestCPFromDB {
+		if latestCP != lastProposedCheckpoint {
 			c := GetProposedCount(cfg, c)
 			count, _ = strconv.Atoi(c)
 			count++
@@ -181,4 +170,24 @@ func GetProposedCount(cfg *config.Config, c client.Client) string {
 		}
 	}
 	return count
+}
+
+// GetLastProposedCheckpoint returns the last proposed checkpoint from db
+func GetLastProposedCheckpoint(cfg *config.Config, c client.Client) string {
+	var cp string
+	q := client.NewQuery("SELECT last(last_proposed_cp) FROM heimdall_proposed_checkpoint", cfg.InfluxDB.Database, "")
+	if response, err := c.Query(q); err == nil && response.Error() == nil {
+		for _, r := range response.Results {
+			if len(r.Series) != 0 {
+				for idx, col := range r.Series[0].Columns {
+					if col == "last" {
+						value := r.Series[0].Values[0][idx]
+						cp = fmt.Sprintf("%v", value)
+						break
+					}
+				}
+			}
+		}
+	}
+	return cp
 }
