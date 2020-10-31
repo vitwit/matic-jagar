@@ -41,7 +41,7 @@ func GetBorLatestSpan(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	addrExists := false
 
 	for _, val := range latestSpan.Result.ValidatorSet.Validators {
-		if val.Signer == cfg.ValDetails.SignerAddress {
+		if val.Signer == strings.ToLower(cfg.ValDetails.SignerAddress) {
 			addrExists = true
 		}
 	}
