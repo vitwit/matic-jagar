@@ -58,8 +58,8 @@ func GetNetworkLatestBlock(ops HTTPOptions, cfg *config.Config, c client.Client)
 
 		// Send alert
 		if int64(heightDiff) >= cfg.AlertingThresholds.BlockDiffThreshold && strings.ToUpper(cfg.ChooseAlerts.BlockDiffAlerts) == "YES" {
-			_ = SendTelegramAlert(fmt.Sprintf("Heimdall block difference alert: Block Difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
-			_ = SendEmailAlert(fmt.Sprintf("Heimdall block difference alert : Block difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
+			_ = SendTelegramAlert(fmt.Sprintf("Heimdall Block Difference Alert: Block Difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
+			_ = SendEmailAlert(fmt.Sprintf("Heimdall Block Difference Alert : Block difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
 			log.Println("Sent alert of block height difference")
 		}
 	}
