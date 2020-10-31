@@ -317,6 +317,17 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        GetProposedCheckpoints,
 			ScraperRate: cfg.Scraper.Rate,
 		},
+		{
+			ExecutionType: "curl cmd",
+			Name:          "Get Network Height of Bor",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.Endpoints.BorExternalRPC,
+				Method:   http.MethodPost,
+				Body:     Payload{Jsonrpc: "2.0", Method: "eth_blockNumber", ID: 83},
+			},
+			Func:        BorNetworkHeight,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 	}}
 }
 
