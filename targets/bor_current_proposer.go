@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
@@ -37,7 +38,7 @@ func GetBorCurrentProposer(ops HTTPOptions, cfg *config.Config, c client.Client)
 
 	proposer := currentProposer.Result
 
-	if proposer == cfg.ValDetails.SignerAddress {
+	if proposer == strings.ToLower(cfg.ValDetails.SignerAddress) {
 		count = count + 1
 	}
 
