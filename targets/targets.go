@@ -113,7 +113,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Block Time Difference",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.Endpoints.HeimdallRPCEndpoint + "/block",
+				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/blocks/latest",
 				Method:   http.MethodGet,
 			},
 			Func:        GetBlockTimeDifference,
@@ -121,7 +121,7 @@ func InitTargets(cfg *config.Config) *Targets {
 		},
 		{
 			ExecutionType: "http",
-			Name:          "Get Current Block Height",
+			Name:          "Get Missed Blocks",
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/blocks/latest",
 				Method:   http.MethodGet,

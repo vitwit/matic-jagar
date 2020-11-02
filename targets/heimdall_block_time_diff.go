@@ -19,57 +19,33 @@ func GetBlockTimeDifference(ops HTTPOptions, cfg *config.Config, c client.Client
 		log.Printf("Error: %v", err)
 		return
 	}
-
-	// Calling function to get validator latest
-	// block height
-	currentBlockHeight := GetValidatorBlock(cfg, c)
-	if currentBlockHeight == "" {
-		log.Println("Error while fetching current block height from db ", currentBlockHeight)
-		return
-	}
-
-	ops.Endpoint = ops.Endpoint + "?height=" + currentBlockHeight
 	currResp, err := HitHTTPTarget(ops)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
 	}
-	var currentBlockResp CurrentBlockWithHeight
+	var currentBlockResp LatestBlock
 	err = json.Unmarshal(currResp.Body, &currentBlockResp)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
 	}
+	currentBlockHeight, _ := strconv.Atoi(currentBlockResp.Block.Header.Height)
 
-	currentBlockTime := currentBlockResp.Result.Block.Header.Time
-	var currentHeight int
-	if currentBlockHeight != "" {
-		currentHeight, _ = strconv.Atoi(currentBlockHeight)
+	prevBlockHeight := currentBlockHeight - 1
+	prevBlockTime := GetPrevBlockTime(cfg, c, strconv.Itoa(prevBlockHeight))
+
+	currentBlockTime := currentBlockResp.Block.Header.Time
+
+	if currentBlockHeight-prevBlockHeight == 1 {
+
+		convertedCurrentTime, _ := time.Parse(time.RFC3339, currentBlockTime)
+		conevrtedPrevBlockTime, _ := time.Parse(time.RFC3339, prevBlockTime)
+		timeDiff := convertedCurrentTime.Sub(conevrtedPrevBlockTime)
+		diffSeconds := fmt.Sprintf("%.2f", timeDiff.Seconds())
+
+		_ = writeToInfluxDb(c, bp, "heimdall_block_time_diff", map[string]string{}, map[string]interface{}{"time_diff": diffSeconds})
+		log.Printf("time diff: %s", diffSeconds)
 	}
 
-	prevHeight := currentHeight - 1
-	ops.Endpoint = cfg.Endpoints.HeimdallRPCEndpoint + "/block"
-	ops.Endpoint = ops.Endpoint + "?height=" + strconv.Itoa(prevHeight)
-
-	resp, err := HitHTTPTarget(ops)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	var prevBlockResp CurrentBlockWithHeight
-	err = json.Unmarshal(resp.Body, &prevBlockResp)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	prevBlockTime := prevBlockResp.Result.Block.Header.Time
-	convertedCurrentTime, _ := time.Parse(time.RFC3339, currentBlockTime)
-	conevrtedPrevBlockTime, _ := time.Parse(time.RFC3339, prevBlockTime)
-	timeDiff := convertedCurrentTime.Sub(conevrtedPrevBlockTime)
-	diffSeconds := fmt.Sprintf("%.2f", timeDiff.Seconds())
-
-	_ = writeToInfluxDb(c, bp, "heimdall_block_time_diff", map[string]string{}, map[string]interface{}{"time_diff": diffSeconds})
-	log.Printf("time diff: %s", diffSeconds)
 }

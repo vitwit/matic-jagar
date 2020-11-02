@@ -18,6 +18,9 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	subStr := GetEncodedData(ops, cfg, c, "validators(uint256)")
+	if subStr == "" {
+		return
+	}
 	valID := GetValID(cfg, c)
 	// n := len(subStr) + len(valID)
 	for i := 0; i < 64-len(valID); i++ {
@@ -48,26 +51,30 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			return
 		}
 
-		var hexData EthResult
-		err = json.Unmarshal(resp.Body, &hexData)
-		if err != nil {
-			log.Printf("Error: %v", err)
-			return
+		if resp.Body != nil {
+			var hexData EthResult
+			err = json.Unmarshal(resp.Body, &hexData)
+			if err != nil {
+				log.Printf("Error: %v", err)
+				return
+			}
+			log.Println("hex data of eth_call error if any..", hexData.Error)
+
+			if hexData.Result == "" {
+				return
+			}
+
+			valResp := DecodeEthCallResult(hexData.Result)
+
+			contractAddress := "0x" + valResp[6][24:]
+
+			stakeAmount, _ := strconv.ParseInt(valResp[0], 16, 64)
+			value := ConvertValueToEth(stakeAmount)
+			amount := fmt.Sprintf("%.6f", value) + MaticDenom
+
+			_ = writeToInfluxDb(c, bp, "heimdall_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
+			log.Printf("Contract Address: %s and Self Stake Amount : %s", contractAddress, amount)
 		}
-
-		log.Println("hex data of eth_call error if any..", hexData.Error)
-
-		valResp := DecodeEthCallResult(hexData.Result)
-
-		contractAddress := "0x" + valResp[6][24:]
-
-		stakeAmount, _ := strconv.ParseInt(valResp[0], 16, 64)
-		value := ConvertValueToEth(stakeAmount)
-		amount := fmt.Sprintf("%.6f", value) + MaticDenom
-
-		_ = writeToInfluxDb(c, bp, "heimdall_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
-		log.Printf("Contract Address: %s and Self Stake Amount : %s", contractAddress, amount)
-
 	}
 }
 
@@ -78,6 +85,9 @@ func GetCommissionRate(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	subStr := GetEncodedData(ops, cfg, c, "commissionRate()")
+	if subStr == "" {
+		return
+	}
 	n := len(subStr)
 	for i := 0; i < 64-n; i++ {
 		subStr = subStr + "0"
@@ -104,13 +114,15 @@ func GetValidatorRewards(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	subStr := GetEncodedData(ops, cfg, c, "validatorRewards()")
+	if subStr == "" {
+		return
+	}
 	n := len(subStr)
 	for i := 0; i < 64-n; i++ {
 		subStr = subStr + "0"
 	}
 	dataHash := subStr
 	if dataHash != "" {
-
 		result := EthCall(ops, cfg, c, dataHash)
 
 		if result.Result != "" {
@@ -165,6 +177,10 @@ func GetEncodedData(ops HTTPOptions, cfg *config.Config, c client.Client, method
 		return ""
 	}
 
+	if hexData.Result == "" {
+		return ""
+	}
+
 	sha3Hash := hexData.Result
 	subStr := sha3Hash[:10]
 
@@ -202,5 +218,4 @@ func EthCall(ops HTTPOptions, cfg *config.Config, c client.Client, dataHash stri
 	}
 
 	return result
-
 }
