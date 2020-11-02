@@ -23,7 +23,7 @@ func GetLatestProposedBlockAndTime(ops HTTPOptions, cfg *config.Config, c client
 		return
 	}
 
-	var blockResp LastProposedBlockAndTime
+	var blockResp LatestBlock
 	err = json.Unmarshal(resp.Body, &blockResp)
 	if err != nil {
 		log.Printf("Error: %v", err)

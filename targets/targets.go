@@ -123,7 +123,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ExecutionType: "http",
 			Name:          "Get Current Block Height",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.Endpoints.HeimdallExternalRPC + "/status",
+				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/blocks/latest",
 				Method:   http.MethodGet,
 			},
 			Func:        GetMissedBlocks,

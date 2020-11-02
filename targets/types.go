@@ -195,11 +195,10 @@ type (
 		} `json:"result"`
 	}
 
-	// LastProposedBlockAndTime is a struct which holds the parameters of last proposed block response
-	LastProposedBlockAndTime struct {
+	// LatestBlock is a struct which holds the parameters of lastest block response
+	LatestBlock struct {
 		BlockMeta interface{} `json:"block_meta"`
-
-		Block struct {
+		Block     struct {
 			Header struct {
 				ChainID         string `json:"chain_id"`
 				Height          string `json:"height"`
@@ -209,6 +208,16 @@ type (
 				LastCommitHash  string `json:"last_commit_hash"`
 				ProposerAddress string `json:"proposer_address"`
 			} `json:"header"`
+			LastCommit struct {
+				BlockID    interface{} `json:"block_id"`
+				Precommits []struct {
+					Type             int         `json:"type"`
+					Height           string      `json:"height"`
+					ValidatorAddress string      `json:"validator_address"`
+					Signature        string      `json:"signature"`
+					SideTxResults    interface{} `json:"side_tx_results"`
+				} `json:"precommits"`
+			} `json:"last_commit"`
 		} `json:"block"`
 	}
 

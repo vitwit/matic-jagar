@@ -49,27 +49,13 @@ func GetMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		log.Printf("Error: %v", err)
 		return
 	}
-
-	var networkLatestBlock Status
-	err = json.Unmarshal(resp.Body, &networkLatestBlock)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	cbh := networkLatestBlock.Result.SyncInfo.LatestBlockHeight
-
-	resp, err = HitHTTPTarget(HTTPOptions{
-		Endpoint:    cfg.Endpoints.HeimdallExternalRPC + "/block",
-		QueryParams: QueryParams{"height": cbh},
-		Method:      "GET",
-	})
 	if err != nil {
 		log.Printf("Error getting details of current block: %v", err)
 		return
 	}
 
-	var b CurrentBlockWithHeight
+	// var b CurrentBlockWithHeight
+	var b LatestBlock
 	err = json.Unmarshal(resp.Body, &b)
 	if err != nil {
 		log.Printf("Error: %v", err)
@@ -78,11 +64,13 @@ func GetMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 	if &b != nil {
 		addrExists := false
-		for _, c := range b.Result.Block.LastCommit.Precommits {
+		for _, c := range b.Block.LastCommit.Precommits {
 			if c.ValidatorAddress == cfg.ValDetails.ValidatorHexAddress {
 				addrExists = true
 			}
 		}
+
+		cbh := b.Block.Header.Height
 
 		log.Println("address exists and height......", addrExists, cbh)
 
