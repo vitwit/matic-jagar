@@ -383,4 +383,8 @@ type (
 			Proposer string `json:"proposer"`
 		} `json:"result"`
 	}
+
+	Caughtup struct {
+		Syncing bool `json:"syncing"`
+	}
 )

@@ -328,6 +328,16 @@ func InitTargets(cfg *config.Config) *Targets {
 			Func:        BorNetworkHeight,
 			ScraperRate: cfg.Scraper.Rate,
 		},
+		{
+			ExecutionType: "http",
+			Name:          "Get Validator Caught UP",
+			HTTPOptions: HTTPOptions{
+				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/syncing",
+				Method:   http.MethodGet,
+			},
+			Func:        ValidatorCaughtUp,
+			ScraperRate: cfg.Scraper.Rate,
+		},
 	}}
 }
 

@@ -11,6 +11,40 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 )
 
+// ValidatorCaughtUp is to get validator syncing status
+func ValidatorCaughtUp(ops HTTPOptions, cfg *config.Config, c client.Client) {
+	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	if err != nil {
+		return
+	}
+
+	resp, err := HitHTTPTarget(ops)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
+	}
+
+	var sync Caughtup
+	err = json.Unmarshal(resp.Body, &sync)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return
+	}
+
+	var synced int
+	caughtUp := !sync.Syncing
+	if !caughtUp {
+		_ = SendTelegramAlert("Your validator node is not synced!", cfg)
+		_ = SendEmailAlert("Your validator node is not synced!", cfg)
+		synced = 0
+	} else {
+		synced = 1
+	}
+
+	_ = writeToInfluxDb(c, bp, "heimdall_val_caughtup", map[string]string{}, map[string]interface{}{"synced": synced})
+	log.Printf("Heimdall Valiator Caught UP: %v", sync.Syncing)
+}
+
 // GetNodeStatus to get reponse of validator status like
 //current block height and node status
 func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
@@ -60,8 +94,7 @@ func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 	bp.AddPoints(pts)
 	_ = writeBatchPoints(c, bp)
-	log.Printf("\nCurrent Block Height: %s \nCaught Up? %t \n",
-		currentBlockHeight, caughtUp)
+	log.Printf("\nCurrent Block Height: %s", currentBlockHeight)
 
 	// Store validator details such as moniker, signer address and hex address
 	moniker := status.Result.NodeInfo.Moniker
