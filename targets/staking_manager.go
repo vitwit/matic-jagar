@@ -11,51 +11,20 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 )
 
-func GetEncodedData(ops HTTPOptions, cfg *config.Config, c client.Client, methodSignature string) string {
-	signature := methodSignature
-
-	bytesData := []byte(signature)
-	hex := EncodeToHex(bytesData)
-	ops.Body.Params = append(ops.Body.Params, hex)
-	ops.Body.Method = "web3_sha3"
-
-	resp, err := HitHTTPTarget(ops)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return ""
-	}
-
-	var hexData EthResult
-	err = json.Unmarshal(resp.Body, &hexData)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return ""
-	}
-
-	sha3Hash := hexData.Result
-	subStr := sha3Hash[:10]
-
-	valID := GetValID(cfg, c)
-
-	for i := 0; i < 64-len(valID); i++ {
-		subStr = subStr + "0"
-	}
-
-	dataHash := subStr + valID
-
-	log.Println("hex...", sha3Hash)
-	log.Println("prefix..", dataHash)
-
-	return dataHash
-}
-
 func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
-	dataHash := GetEncodedData(ops, cfg, c, "validators(uint256)")
+	subStr := GetEncodedData(ops, cfg, c, "validators(uint256)")
+	valID := GetValID(cfg, c)
+	// n := len(subStr) + len(valID)
+	for i := 0; i < 64-len(valID); i++ {
+		subStr = subStr + "0"
+	}
+
+	dataHash := subStr + valID
 
 	if dataHash != "" {
 		data := Payload{
@@ -102,47 +71,18 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 }
 
-func EthCall(ops HTTPOptions, cfg *config.Config, c client.Client, dataHash string) (eth EthResult) {
-	contractAddress := GetValContractAddress(cfg, c)
-	data := Payload{
-		Jsonrpc: "2.0",
-		Method:  "eth_call",
-		Params: []interface{}{
-			Params{
-				To:   contractAddress,
-				Data: dataHash,
-			},
-			"latest",
-		},
-		ID: 1,
-	}
-
-	ops.Body = data
-
-	resp, err := HitHTTPTarget(ops)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return eth
-	}
-
-	var result EthResult
-	err = json.Unmarshal(resp.Body, &result)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return eth
-	}
-
-	return result
-
-}
-
 func GetCommissionRate(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
-	dataHash := GetEncodedData(ops, cfg, c, "commissionRate()")
+	subStr := GetEncodedData(ops, cfg, c, "commissionRate()")
+	n := len(subStr)
+	for i := 0; i < 64-n; i++ {
+		subStr = subStr + "0"
+	}
+	dataHash := subStr
 	if dataHash != "" {
 		result := EthCall(ops, cfg, c, dataHash)
 		if result.Result != "" {
@@ -151,7 +91,7 @@ func GetCommissionRate(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			rate := fmt.Sprintf("%.2f", value)
 
 			_ = writeToInfluxDb(c, bp, "heimdall_commission_rate", map[string]string{}, map[string]interface{}{"commission_rate": rate})
-			log.Printf("Contract Rate: %d", rate)
+			log.Printf("Contract Rate: %s", rate)
 		}
 	}
 
@@ -163,7 +103,12 @@ func GetValidatorRewards(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
-	dataHash := GetEncodedData(ops, cfg, c, "validatorRewards()")
+	subStr := GetEncodedData(ops, cfg, c, "validatorRewards()")
+	n := len(subStr)
+	for i := 0; i < 64-n; i++ {
+		subStr = subStr + "0"
+	}
+	dataHash := subStr
 	if dataHash != "" {
 
 		result := EthCall(ops, cfg, c, dataHash)
@@ -197,4 +142,65 @@ func GetValContractAddress(cfg *config.Config, c client.Client) string {
 		}
 	}
 	return address
+}
+
+func GetEncodedData(ops HTTPOptions, cfg *config.Config, c client.Client, methodSignature string) string {
+	signature := methodSignature
+
+	bytesData := []byte(signature)
+	hex := EncodeToHex(bytesData)
+	ops.Body.Params = append(ops.Body.Params, hex)
+	ops.Body.Method = "web3_sha3"
+
+	resp, err := HitHTTPTarget(ops)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return ""
+	}
+
+	var hexData EthResult
+	err = json.Unmarshal(resp.Body, &hexData)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return ""
+	}
+
+	sha3Hash := hexData.Result
+	subStr := sha3Hash[:10]
+
+	return subStr
+}
+
+func EthCall(ops HTTPOptions, cfg *config.Config, c client.Client, dataHash string) (eth EthResult) {
+	contractAddress := GetValContractAddress(cfg, c)
+	data := Payload{
+		Jsonrpc: "2.0",
+		Method:  "eth_call",
+		Params: []interface{}{
+			Params{
+				To:   contractAddress,
+				Data: dataHash,
+			},
+			"latest",
+		},
+		ID: 1,
+	}
+
+	ops.Body = data
+
+	resp, err := HitHTTPTarget(ops)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return eth
+	}
+
+	var result EthResult
+	err = json.Unmarshal(resp.Body, &result)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return eth
+	}
+
+	return result
+
 }
