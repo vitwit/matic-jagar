@@ -393,6 +393,7 @@ type (
 		} `json:"result"`
 	}
 
+	// Caughtup is a struct which holds the fields of syncing
 	Caughtup struct {
 		Syncing bool `json:"syncing"`
 	}

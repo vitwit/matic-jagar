@@ -41,7 +41,7 @@ func GetBorLatestSpan(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	addrExists := false
 
 	for _, val := range latestSpan.Result.ValidatorSet.Validators {
-		if val.Signer == strings.ToLower(cfg.ValDetails.SignerAddress) {
+		if strings.EqualFold(val.Signer, cfg.ValDetails.SignerAddress) {
 			addrExists = true
 		}
 	}
@@ -100,6 +100,8 @@ func GetBorSpanValidatorCountFromDb(cfg *config.Config, c client.Client) string 
 	return count
 }
 
+// GetBlockProducer is to get the proucer counts and checks
+//weather the validator is part of block producer or not
 func GetBlockProducer(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -126,7 +128,7 @@ func GetBlockProducer(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	addrExists := "No"
 
 	for _, value := range spanProducers.Result.SelectedProducers {
-		if value.Signer == strings.ToLower(cfg.ValDetails.SignerAddress) {
+		if strings.EqualFold(value.Signer, cfg.ValDetails.SignerAddress) {
 			addrExists = "Yes"
 		}
 	}

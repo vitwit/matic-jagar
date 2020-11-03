@@ -77,8 +77,8 @@ func GetBorMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	if signers.Result != nil {
 		addrExists := false
 
-		for _, c := range signers.Result {
-			if strings.ToUpper(c) == strings.ToUpper(cfg.ValDetails.SignerAddress) {
+		for _, addr := range signers.Result {
+			if strings.EqualFold(addr, cfg.ValDetails.SignerAddress) {
 				addrExists = true
 			}
 		}

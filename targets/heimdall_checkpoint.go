@@ -140,15 +140,15 @@ func GetProposedCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client
 	// Get last proposed checkpoint from db
 	lastProposedCheckpoint := GetLastProposedCheckpoint(cfg, c)
 
-	if proposedCP.Result.Proposer == strings.ToLower(cfg.ValDetails.SignerAddress) {
-		count := 0
+	if strings.EqualFold(proposedCP.Result.Proposer, cfg.ValDetails.SignerAddress) {
+		num := GetProposedCount(cfg, c)
+		count, _ := strconv.Atoi(num)
 		if latestCP != lastProposedCheckpoint {
-			c := GetProposedCount(cfg, c)
-			count, _ = strconv.Atoi(c)
 			count++
 		}
+
 		_ = writeToInfluxDb(c, bp, "heimdall_proposed_checkpoint", map[string]string{}, map[string]interface{}{"last_proposed_cp": latestCP, "proposed_count": count})
-		log.Printf("Latest Proposed Checkpoint : %s Proposed Count : %d", latestCP, count)
+		log.Fatalf("Latest Proposed Checkpoint : %s Proposed Count : %d", latestCP, count)
 	}
 }
 

@@ -33,12 +33,10 @@ func GetBorCurrentProposer(ops HTTPOptions, cfg *config.Config, c client.Client)
 	}
 
 	prevCount := GetBlocksProducedCountFromDB(cfg, c)
-
 	count, _ := strconv.Atoi(prevCount)
-
 	proposer := currentProposer.Result
 
-	if proposer == strings.ToLower(cfg.ValDetails.SignerAddress) {
+	if strings.EqualFold(proposer, cfg.ValDetails.SignerAddress) {
 		count = count + 1
 	}
 
