@@ -33,7 +33,7 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			return
 		}
 
-		bal, er := HexToBigInt(balance.Result)
+		bal, er := HexToBigInt(balance.Result[2:])
 		if !er {
 			log.Printf("Error conversion from hex to big int : %v", er)
 			return

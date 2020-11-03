@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"strconv"
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
@@ -59,18 +58,17 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 				return
 			}
 			log.Println("hex data of eth_call error if any..", hexData.Error)
-
 			if hexData.Result == "" {
 				return
 			}
 
 			valResp := DecodeEthCallResult(hexData.Result)
-
 			contractAddress := "0x" + valResp[6][24:]
-
-			stakeAmount, _ := strconv.ParseInt(valResp[0], 16, 64)
-			value := ConvertValueToEth(stakeAmount)
-			amount := fmt.Sprintf("%.6f", value) + MaticDenom
+			stakeAmount, er := HexToBigInt(valResp[0][24:])
+			if !er {
+				return
+			}
+			amount := ConvertWeiToEth(stakeAmount) + MaticDenom
 
 			_ = writeToInfluxDb(c, bp, "heimdall_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
 			log.Printf("Contract Address: %s and Self Stake Amount : %s", contractAddress, amount)
@@ -89,22 +87,24 @@ func GetCommissionRate(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 	n := len(subStr)
-	for i := 0; i < 64-n; i++ {
+	for i := 0; i < 66-n; i++ {
 		subStr = subStr + "0"
 	}
 	dataHash := subStr
 	if dataHash != "" {
 		result := EthCall(ops, cfg, c, dataHash)
 		if result.Result != "" {
-			commissionRate, _ := strconv.ParseInt(result.Result[2:], 16, 64)
-			value := ConvertValueToEth(commissionRate)
-			rate := fmt.Sprintf("%.2f", value)
+			commissionRate, er := HexToBigInt(result.Result[2:])
+			if !er {
+				return
+			}
+
+			rate := ConvertWeiToEth(commissionRate) + MaticDenom
 
 			_ = writeToInfluxDb(c, bp, "heimdall_commission_rate", map[string]string{}, map[string]interface{}{"commission_rate": rate})
 			log.Printf("Contract Rate: %s", rate)
 		}
 	}
-
 }
 
 func GetValidatorRewards(ops HTTPOptions, cfg *config.Config, c client.Client) {
@@ -118,21 +118,21 @@ func GetValidatorRewards(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 	n := len(subStr)
-	for i := 0; i < 64-n; i++ {
+	for i := 0; i < 66-n; i++ {
 		subStr = subStr + "0"
 	}
 	dataHash := subStr
 	if dataHash != "" {
 		result := EthCall(ops, cfg, c, dataHash)
-
 		if result.Result != "" {
-			rewards, _ := strconv.ParseInt(result.Result[2:], 16, 64)
+			rewards, er := HexToBigInt(result.Result[2:])
+			if !er {
+				return
+			}
+			rewradsInEth := ConvertWeiToEth(rewards) + MaticDenom
 
-			rewardsEth := ConvertValueToEth(rewards)
-			ether := fmt.Sprintf("%.8f", rewardsEth) + MaticDenom
-
-			_ = writeToInfluxDb(c, bp, "heimdall_validator_rewards", map[string]string{}, map[string]interface{}{"val_rewards": ether})
-			log.Printf("Validator Rewards: %s", ether)
+			_ = writeToInfluxDb(c, bp, "heimdall_validator_rewards", map[string]string{}, map[string]interface{}{"val_rewards": rewradsInEth})
+			log.Printf("Validator Rewards: %s", rewradsInEth)
 		}
 	}
 }
