@@ -24,6 +24,7 @@ type (
 		Rate          string `mapstructure:"rate"`
 		Port          string `mapstructure:"port"`
 		ValidatorRate string `mapstructure:"validator_rate"`
+		ContractRate  string `mapstructure:"contract_rate"`
 	}
 
 	//InfluxDB details
@@ -46,10 +47,10 @@ type (
 
 	// ValDetails struct
 	ValDetails struct {
-		ValidatorHexAddress string `mapstructure:"validator_hex_addr"`
-		SignerAddress       string `mapstructure:"signer_address"`
-		ValidatorName       string `mapstructure:"validator_name"`
-		ContractAddress     string `mapstructure:"contract_address"`
+		ValidatorHexAddress  string `mapstructure:"validator_hex_addr"`
+		SignerAddress        string `mapstructure:"signer_address"`
+		ValidatorName        string `mapstructure:"validator_name"`
+		StakeManagerContract string `mapstructure:"stake_manager_contract"`
 	}
 
 	// EnableAlerts struct which holds options to enalbe/disable alerts

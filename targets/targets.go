@@ -266,7 +266,7 @@ func InitTargets(cfg *config.Config) *Targets {
 				Endpoint: cfg.Endpoints.EthRPCEndpoint,
 			},
 			Func:        GetContractAddress,
-			ScraperRate: cfg.Scraper.Rate,
+			ScraperRate: cfg.Scraper.ContractRate,
 		},
 		{
 			ExecutionType: "curl",

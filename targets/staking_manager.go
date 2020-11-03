@@ -34,7 +34,7 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			Method:  "eth_call",
 			Params: []interface{}{
 				Params{
-					To:   cfg.ValDetails.ContractAddress,
+					To:   cfg.ValDetails.StakeManagerContract,
 					Data: dataHash,
 				},
 				"latest",
