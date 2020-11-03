@@ -9,8 +9,8 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 )
 
-// GetValidatorFeeAndGas is to get validator vee and max tx gas
-func GetValidatorFeeAndGas(ops HTTPOptions, cfg *config.Config, c client.Client) {
+// GetValidatorGas is to get validator max tx gas
+func GetValidatorGas(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return

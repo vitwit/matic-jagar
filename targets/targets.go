@@ -50,7 +50,7 @@ func InitTargets(cfg *config.Config) *Targets {
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
-			ExecutionType: "http", // Confirmation about alerting
+			ExecutionType: "http",
 			Name:          "Get Heimdall Current Balanace",
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/bank/balances/" + cfg.ValDetails.SignerAddress,
@@ -141,12 +141,12 @@ func InitTargets(cfg *config.Config) *Targets {
 		},
 		{
 			ExecutionType: "http",
-			Name:          "Get Validator fee and gas",
+			Name:          "Get Validator gas",
 			HTTPOptions: HTTPOptions{
-				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/auth/params", //take confirmation about validator fee
+				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/auth/params",
 				Method:   http.MethodGet,
 			},
-			Func:        GetValidatorFeeAndGas,
+			Func:        GetValidatorGas,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
