@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os/exec"
 	"strconv"
 	"strings"
 
@@ -44,13 +45,40 @@ func ValidatorCaughtUp(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		synced = 1
 	}
 
-	_ = writeToInfluxDb(c, bp, "heimdall_val_caughtup", map[string]string{}, map[string]interface{}{"synced": synced})
+	// _ = writeToInfluxDb(c, bp, "heimdall_val_caughtup", map[string]string{}, map[string]interface{}{"synced": synced})
+	_ = writeToInfluxDb(c, bp, "heimdall_node_synced", map[string]string{}, map[string]interface{}{"synced": synced})
 	log.Printf("Heimdall Valiator Caught UP: %v", sync.Syncing)
 }
 
-// GetNodeStatus to get reponse of validator status like
-//current block height and node status
+// GetNodeStatus is to check if port number 26656 is in use or not
 func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
+	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	if err != nil {
+		return
+	}
+
+	cmd := exec.Command("bash", "-c", "</dev/tcp/0.0.0.0/26656 &>/dev/null")
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		_ = SendTelegramAlert("Your validator instance is not running", cfg)
+		_ = SendEmailAlert("Your validator instance is not running", cfg)
+		_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
+		return
+	}
+
+	resp := string(out)
+	if resp != "" {
+		_ = SendTelegramAlert(fmt.Sprintf("Your validator instance is not running: \n%v", resp), cfg)
+		_ = SendEmailAlert(fmt.Sprintf("Your validator instance is not running: \n%v", resp), cfg)
+		_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
+		return
+	}
+
+	_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 1})
+}
+
+// GetOperatorInfo to get validator details like moniker and addresses
+func GetOperatorInfo(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -78,21 +106,6 @@ func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		if err == nil {
 			pts = append(pts, p2)
 		}
-	}
-
-	var synced int
-	caughtUp := !status.Result.SyncInfo.CatchingUp
-	if !caughtUp {
-		_ = SendTelegramAlert("Your validator node is not synced!", cfg)
-		_ = SendEmailAlert("Your validator node is not synced!", cfg)
-		synced = 0
-	} else {
-		synced = 1
-	}
-
-	p3, err := createDataPoint("heimdall_node_synced", map[string]string{}, map[string]interface{}{"status": synced})
-	if err == nil {
-		pts = append(pts, p3)
 	}
 
 	bp.AddPoints(pts)

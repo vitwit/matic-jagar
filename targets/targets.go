@@ -42,11 +42,17 @@ func InitTargets(cfg *config.Config) *Targets {
 		{
 			ExecutionType: "cmd",
 			Name:          "Get Node Status",
+			Func:          GetNodeStatus,
+			ScraperRate:   cfg.Scraper.Rate,
+		},
+		{
+			ExecutionType: "http",
+			Name:          "Get Operator Info",
 			HTTPOptions: HTTPOptions{
 				Endpoint: cfg.Endpoints.HeimdallRPCEndpoint + "/status?",
 				Method:   http.MethodGet,
 			},
-			Func:        GetNodeStatus,
+			Func:        GetOperatorInfo,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
