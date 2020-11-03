@@ -9,6 +9,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 )
 
+// GetBorPendingTransactions is to get the pending transactions of bor
 func GetBorPendingTransactions(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {

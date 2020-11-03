@@ -10,6 +10,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 )
 
+// GetContractAddress is to get the validator share contract and self stake
 func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -76,6 +77,8 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 }
 
+// GetCommissionRate is to get the commission rate
+// by calling method commissionRate() of validator share contract
 func GetCommissionRate(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -107,6 +110,8 @@ func GetCommissionRate(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 }
 
+// GetValidatorRewards is to get the rewards
+// by calling method validatorRewards() of validator share contract
 func GetValidatorRewards(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -137,6 +142,7 @@ func GetValidatorRewards(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 }
 
+// GetValContractAddress returns validator share contract address from db
 func GetValContractAddress(cfg *config.Config, c client.Client) string {
 	var address string
 	q := client.NewQuery("SELECT last(contract_address) FROM heimdall_contract_details", cfg.InfluxDB.Database, "")
@@ -156,6 +162,8 @@ func GetValContractAddress(cfg *config.Config, c client.Client) string {
 	return address
 }
 
+// GetEncodedData returns the sha3Hash
+//which will be calculated for the partcular method signature and by making a call of web3_sha3
 func GetEncodedData(ops HTTPOptions, cfg *config.Config, c client.Client, methodSignature string) string {
 	signature := methodSignature
 
@@ -187,6 +195,7 @@ func GetEncodedData(ops HTTPOptions, cfg *config.Config, c client.Client, method
 	return subStr
 }
 
+// EthCall will returns the validator share contract method response
 func EthCall(ops HTTPOptions, cfg *config.Config, c client.Client, dataHash string) (eth EthResult) {
 	contractAddress := GetValContractAddress(cfg, c)
 	data := Payload{
