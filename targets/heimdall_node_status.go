@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
@@ -34,8 +35,10 @@ func ValidatorCaughtUp(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	var synced int
 	caughtUp := !sync.Syncing
 	if !caughtUp {
-		_ = SendTelegramAlert("Your validator node is not synced!", cfg)
-		_ = SendEmailAlert("Your validator node is not synced!", cfg)
+		if strings.ToUpper(cfg.ChooseAlerts.NodeSyncAlert) == "YES" {
+			_ = SendTelegramAlert("Your validator node is not synced!", cfg)
+			_ = SendEmailAlert("Your validator node is not synced!", cfg)
+		}
 		synced = 0
 	} else {
 		synced = 1
