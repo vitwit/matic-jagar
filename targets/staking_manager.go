@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
@@ -102,10 +103,19 @@ func GetCommissionRate(ops HTTPOptions, cfg *config.Config, c client.Client) {
 				return
 			}
 
-			rate := ConvertWeiToEth(commissionRate) + MaticDenom
+			// rate := ConvertWeiToEth(commissionRate) + MaticDenom
+			rate := ConvertWeiToEth(commissionRate)
 
-			_ = writeToInfluxDb(c, bp, "heimdall_commission_rate", map[string]string{}, map[string]interface{}{"commission_rate": rate})
-			log.Printf("Contract Rate: %s", rate)
+			var fee float64
+			f, err := strconv.ParseFloat(rate, 64)
+			if err != nil {
+				fee = 0
+			} else {
+				fee = f * 100
+			}
+
+			_ = writeToInfluxDb(c, bp, "heimdall_commission_rate", map[string]string{}, map[string]interface{}{"commission_rate": fee})
+			log.Printf("Contract Rate: %f", fee)
 		}
 	}
 }

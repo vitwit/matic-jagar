@@ -36,7 +36,11 @@ func GetBorLatestSpan(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 	// Get previous span id from db
 	prevSpanID := GetBorSpanIDFromDb(cfg, c)
-	prevSpan, _ := strconv.Atoi(prevSpanID)
+	prevSpan, err := strconv.Atoi(prevSpanID)
+	if err != nil {
+		log.Printf("Error in conversion from string to int of span ID : %v", err)
+		return
+	}
 
 	addrExists := false
 
@@ -47,7 +51,11 @@ func GetBorLatestSpan(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	count := GetBorSpanValidatorCountFromDb(cfg, c)
-	spanValCount, _ := strconv.Atoi(count)
+	spanValCount, err := strconv.Atoi(count)
+	if err != nil {
+		log.Printf("Error in string convertion to int : %v", err)
+		return
+	}
 
 	if addrExists {
 		diff := spanID - prevSpan

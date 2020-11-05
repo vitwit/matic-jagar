@@ -33,7 +33,11 @@ func GetBorCurrentProposer(ops HTTPOptions, cfg *config.Config, c client.Client)
 	}
 
 	prevCount := GetBlocksProducedCountFromDB(cfg, c)
-	count, _ := strconv.Atoi(prevCount)
+	count, err := strconv.Atoi(prevCount)
+	if err != nil {
+		log.Printf("Error in conversion from string to int of produced count : %v", err)
+		return
+	}
 	proposer := currentProposer.Result
 
 	if strings.EqualFold(proposer, cfg.ValDetails.SignerAddress) {

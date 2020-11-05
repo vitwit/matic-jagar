@@ -39,8 +39,8 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			return
 		}
 
-		ethBalance := ConvertWeiToEth(bal) + "ETH" // current balance
-		prevBal := GetBorBalanceFromDB(cfg, c)     // previous balance from db
+		ethBalance := ConvertWeiToEth(bal)     // current balance
+		prevBal := GetBorBalanceFromDB(cfg, c) // previous balance from db
 		if prevBal == "" {
 			prevBal = "0"
 		}
@@ -51,7 +51,7 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			}
 		}
 
-		balWithDenom := ethBalance
+		balWithDenom := ethBalance + "ETH"
 		_ = writeToInfluxDb(c, bp, "matic_eth_balance", map[string]string{}, map[string]interface{}{"balance": balWithDenom, "amount": ethBalance})
 		log.Printf("Eth Current Balance: %s", ethBalance)
 	}

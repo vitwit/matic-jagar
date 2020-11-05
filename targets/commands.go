@@ -27,8 +27,6 @@ func TelegramAlerting(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 	updates, err := bot.GetUpdatesChan(u)
 
-	log.Println("len of update.", len(updates))
-
 	msgToSend := ""
 
 	for update := range updates {

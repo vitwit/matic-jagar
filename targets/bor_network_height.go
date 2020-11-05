@@ -33,7 +33,11 @@ func BorNetworkHeight(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			return
 		}
 
-		networkHeight := HexToIntConversion(cbh.Result)
+		networkHeight, err := HexToIntConversion(cbh.Result)
+		if err != nil {
+			log.Printf("Error while converting bor n/w height from hex to int : %v", err)
+			return
+		}
 
 		_ = writeToInfluxDb(c, bp, "bor_network_height", map[string]string{}, map[string]interface{}{"block_height": networkHeight, "height_in_hex": cbh.Result})
 		log.Printf("Bor Network Block Height: %d", networkHeight)

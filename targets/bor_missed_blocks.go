@@ -70,7 +70,11 @@ func GetBorMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
-	height := HexToIntConversion(borHeight)
+	height, err := HexToIntConversion(borHeight)
+	if err != nil {
+		log.Printf("Error while converting bor height from hex to int : %v", err)
+		return
+	}
 
 	cbh := strconv.Itoa(height)
 

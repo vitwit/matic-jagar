@@ -31,7 +31,11 @@ func BorCurrentHeight(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			return
 		}
 
-		height := HexToIntConversion(cbh.Result)
+		height, err := HexToIntConversion(cbh.Result)
+		if err != nil {
+			log.Printf("Error while converting bor current height from hex to int : %v", err)
+			return
+		}
 
 		_ = writeToInfluxDb(c, bp, "bor_current_height", map[string]string{}, map[string]interface{}{"block_height": height, "height_in_hex": cbh.Result})
 		log.Printf("Bor Current Block Height: %d", height)
