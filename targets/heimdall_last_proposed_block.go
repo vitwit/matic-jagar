@@ -32,7 +32,7 @@ func GetLatestProposedBlockAndTime(ops HTTPOptions, cfg *config.Config, c client
 	}
 
 	time := blockResp.Block.Header.Time
-	blockTime := GetUserDateFormat(time)
+	blockTime := GetUserDateFormat(time) //convert time to user readable format
 	blockHeight := blockResp.Block.Header.Height
 	log.Printf("last proposed block time : %s,  height : %s", blockTime, blockHeight)
 

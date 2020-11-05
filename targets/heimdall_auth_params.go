@@ -29,9 +29,8 @@ func GetValidatorGas(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
-	valFee := authParam.Result.TxFees
 	maxTxGas := authParam.Result.MaxTxGas
 
-	_ = writeToInfluxDb(c, bp, "heimdall_auth_params", map[string]string{}, map[string]interface{}{"validator_fee": valFee, "max_tx_gas": maxTxGas})
-	log.Printf("Val fee: %s and max tx gas: %d\n", valFee, maxTxGas)
+	_ = writeToInfluxDb(c, bp, "heimdall_auth_params", map[string]string{}, map[string]interface{}{"max_tx_gas": maxTxGas})
+	log.Printf("Max tx gas: %d\n", maxTxGas)
 }

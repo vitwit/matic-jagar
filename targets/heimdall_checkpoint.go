@@ -86,7 +86,7 @@ func GetCheckpointsDuration(ops HTTPOptions, cfg *config.Config, c client.Client
 	}
 
 	duration := cpd.Result.CheckpointBufferTime
-	minutes := ConvertNanoSecToMinutes(duration)
+	minutes := ConvertNanoSecToMinutes(duration) //covert nano seconds to minutes
 
 	_ = writeToInfluxDb(c, bp, "heimdall_checkpoint_duration", map[string]string{}, map[string]interface{}{"duration": minutes})
 	log.Printf("Checkpoints Duration in nano seconds: %d", duration)
@@ -141,8 +141,8 @@ func GetProposedCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client
 	lastProposedCheckpoint := GetLastProposedCheckpoint(cfg, c)
 
 	if strings.EqualFold(proposedCP.Result.Proposer, cfg.ValDetails.SignerAddress) {
-		num := GetProposedCount(cfg, c)
-		count, _ := strconv.Atoi(num)
+		num := GetProposedCount(cfg, c) // get checkpoints proposed count from db
+		count, _ := strconv.Atoi(num)   // convert string to int
 		if latestCP != lastProposedCheckpoint {
 			count++
 		}

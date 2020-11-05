@@ -19,22 +19,22 @@ func GetBlockTimeDifference(ops HTTPOptions, cfg *config.Config, c client.Client
 		log.Printf("Error: %v", err)
 		return
 	}
+
 	currResp, err := HitHTTPTarget(ops)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
 	}
+
 	var currentBlockResp LatestBlock
 	err = json.Unmarshal(currResp.Body, &currentBlockResp)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
 	}
-	currentBlockHeight, _ := strconv.Atoi(currentBlockResp.Block.Header.Height)
-
+	currentBlockHeight, _ := strconv.Atoi(currentBlockResp.Block.Header.Height) //covert string to int
 	prevBlockHeight := currentBlockHeight - 1
-	prevBlockTime := GetPrevBlockTime(cfg, c, strconv.Itoa(prevBlockHeight))
-
+	prevBlockTime := GetPrevBlockTime(cfg, c, strconv.Itoa(prevBlockHeight)) // get previous block time
 	currentBlockTime := currentBlockResp.Block.Header.Time
 
 	if currentBlockHeight-prevBlockHeight == 1 {

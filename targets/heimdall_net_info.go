@@ -61,7 +61,11 @@ func GetNetInfo(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	log.Printf("No. of peers: %d \n", numPeers)
 
 	// Calling funtion to get peer latency
-	GetLatency(ops, cfg, c)
+	err = GetLatency(ops, cfg, c)
+	if err != nil {
+		log.Printf("Error while calculating peer latency : %v", err)
+		return
+	}
 }
 
 // GetPeersCount returns count of peer addresses from db
