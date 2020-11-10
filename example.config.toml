@@ -29,6 +29,7 @@ missed_block_alerts = "yes"
 num_peers_alerts = "yes"
 node_sync_alert = "yes"
 node_status_alert = "yes"
+eth_low_balance_alert = "yes"
 
 [alerting_threholds]
 num_peers_threshold = 0

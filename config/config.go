@@ -75,6 +75,7 @@ type (
 		NumPeersAlerts      string `mapstructure:"num_peers_alerts"`
 		NodeSyncAlert       string `mapstructure:"node_sync_alert"`
 		NodeStatusAlert     string `mapstructure:"node_status_alert"`
+		EthLowBalanceAlert  string `mapstructure:"eth_low_balance_alert"`
 	}
 
 	// AlertingThreshold
