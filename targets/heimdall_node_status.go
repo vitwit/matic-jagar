@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os/exec"
 	"strconv"
 	"strings"
 
@@ -57,19 +56,24 @@ func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
-	cmd := exec.Command("bash", "-c", "</dev/tcp/0.0.0.0/26656 &>/dev/null")
-	out, err := cmd.CombinedOutput()
+	resp, err := HitHTTPTarget(ops)
 	if err != nil {
-		_ = SendTelegramAlert("Your validator instance is not running", cfg)
-		_ = SendEmailAlert("Your validator instance is not running", cfg)
-		_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
+		log.Printf("Error: %v", err)
 		return
 	}
 
-	resp := string(out)
-	if resp != "" {
-		_ = SendTelegramAlert(fmt.Sprintf("Your validator instance is not running: \n%v", resp), cfg)
-		_ = SendEmailAlert(fmt.Sprintf("Your validator instance is not running: \n%v", resp), cfg)
+	var status Status
+	err = json.Unmarshal(resp.Body, &status)
+	if err != nil {
+		_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
+
+		log.Printf("Validator Error: %v", err)
+		return
+	}
+
+	if &status.Result == nil {
+		_ = SendTelegramAlert("Your validator instance is not running", cfg)
+		_ = SendEmailAlert("Your validator instance is not running", cfg)
 		_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
 		return
 	}
