@@ -72,8 +72,10 @@ func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	if &status.Result == nil {
-		_ = SendTelegramAlert("Your validator instance is not running", cfg)
-		_ = SendEmailAlert("Your validator instance is not running", cfg)
+		if strings.ToUpper(cfg.ChooseAlerts.NodeStatusAlert) == "YES" {
+			_ = SendTelegramAlert("Your validator instance is not running", cfg)
+			_ = SendEmailAlert("Your validator instance is not running", cfg)
+		}
 		_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
 		return
 	}

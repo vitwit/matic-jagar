@@ -74,6 +74,7 @@ type (
 		MissedBlockAlerts   string `mapstructure:"missed_block_alerts"`
 		NumPeersAlerts      string `mapstructure:"num_peers_alerts"`
 		NodeSyncAlert       string `mapstructure:"node_sync_alert"`
+		NodeStatusAlert     string `mapstructure:"node_status_alert"`
 	}
 
 	// AlertingThreshold
