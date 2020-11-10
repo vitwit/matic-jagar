@@ -34,6 +34,7 @@ node_status_alert = "yes"
 num_peers_threshold = 0
 missed_blocks_threshold = 10
 block_diff_threshold = 10
+eth_balance_threshold = 0.1
 
 [scraper]
 rate = "6s"
