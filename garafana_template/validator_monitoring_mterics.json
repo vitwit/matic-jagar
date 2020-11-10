@@ -1,72 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_INFLUXDBTELEGRAF",
-      "label": "InfluxDBTelegraf",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "influxdb",
-      "pluginName": "InfluxDB"
-    },
-    {
-      "name": "DS_INFLUXDBMATIC",
-      "label": "InfluxDBMatic",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "influxdb",
-      "pluginName": "InfluxDB"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "panel",
-      "id": "gauge",
-      "name": "Gauge",
-      "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "7.3.0"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "influxdb",
-      "name": "InfluxDB",
-      "version": "1.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "singlestat",
-      "name": "Singlestat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "stat",
-      "name": "Stat",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "table-old",
-      "name": "Table (old)",
-      "version": ""
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -84,13 +16,13 @@
   "editable": true,
   "gnetId": 928,
   "graphTooltip": 1,
-  "id": null,
-  "iteration": 1604571380462,
+  "id": 10,
+  "iteration": 1605000041772,
   "links": [],
   "panels": [
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDBTELEGRAF}",
+      "datasource": "InfluxDBMatic",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -111,7 +43,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -216,7 +148,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -319,7 +251,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -421,7 +353,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDBTELEGRAF}",
+      "datasource": "InfluxDBMatic",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -435,7 +367,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -504,7 +436,7 @@
         "showThresholdLabels": false,
         "showThresholdMarkers": false
       },
-      "pluginVersion": "7.3.0",
+      "pluginVersion": "7.3.1",
       "targets": [
         {
           "groupBy": [],
@@ -540,7 +472,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -648,7 +580,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -744,7 +676,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDBTELEGRAF}",
+      "datasource": "InfluxDBMatic",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -765,7 +697,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -873,7 +805,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -976,7 +908,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1080,7 +1012,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1193,7 +1125,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1298,7 +1230,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1331,7 +1263,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.0",
+      "pluginVersion": "7.3.1",
       "pointradius": 1,
       "points": false,
       "renderer": "flot",
@@ -1403,7 +1335,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -1448,7 +1380,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.0",
+      "pluginVersion": "7.3.1",
       "targets": [
         {
           "groupBy": [],
@@ -1484,7 +1416,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1595,7 +1527,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1691,7 +1623,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1712,7 +1644,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1815,7 +1747,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1918,7 +1850,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -2022,7 +1954,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -2126,7 +2058,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -2229,7 +2161,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -2333,7 +2265,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -2437,7 +2369,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -2541,7 +2473,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -2637,7 +2569,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDBTELEGRAF}",
+      "datasource": "InfluxDBMatic",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2658,7 +2590,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -2754,7 +2686,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -2809,7 +2741,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.0",
+      "pluginVersion": "7.3.1",
       "targets": [
         {
           "groupBy": [],
@@ -2851,7 +2783,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -2886,7 +2818,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.0",
+      "pluginVersion": "7.3.1",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2965,7 +2897,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDBTELEGRAF}",
+      "datasource": "InfluxDBMatic",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2986,7 +2918,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -3090,7 +3022,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -3194,7 +3126,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -3297,7 +3229,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -3401,7 +3333,7 @@
         "#FADE2A",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -3505,7 +3437,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -3612,7 +3544,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -3715,7 +3647,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -3818,7 +3750,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -3914,7 +3846,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "${DS_INFLUXDBTELEGRAF}",
+      "datasource": "InfluxDBMatic",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -3928,7 +3860,7 @@
     },
     {
       "columns": [],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -4123,7 +4055,7 @@
     },
     {
       "columns": [],
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -4308,7 +4240,7 @@
       "type": "table-old"
     },
     {
-      "datasource": "${DS_INFLUXDBMATIC}",
+      "datasource": "InfluxDBMatic",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -4342,7 +4274,7 @@
       "options": {
         "showHeader": true
       },
-      "pluginVersion": "7.3.0",
+      "pluginVersion": "7.3.1",
       "targets": [
         {
           "groupBy": [],
@@ -4434,8 +4366,7 @@
   "schemaVersion": 26,
   "style": "dark",
   "tags": [
-    "influxdb",
-    "telegraf"
+    "influxdb"
   ],
   "templating": {
     "list": [
@@ -4530,8 +4461,13 @@
       },
       {
         "allValue": null,
-        "current": {},
-        "datasource": "${DS_INFLUXDBTELEGRAF}",
+        "current": {
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
+        },
+        "datasource": "InfluxDBMatic",
         "definition": "",
         "error": null,
         "hide": 0,
@@ -4553,7 +4489,11 @@
       },
       {
         "allValue": null,
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": "$datasource",
         "definition": "",
         "error": null,
@@ -4576,7 +4516,11 @@
       },
       {
         "allValue": null,
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": "$datasource",
         "definition": "",
         "error": null,
@@ -4599,7 +4543,11 @@
       },
       {
         "allValue": null,
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": "$datasource",
         "definition": "",
         "error": null,
@@ -4622,7 +4570,11 @@
       },
       {
         "allValue": null,
-        "current": {},
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
         "datasource": "$datasource",
         "definition": "",
         "error": null,
@@ -4677,5 +4629,5 @@
   "timezone": "browser",
   "title": "Validator Monitoring Metrics",
   "uid": "yfE8ErtGz",
-  "version": 14
+  "version": 2
 }
