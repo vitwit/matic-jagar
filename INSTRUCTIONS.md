@@ -27,7 +27,7 @@ $ sudo -S systemctl start grafana-server
 Grafana will be running on port :3000 (ex:: https://localhost:3000)
 ```
 
-### Install InfluxDB and Telegraf
+### Install InfluxDB
 
 ```sh
 $ cd $HOME
@@ -48,12 +48,40 @@ The default port that runs the InfluxDB HTTP service is :8086
 **Note :** If you want cusomize the configuration, edit `influxdb.conf` at `/etc/influxdb/influxdb.conf` and don't forget to restart the server after the changes. You can find a sample 'influxdb.conf' [file here](https://github.com/jheyman/influxdb/blob/master/influxdb.conf).
 
 
-Start telegraf
+### Install Prometheus 
 
 ```sh
-$ sudo -S apt-get update && sudo apt-get install telegraf
-$ sudo -S service telegraf start
+$ cd $HOME
+$ wget https://github.com/prometheus/prometheus/releases/download/v2.22.1/prometheus-2.22.1.linux-amd64.tar.gz
+$ tar xvfz prometheus-2.22.1.linux-amd64.tar.gz
+$ cd prometheus-2.22.1.linux-amd64
 ```
+
+- Add the following in prometheus.yaml using your editor of choice
+
+```sh
+  job_name: Validator
+    static_configs: 
+      - 
+        labels: 
+          group: Validator
+        targets: 
+          - "localhost:26660"
+
+```
+
+- Start Prometheus
+
+```sh
+$ ./prometheus --config.file=prometheus.yml
+```
+
+### Install node exporter
+
+
+**Follow [this link](https://devopscube.com/monitor-linux-servers-prometheus-node-exporter/) to install node exporter and start it**.
+
+
 
 ## Install and configure the Validator Mission Control
 
@@ -328,3 +356,14 @@ This dashboard displays a quick information summary of validator details and sys
 - To import **bor**, click the *plus* button present on left hand side of the dashboard. Click on import and load the bor.json present in the grafana_template folder.
 
 - *For more info about grafana dashboard imports you can refer https://grafana.com/docs/grafana/latest/reference/export_import/*
+
+
+### HowTo Create Telegram Bot
+
+Follow below steps to create a telegram bot and make it running
+
+- In the first step go to your telegram account and search for bot father `@BotFather` .
+- Go to that chat and do `/newbot` and follow the instructions which you get from bot father.
+- Choose a name for your bot and after doing that you will be getting a message wich is having bot_token below of this`Use this token to access the HTTP API:` , copy that token and paste it in place of tg_bot_token.
+
+- To know your chat id search for `@my_id_bot` and add this into your telegram bit group. Then it will show your chat id, paste that in config in place of tg_chat_id.
