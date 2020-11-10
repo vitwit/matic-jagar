@@ -46,9 +46,16 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		}
 		if prevBal != ethBalance {
 			if strings.ToUpper(cfg.ChooseAlerts.BalanceChangeAlerts) == "YES" {
-				_ = SendTelegramAlert(fmt.Sprintf("Bor Balance Change Alert : Your account balance has changed from  %s to %s", prevBal+"ETH", ethBalance), cfg)
-				_ = SendEmailAlert(fmt.Sprintf("Bor Balance Change Alert : Your Bor account balance has changed from  %s to %s", prevBal+"ETH", ethBalance), cfg)
+				_ = SendTelegramAlert(fmt.Sprintf("Bor Balance Change Alert : Your account balance has changed from  %s to %s", prevBal+"ETH", ethBalance+"ETH"), cfg)
+				_ = SendEmailAlert(fmt.Sprintf("Bor Balance Change Alert : Your Bor account balance has changed from  %s to %s", prevBal+"ETH", ethBalance+"ETH"), cfg)
 			}
+		}
+
+		balThreshold := fmt.Sprintf("%f", cfg.AlertingThresholds.EthBalanceThreshold)
+
+		if ethBalance <= balThreshold {
+			_ = SendTelegramAlert(fmt.Sprintf("Eth Low Balance Alert : Your account balance has reached to your configured thershold %s", ethBalance+"ETH"), cfg)
+			_ = SendEmailAlert(fmt.Sprintf("Eth Low Balance Alert : Your Bor account balance has  reached to your configured thershold %s", ethBalance+"ETH"), cfg)
 		}
 
 		balWithDenom := ethBalance + "ETH"

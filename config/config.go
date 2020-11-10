@@ -79,9 +79,10 @@ type (
 
 	// AlertingThreshold
 	AlertingThreshold struct {
-		NumPeersThreshold     int64 `mapstructure:"num_peers_threshold"`
-		MissedBlocksThreshold int64 `mapstructure:"missed_blocks_threshold"`
-		BlockDiffThreshold    int64 `mapstructure:"block_diff_threshold"`
+		NumPeersThreshold     int64   `mapstructure:"num_peers_threshold"`
+		MissedBlocksThreshold int64   `mapstructure:"missed_blocks_threshold"`
+		BlockDiffThreshold    int64   `mapstructure:"block_diff_threshold"`
+		EthBalanceThreshold   float64 `mapstructure:"eth_balance_threshold"`
 	}
 
 	//Config
