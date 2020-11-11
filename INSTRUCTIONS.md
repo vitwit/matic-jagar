@@ -1,30 +1,29 @@
-# Validator Mission Control
+# Matic-Jagar setup
 
 
 ## Install Prerequisites
 - **Go 13.x+**
 - **Grafana 6.7+**
 - **InfluxDB 1.7+**
-- **Telegraf 1.14+**
 
 
 ### Install Grafana for Ubuntu
-Download the latest .deb file and extract it by using the following commands
+Download the latest .deb file and extract it:
 
 ```sh
 $ cd $HOME
-$ sudo -S apt-get install -y adduser libfontconfig1
+$ sudo -S apt-get install -y libfontconfig1
 $ wget https://dl.grafana.com/oss/release/grafana_7.3.1_amd64.deb
 $ sudo -S dpkg -i grafana_7.3.1_amd64.deb
 ```
 
 Start the grafana server
-```sh
+```
 $ sudo -S systemctl daemon-reload
 
 $ sudo -S systemctl start grafana-server
 
-Grafana will be running on port :3000 (ex:: https://localhost:3000)
+Grafana will be running on port 3000 
 ```
 
 ### Install InfluxDB
@@ -45,7 +44,16 @@ $ sudo -S service influxdb start
 The default port that runs the InfluxDB HTTP service is :8086
 ```
 
-**Note :** If you want cusomize the configuration, edit `influxdb.conf` at `/etc/influxdb/influxdb.conf` and don't forget to restart the server after the changes. You can find a sample 'influxdb.conf' [file here](https://github.com/jheyman/influxdb/blob/master/influxdb.conf).
+Create an influxDB database:
+
+```sh
+$   cd $HOME
+$   influx
+>   CREATE DATABASE <db_name>   (ex: CREATE DATABASE matic)
+$   exit
+```
+
+**Note :** If you want cusomize the configuration, edit `influxdb.conf` at `/etc/influxdb/influxdb.conf` and restart the server after the changes. You can find a sample 'influxdb.conf' [file here](https://github.com/jheyman/influxdb/blob/master/influxdb.conf).
 
 
 ### Install Prometheus 
@@ -53,277 +61,133 @@ The default port that runs the InfluxDB HTTP service is :8086
 ```sh
 $ cd $HOME
 $ wget https://github.com/prometheus/prometheus/releases/download/v2.22.1/prometheus-2.22.1.linux-amd64.tar.gz
-$ tar xvfz prometheus-2.22.1.linux-amd64.tar.gz
-$ cd prometheus-2.22.1.linux-amd64
+$ tar -xvf prometheus-2.22.1.linux-amd64.tar.gz
+$ sudo cp prometheus-2.22.1.linux-amd64/prometheus $GOBIN
+$ sudo cp prometheus-2.22.1.linux-amd64/prometheus.yml $HOME
 ```
 
-- Add the following in prometheus.yaml using your editor of choice
+- Add the following in prometheus.yml using your editor of choice
 
 ```sh
-  job_name: Validator
-    static_configs: 
-      - 
-        labels: 
-          group: Validator
-        targets: 
-          - "localhost:26660"
+ scrape_configs:
+ 
+  - job_name: 'validator'
 
+    static_configs:
+    - targets: ['localhost:26660']
+
+
+  - job_name: 'node_exporter'
+
+    static_configs:
+    - targets: ['localhost:9100']
 ```
 
-- Start Prometheus
+- Setup Prometheus System service
+ ```
+ sudo nano /lib/systemd/system/prometheus.service
+ ```
+ 
+ Copy-paste the following and make any relevant changes
+ 
+ ```
+ [Unit]
+Description=Prometheus
+After=network-online.target
+
+[Service]
+User=<user>
+ExecStart=/home/<user>/go/bin/prometheus --config.file=/home/<user>/prometheus.yml
+Restart=always
+RestartSec=3
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target
+ ```
+
 
 ```sh
-$ ./prometheus --config.file=prometheus.yml
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable prometheus.service
+$ sudo systemctl start prometheus.service
 ```
 
 ### Install node exporter
 
 
-**Follow [this link](https://devopscube.com/monitor-linux-servers-prometheus-node-exporter/) to install node exporter and start it**.
+```sh
+$ cd $HOME
+$ curl -LO https://github.com/prometheus/node_exporter/releases/download/v0.18.1/node_exporter-0.18.1.linux-amd64.tar.gz
+$ tar -xvf node_exporter-0.18.1.linux-amd64.tar.gz
+$ sudo cp node_exporter-0.18.1.linux-amd64/node_exporter $GOBIN
+```
+- Setup Node exporter service
 
+```
+ sudo nano /lib/systemd/system/node_exporter.service
+ ```
+ 
+ Copy-paste the following and make any relevant changes
+ 
+ ```
+ [Unit]
+Description=Node_exporter
+After=network-online.target
 
+[Service]
+User=<user>
+ExecStart=/home/<user>/go/bin/node_exporter
+Restart=always
+RestartSec=3
+LimitNOFILE=4096
 
-## Install and configure the Validator Mission Control
+[Install]
+WantedBy=multi-user.target
+ ```
+
+```sh
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable node_exporter.service
+$ sudo systemctl start node_exporter.service
+```
+
+## Install and configure the tool
 
 ### Get the code
 
 ```bash
 $ git clone https://github.com/vitwit/matic-jagar.git
 $ cd matic-jagar
-$ git fetch && git checkout refactor
+$ git fetch && git checkout mumbai-testnet
 $ cp example.config.toml config.toml
 ```
 
-### Configure the following variables in `config.toml`
+Edit the `config.toml` with your changes. Informaion on all the fields in `config.toml` can be found [here](./docs/config-desc.md)
 
-- **[rpc_and_lcd_endpoints]**
 
-    - *eth_rpc_endpoint*
+## Build and run the monitoring binary
 
-        Etherium rpc endpoint useful to gather information about validator staking rewards, balance, commission rate and to query valiator share contract address.
-
-    - *bor_rpc_end_point*
-
-        Bor rpc endpoint is useful to get metrics of bor node such as block height, current proposer, pending transactions and also precommits of a block to know about missed blocks.
-
-    - *bor_external_rpc*
-
-        Bor rxternal open RPC endpoint(secondary RPC other than your own validator). Useful to get network block height and to calculate block time difference of your validator and network.
-
-    - *heimdall_rpc_endpoint*
-        
-        Heimdall rpc end point (RPC of your own validator) useful to gather information about network info, validator voting power, unconfirmed txns etc.
-
-    - *heimdall_lcd_endpoint*
-
-        Address of your lcd client (ex: http://localhost:1317), Which will be used to gather information like latest block info, blanaces and staking related matrics etc.
-
-    - *heimdall_external_rpc*
-
-        Heimdall rpc end point (RPC of your own validator) useful to gather information about network info, validator voting power, unconfirmed txns etc.
-
-- **[validator_details]**
-
-    - *validator_hex_addr*
-
-        Validator hex address useful to know about last proposed block, missed blocks and voting power, etc.
-
-    - *signer_address*
-
-        Signer address of your validator which will be used to get information about staking, balances an voting power.
-
-    - *validator_name*
-
-        Provide name of your validator, to get it displayed in alerts.
-
-    - *stake_manager_contract*
-
-        Address of stake manager contract, which will be used to query the methods of stake manager contract and also to get contract address of validator share contract.
-
-- **[enable_alerts]**
-
-    - *enable_telegram_alerts*
-
-        Configure **yes** if you wish to get telegram alerts otherwise make it **no** .
-    
-    - *enable_email_alerts*
-    
-        Configure **yes** if you wish to get email alerts otherwise make it **no** .
-
-- **[daily_alert]**
-
-    -   Alert about validator health, i.e. whether it's voting or jailed. You can get alerts twice a day based on the time you will configure i.e., **alert_time1** and **alert_time2** .
-
-- **[choose_alerts]**
-
-    - *balance_change_alerts*
-
-        If you want to get alerts about balance change cofigure **yes** otherwise make it **no** .
-
-    - *voting_power_alerts*
-
-        If you want to get alerts about voting power change cofigure **yes** otherwise make it **no** .
-
-    - *proposal_alerts*
-
-        If you want to recieve alerts about new proposal and whenever there is a change in proposal status like deposit_perio to voting_period etc, then configure **yes** otherwise make it **no**.
-
-    - *block_diff_alerts*
-
-        If you want to recieve alerts when there is a change in your validator block height and network height then make it **yes** otherwise **no** .
-
-    - *missed_block_alerts*
-
-        If you want to get alerts when your validator is missing blocks then configure it **yes** otherwise **no** .
-
-    - *num_peers_alerts*
-
-        If you want to be notified, when there is a drop in number of peers connected to your validator, then configure it **yes** or else **no** .
-    
-    - *node_sync_alert*
-
-        If you want to be notified about your node syncing status then make it **yes** otherwise **no**.
-
-- **[alerting_threholds]**
-
-    - *num_peers_threshold*
-
-        Configure the threshold to get an alert if the no.of connected peers falls below the given threshold.
-
-    - *missed_blocks_threshold*
-
-        Configure the threshold to receive missed block alerts, e.g. a value of 10 would alert you every time you've missed 10 consecutive blocks.
-    
-    - *block_diff_threshold*
-
-        An integer value to receive block difference alerts, e.g. a value of 2 would alert you if your validator falls 2 or more blocks behind the chain's current block height.
-
-- **[telegram]**
-
-    - *tg_chat_id*
-
-        Telegram chat ID to receive Telegram alerts, required for Telegram alerting.
-    
-    - *tg_bot_token*
-
-        Telegram bot token, required for Telegram alerting. The bot should be added to the chat and should have send message permission.
-
-- **[sendgrid]**
-
-    - *sendgrid_token*
-
-        Sendgrid mail service api token, required for e-mail alerting.
-
-    - *email_address*
-
-        E-mail address to receive mail notifications, required for e-mail alerting.
-
-- **[influxdb]**
-
-    - *database*
-
-        Name of your influxdb database, to which in which you want to store the data.
-
-    - *username*
-
-        Provice username if have any.
-
-After populating config.toml, check if you have connected to influxdb and created a database which you are going to use.
-
-If not or If your connection throws error "database not found", create a database
-
-```bash
-$   cd $HOME
-$   influx
->   CREATE DATABASE db_name   (ex: CREATE DATABASE matic)
-$   exit
+```sh
+$ go build -o matic && ./matic
 ```
 
-After all these steps, build and run the monitoring binary
-
-$ **go build -o matic && ./matic**
-
-We have finished the installation and started the server. Now lets configure the Grafana dashboard.
+Installation of the tool is completed lets configure the Grafana dashboards.
 
 ## Grafana Dashboards
 
-Validator Mission Control provides three dashboards
+The repo provides five dashboards
 
-1. Validator Monitoring Metrics (These are the heimdall metrics which we have calculated and stored in influxdb)
-2. Bor (These are the bor metrics which we have calculated and stored in influxdb)
-3. System Metrics (These are the metrics related to the system configuration which come from telegraf)
-4. Summary (Which gives quick overview of heimall, bor and system metrics)
+1. Validator Monitoring Metrics - These are the validator metrics which are calculated and stored in influxdb.
+2. Bor - These are the bor metrics which are calculated and stored in influxdb.
+3. System Metrics - These are the metrics related to your validator server on which this tool is hosted on.
+4. Summary -  gives quick overview of heimall, bor and system metrics.
+5. Heimdall network metrics - These are tendermint prometheus metrics emmitted by the node.
 
-
-### 1. Validator monitoring metrics (Heimdall)
-The following list of metrics are displayed in this dashboard.
-
-- Validator Details :  Displays the details of a validator like moniker, valiator signer address and hex address.
-- Node Status :  Displays whether the node is running or not in the form of UP and DOWN.
-- Validator Status :  Displays the validator health. Shows Voting if the validator is in active state or else Jailed.
-- Validator Caught Up : Displays whether the validator node is in sync with the network or not.
-- Block Time Difference : Displays the time difference between previous block and current block.
-- Current Block Height - Validator :  Validator : Displays the current block height committed by the validator.
-- Latest Block Height - Network : Network : Displays the latest block height of a network.
-- Height Difference : Displays the difference between heights of validator current block height and network latest block height.
-- Missed Blocks : Displays a graph about missed blocks.
-- Last Missed Block Range : Displays the continuous missed blocks range based on the threshold given in the config.toml
-- Blocks Missed In last 48h : Displays the count of blocks missed by the validator in last 48 hours.
-- Unconfirmed Txns : Displays the number of unconfirmed transactions on that node.
-- Latest Checkpoint : Displays the height of the latest check point.
-- No.of Peers : Displays the total number of peers connected to the validator.
-- Peer Address : Displays the ip addresses of connected peers.
-- Latency : Displays the latency of connected peers with respect to the validator.
-- Validator Fee : Displays the commission rate of the validator.
-- Voting Power : Displays the voting power of the validator.
-- Max Tx Gas : Displays the max transaction gas.
-- Rewards : Displays the rewards of your validator.
-- Unclaimed Rewards : Displays the current unclaimed rewards amount of the validator.
-- Last proposed Block Height : Displays height of the last block proposed by the validator.
-- Last Proposed Block Time : Displays the time of the last block proposed by the validator.
-- Heimdall Current Balance : Displays the account balance of the validator.
-- Bor Current Balance : Displays the current balance of your bor node.
-- Self Stake : Displays the self stake of your valiator.
-- Voting Period Proposals : Displays the list of the proposals which are currently in voting period.
-- Deposit Period Proposals : Displays the list of the proposals which are currently in deposit period.
-- Completed Proposals : Displays the list of the proposals which are completed with their status as passed or rejected.
+Information on all the dashboards can be found [here](./docs/dashboard-desc.md)
 
 
-**Note:** The above mentioned metrics will be calculated and displayed according to the validator address which will be configured in config.toml.
-
-For alerts regarding system metrics, a Telegram bot can be set up on the dashboard itself. A new notification channel can be added for the Telegram bot by clicking on the bell icon on the left hand sidebar of the dashboard. 
-
-This will let the user configure the Telegram bot ID and chat ID. **A custom alert** can be set for each graph in a Grafana dashboard by clicking on the edit button and adding alert rules.
-
-### 2. Bor
-Displays the metrics of bor node such as,
-
-    - Current Block Height - validator :
-    - Current Block Height - network :
-    - Block Height Difference :
-    - Current Span :
-    - Pending Transactions :
-    - Current Block Proposer :
-    - No.of Blocks Proposed :
-    - No.of Blocs Signed :
-    - No.of Span Validator is part of :
-    - Misse Blocks Range :
-    - Last Misse Block Range :
-    - Missed Blocks In Last 48 hours :
-
-### 3. System Monitoring Metrics
-These are powered by telegraf.
-
--  For the list of system monitoring metrics, you can refer `telgraf.conf`. You can replace the file with your original telegraf.conf file which will be located at /telegraf/etc/telegraf (installation directory).
- 
- ### 4. Summary Dashboard
-This dashboard displays a quick information summary of validator details and system metrics. It includes following details.
-
-- Validator identity (Moniker and hex Address)
-- Validator summary (Node Status, Validator Status, Voting Power, Height Difference and No.Of peers) are the metrics being displayed from Validator details.
-- Server uptime,CPU usage, RAM Usage, Memory usage and information about disk usage are the metrics being displayed from System details.
-
-## How to import these dashboards in your Grafana installation
+## Importing dashboards
 
 ### 1. Login to your Grafana dashboard
 - Open your web browser and go to http://<your_ip>:3000/. `3000` is the default HTTP port that Grafana listens to if you haven’t configured a different port.
@@ -332,38 +196,24 @@ This dashboard displays a quick information summary of validator details and sys
 
 ### 2. Create Datasources
 
-- Before importing the dashboards you have to create datasources of InfluxDBTelegraf and InfluxDBMatic.
+- Before importing the dashboards you have to create a datasource of **InfluxDBMatic**.
 - To create datasoruces go to configuration and select Data Sources.
-- After that you can find Add data source, select InfluxDB from Time series databases section.
-- Then to create `InfluxDBMatic` Datasource, follow these configurations. In place of name give InfluxDBMatic, in place of URL give url of influxdb where it is running (ex : http://ip_address:8086). Finaly in InfluxDB Details section give Database name as `matic` (If you haven't created a database with different name). You can give User and Password of influx if you have set anthing, otherwise you can leave it empty.
-- After this configuration click on Save & Test. Now you have a working Datasource of InfluxDBMatic.
+- Click on `Add data source` and select InfluxDB from Time series databases section.
+- Name the datasource as`InfluxDBMatic`. Replace the URL with `http://localhost:8086`. In InfluxDB Details section replace Database name as `matic`.
+- Click on **Save & Test** . Now you have a working Datasource of InfluxDBMatic.
 
-- Repeat same steps to create `InfluxDBTelegraf` Datasource. In place of name give InfluxDBTelegraf, give URL of telegraf where it is running (ex: http://ip_address:8086). Give Database name as telegraf, user and password (If you have configured any). 
+- For a **Prometheus** data source, click on `Add data source` and select `Prometheus`. Replace the URL with `http//localhost:9090`. Click on **Save & Test** . Now you have a working Datasource of Prometheus.
 
-- After this configuration click on Save & Test. Now you have a working Datasource of InfluxDBTelegraf.
 
 ### 3. Import the dashboards
 - To import the json file of the **validator monitoring metrics** click the *plus* button present on left hand side of the dashboard. Click on import and load the validator_monitoring_metrics.json present in the grafana_template folder. 
 
 - Select the datasources and click on import.
 
-- To import **system monitoring metrics** click the *plus* button present on left hand side of the dashboard. Click on import and load the system_monitoring_metrics.json present in the grafana_template folder.
+- Follow the same steps to import **system_monitoring_metrics.json**, **heimdall_network_metrics.json**, **bor.json**, **summary.json**. 
 
-- While creating this dashboard if you face any issues at valueset, change it to empty and then click on import by selecting the datasources.
-
-- To import **summary**, click the *plus* button present on left hand side of the dashboard. Click on import and load the summary.json present in the grafana_template folder.
-
-- To import **bor**, click the *plus* button present on left hand side of the dashboard. Click on import and load the bor.json present in the grafana_template folder.
 
 - *For more info about grafana dashboard imports you can refer https://grafana.com/docs/grafana/latest/reference/export_import/*
 
 
-### HowTo Create Telegram Bot
 
-Follow below steps to create a telegram bot and make it running
-
-- In the first step go to your telegram account and search for bot father `@BotFather` .
-- Go to that chat and do `/newbot` and follow the instructions which you get from bot father.
-- Choose a name for your bot and after doing that you will be getting a message wich is having bot_token below of this`Use this token to access the HTTP API:` , copy that token and paste it in place of tg_bot_token.
-
-- To know your chat id search for `@my_id_bot` and add this into your telegram bit group. Then it will show your chat id, paste that in config in place of tg_chat_id.

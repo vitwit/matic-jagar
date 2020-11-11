@@ -1,16 +1,16 @@
 [rpc_and_lcd_endpoints]
-eth_rpc_endpoint = "https://goerli.prylabs.net"
-bor_rpc_end_point = "http://143.110.185.126:8545"
-bor_external_rpc = "http://143.110.185.126:8545"
-heimdall_rpc_endpoint = "http://143.110.185.126:26657"
-heimdall_lcd_endpoint = "http://143.110.185.126:1317"
-heimdall_external_rpc = "http://143.110.185.126:26657"
+eth_rpc_endpoint = "https://goerli.prylabs.net" # Replace with infura endpoint 
+bor_rpc_end_point = "http://localhost:8545"
+bor_external_rpc = "http://<sentry-ip>:8545" # Replace the IP address with your sentry IP address
+heimdall_rpc_endpoint = "http://localhost:26657"
+heimdall_lcd_endpoint = "http://localhost:1317"
+heimdall_external_rpc = "http://<sentry-ip>:26657" # Replace the IP address with your sentry IP address
 
 [validator_details]
-validator_hex_addr = "E4B8E9222704401AD16D4D826732953DAF07C7E2"
-signer_address = "0xE4b8e9222704401aD16d4d826732953DAf07C7E2"
-validator_name = "Matic"
-stake_manager_contract = "0x00200eA4Ee292E253E6Ca07dBA5EdC07c8Aa37A3"
+validator_hex_addr = "E4B8E9225842401AD16D4D826732953DAF07C7E2" # Replace this address with your validator hex address
+signer_address = "0xE4b8e9222705621aD16d4d826732953DAf07C7E2" # Replace this with your valdiator signer address
+validator_name = "Matic" # Moniker
+stake_manager_contract = "0x00200eA4Ee292E253E6Ca07dBA5EdC07c8Aa37A3" # Stake manager contract address on Goerli testnet
 
 [enable_alerts]
 enable_telegram_alerts = "yes"
@@ -44,8 +44,8 @@ validator_rate = "60s"
 contract_rate = "300s"
 
 [telegram]
-tg_chat_id = 228288205
-tg_bot_token = "1117273891:AAEtr3ZU5x4JRj5YSF4LBeu1fPF0T4xj-UI"
+tg_chat_id = 228288878
+tg_bot_token = "1112154693891:AAEtr3ZU5x4JRj5YSF4LBeu1fPF0T4xj-UI"
 
 [sendgrid]
 sendgrid_token = "SG.J4dl16RST9OM9Nc2Tbvh6A.L_FPSzlqvBesPPQ06XGhVTTEt5Hs8TUzo9D1AZlRk"
@@ -53,5 +53,5 @@ email_address = "xyz@domain.com"
 
 [influxdb]
 port = "8086"
-database = "matic3"
-username = "vitwit"
+database = "matic"
+username = ""
