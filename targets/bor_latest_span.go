@@ -36,6 +36,9 @@ func GetBorLatestSpan(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 	// Get previous span id from db
 	prevSpanID := GetBorSpanIDFromDb(cfg, c)
+	if prevSpanID == "" {
+		prevSpanID = "0"
+	}
 	prevSpan, err := strconv.Atoi(prevSpanID)
 	if err != nil {
 		log.Printf("Error in conversion from string to int of span ID : %v", err)
