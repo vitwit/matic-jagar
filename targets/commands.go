@@ -13,6 +13,9 @@ import (
 
 // TelegramAlerting
 func TelegramAlerting(ops HTTPOptions, cfg *config.Config, c client.Client) {
+	if strings.ToUpper(cfg.EnableAlerts.EnableTelegramAlerts) == "NO" {
+		return
+	}
 	bot, err := tgbotapi.NewBotAPI(cfg.Telegram.BotToken)
 	if err != nil {
 		log.Fatalf("Please configure telegram bot token %v:", err)

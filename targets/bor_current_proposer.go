@@ -33,6 +33,9 @@ func GetBorCurrentProposer(ops HTTPOptions, cfg *config.Config, c client.Client)
 	}
 
 	prevCount := GetBlocksProducedCountFromDB(cfg, c)
+	if prevCount == "" {
+		prevCount = "0"
+	}
 	count, err := strconv.Atoi(prevCount)
 	if err != nil {
 		log.Printf("Error in conversion from string to int of produced count : %v", err)
@@ -45,7 +48,7 @@ func GetBorCurrentProposer(ops HTTPOptions, cfg *config.Config, c client.Client)
 	}
 
 	_ = writeToInfluxDb(c, bp, "bor_current_proposer", map[string]string{}, map[string]interface{}{"blocks_produced": count, "current_proposer": proposer, "proposer": proposer[2:]})
-	log.Printf("No of Blocks Proposed: %d", count)
+	log.Printf("No of Blocks Proposed: %d and currnt Proposer : %s", count, proposer)
 }
 
 // GetBlocksProducedCountFromDB returns the no of blocks produced from db

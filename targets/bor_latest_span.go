@@ -51,6 +51,9 @@ func GetBorLatestSpan(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	count := GetBorSpanValidatorCountFromDb(cfg, c)
+	if count == "" {
+		count = "0"
+	}
 	spanValCount, err := strconv.Atoi(count)
 	if err != nil {
 		log.Printf("Error in string convertion to int : %v", err)
