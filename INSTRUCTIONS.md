@@ -29,16 +29,13 @@ Grafana will be running on port 3000
 ### Install InfluxDB
 
 ```sh
-$ cd $HOME
-$ wget -qO- https://repos.influxdata.com/influxdb.key | sudo apt-key add -
-$ source /etc/lsb-release
-$ echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+$ wget https://dl.influxdata.com/influxdb/releases/influxdb_1.8.3_amd64.deb
+$ sudo dpkg -i influxdb_1.8.3_amd64.deb
 ```
 
 Start influxDB
 
 ```sh
-$ sudo -S apt-get update && sudo apt-get install influxdb
 $ sudo -S service influxdb start
 
 The default port that runs the InfluxDB HTTP service is :8086
