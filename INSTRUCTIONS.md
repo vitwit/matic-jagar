@@ -148,6 +148,11 @@ $ sudo systemctl daemon-reload
 $ sudo systemctl enable node_exporter.service
 $ sudo systemctl start node_exporter.service
 ```
+#### Clean-up (Optional)
+
+```
+$ rm influxdb_1.8.3_amd64.deb grafana_7.3.1_amd64.deb node_exporter-0.18.1.linux-amd64.tar.gz prometheus-2.22.1.linux-amd64.tar.gz
+```
 
 ## Install and configure the tool
 
