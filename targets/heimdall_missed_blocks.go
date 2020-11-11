@@ -65,7 +65,7 @@ func GetMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	if &b != nil {
 		addrExists := false
 		for _, c := range b.Block.LastCommit.Precommits {
-			if c.ValidatorAddress == cfg.ValDetails.ValidatorHexAddress {
+			if strings.EqualFold(c.ValidatorAddress, cfg.ValDetails.ValidatorHexAddress) {
 				addrExists = true
 			}
 		}

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
@@ -36,7 +37,7 @@ func GetLatestProposedBlockAndTime(ops HTTPOptions, cfg *config.Config, c client
 	blockHeight := blockResp.Block.Header.Height
 	log.Printf("last proposed block time : %s,  height : %s", blockTime, blockHeight)
 
-	if cfg.ValDetails.ValidatorHexAddress == blockResp.Block.Header.ProposerAddress {
+	if strings.EqualFold(cfg.ValDetails.ValidatorHexAddress, blockResp.Block.Header.ProposerAddress) {
 		fields := map[string]interface{}{
 			"height":     blockHeight,
 			"block_time": blockTime,
