@@ -46,7 +46,7 @@ Create an influxDB database:
 ```sh
 $   cd $HOME
 $   influx
->   CREATE DATABASE <db_name>   (ex: CREATE DATABASE matic)
+>   CREATE DATABASE matic  
 $   exit
 ```
 
