@@ -36,7 +36,7 @@ $ sudo dpkg -i influxdb_1.8.3_amd64.deb
 Start influxDB
 
 ```sh
-$ sudo -S service influxdb start
+$ sudo systemctl start influxdb 
 
 The default port that runs the InfluxDB HTTP service is :8086
 ```
