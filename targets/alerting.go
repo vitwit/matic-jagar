@@ -4,7 +4,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/vitwit/matic-jagar/alerting"
+	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
 )
 
@@ -12,7 +12,7 @@ import (
 //by checking user's choice
 func SendTelegramAlert(msg string, cfg *config.Config) error {
 	if strings.ToUpper(cfg.EnableAlerts.EnableTelegramAlerts) == "YES" {
-		if err := alerting.NewTelegramAlerter().Send(msg, cfg.Telegram.BotToken, cfg.Telegram.ChatID); err != nil {
+		if err := alerter.NewTelegramAlerter().SendTelegramMessage(msg, cfg.Telegram.BotToken, cfg.Telegram.ChatID); err != nil {
 			log.Printf("failed to send tg alert: %v", err)
 			return err
 		}
@@ -24,7 +24,7 @@ func SendTelegramAlert(msg string, cfg *config.Config) error {
 //by checking user's choice
 func SendEmailAlert(msg string, cfg *config.Config) error {
 	if strings.ToUpper(cfg.EnableAlerts.EnableEmailAlerts) == "YES" {
-		if err := alerting.NewEmailAlerter().Send(msg, cfg.SendGrid.Token, cfg.SendGrid.EmailAddress); err != nil {
+		if err := alerter.NewEmailAlerter().SendEmail(msg, cfg.SendGrid.Token, cfg.SendGrid.EmailAddress); err != nil {
 			log.Printf("failed to send email alert: %v", err)
 			return err
 		}
@@ -35,7 +35,7 @@ func SendEmailAlert(msg string, cfg *config.Config) error {
 // SendEmergencyEmailAlert sends alert pager duty account
 func SendEmergencyEmailAlert(msg string, cfg *config.Config) error {
 	if strings.ToUpper(cfg.EnableAlerts.EnableEmailAlerts) == "YES" {
-		if err := alerting.NewEmailAlerter().Send(msg, cfg.SendGrid.Token, cfg.PagerdutyEmail); err != nil {
+		if err := alerter.NewEmailAlerter().SendEmail(msg, cfg.SendGrid.Token, cfg.PagerdutyEmail); err != nil {
 			log.Printf("failed to send email alert to pager duty: %v", err)
 			return err
 		}

@@ -7,19 +7,19 @@ import (
 )
 
 type (
-	//Telegram bot details struct
+	// Telegram bot details struct
 	Telegram struct {
 		BotToken string `mapstructure:"tg_bot_token"`
 		ChatID   int64  `mapstructure:"tg_chat_id"`
 	}
 
-	//SendGrid tokens
+	// SendGrid stores sendgrid API credentials
 	SendGrid struct {
 		Token        string `mapstructure:"sendgrid_token"`
 		EmailAddress string `mapstructure:"email_address"`
 	}
 
-	//Scraper time interval
+	// Scraper defines the time intervals for multiple scrapers to fetch the data
 	Scraper struct {
 		Rate          string `mapstructure:"rate"`
 		Port          string `mapstructure:"port"`
@@ -27,7 +27,7 @@ type (
 		ContractRate  string `mapstructure:"contract_rate"`
 	}
 
-	//InfluxDB details
+	// InfluxDB details
 	InfluxDB struct {
 		Port     string `mapstructure:"port"`
 		Database string `mapstructure:"database"`
@@ -86,7 +86,7 @@ type (
 		EthBalanceThreshold   float64 `mapstructure:"eth_balance_threshold"`
 	}
 
-	//Config
+	// Config struct which holds all the configuration feilds and structs
 	Config struct {
 		Endpoints          Endpoints         `mapstructure:"rpc_and_lcd_endpoints"`
 		ValDetails         ValDetails        `mapstructure:"validator_details"`
@@ -102,7 +102,7 @@ type (
 	}
 )
 
-//ReadFromFile to read config details using viper
+// ReadFromFile to read config details using viper
 func ReadFromFile() (*Config, error) {
 	v := viper.New()
 	v.AddConfigPath(".")
@@ -124,7 +124,7 @@ func ReadFromFile() (*Config, error) {
 	return &cfg, nil
 }
 
-//Validate config struct
+// Validate config struct
 func (c *Config) Validate(e ...string) error {
 	v := validator.New()
 	if len(e) == 0 {

@@ -1,9 +1,9 @@
-package alerting
+package alerter
 
 import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 
-//Send function to send alert to telegram bot
-func (t telegramAlert) Send(msgText, botToken string, chatID int64) error {
+// SendTelegramMessage to send alert to telegram bot
+func (t telegramAlert) SendTelegramMessage(msgText, botToken string, chatID int64) error {
 	bot, err := tgbotapi.NewBotAPI(botToken)
 	if err != nil {
 		return err

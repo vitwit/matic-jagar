@@ -1,12 +1,12 @@
-package alerting
+package alerter
 
 import (
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-// Send to send mail alert
-func (e emailAlert) Send(msg, token, toEmail string) error {
+// SendEmail to send mail alert
+func (e emailAlert) SendEmail(msg, token, toEmail string) error {
 	from := mail.NewEmail("ICF Tool", "icf@vitwit.com")
 	subject := msg
 	to := mail.NewEmail("IFC Tool", toEmail)
