@@ -181,11 +181,11 @@ Installation of the tool is completed lets configure the Grafana dashboards.
 
 The repo provides five dashboards
 
-1. Validator Monitoring Metrics - These are the validator metrics which are calculated and stored in influxdb.
-2. Bor - These are the bor metrics which are calculated and stored in influxdb.
-3. System Metrics - These are the metrics related to your validator server on which this tool is hosted on.
-4. Summary -  gives quick overview of heimall, bor and system metrics.
-5. Heimdall network metrics - These are tendermint prometheus metrics emmitted by the node.
+1. Validator Monitoring Metrics - Displays the validator metrics which are calculated and stored in influxdb.
+2. Bor - Displays the bor metrics of validator which are calculated and stored in influxdb.
+3. System Metrics - Displays the metrics related to your validator server on which this tool is hosted on.
+4. Summary - Displays a quick overview of heimdall, bor and system metrics.
+5. Heimdall network metrics - Displays tendermint prometheus metrics emmitted by the node.
 
 Information on all the dashboards can be found [here](./docs/dashboard-desc.md)
 
