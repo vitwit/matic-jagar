@@ -125,7 +125,8 @@ $ sudo cp node_exporter-0.18.1.linux-amd64/node_exporter $GOBIN
  sudo nano /lib/systemd/system/node_exporter.service
  ```
  
- Copy-paste the following and make any relevant changes
+ 
+ Copy-paste the following and replace the <user> variable with your user.
  
  ```
  [Unit]
