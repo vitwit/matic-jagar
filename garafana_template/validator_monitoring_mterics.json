@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": 928,
   "graphTooltip": 1,
-  "id": 10,
-  "iteration": 1605000041772,
+  "id": 21,
+  "iteration": 1605163085099,
   "links": [],
   "panels": [
     {
@@ -767,7 +767,7 @@
             [
               {
                 "params": [
-                  "status"
+                  "synced"
                 ],
                 "type": "field"
               }
