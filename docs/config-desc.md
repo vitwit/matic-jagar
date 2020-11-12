@@ -2,7 +2,7 @@
 
     - *eth_rpc_endpoint*
 
-        Ethereum rpc endpoint used to gather information about validator staking rewards, balance, commission rate and to query valiator share contract address.
+        Ethereum rpc endpoint is used to gather information about validator staking rewards, balance, commission rate and to query valiator share contract address.
 
     - *bor_rpc_end_point*
 
@@ -18,7 +18,7 @@
 
     - *heimdall_lcd_endpoint*
 
-        Heimdall rpc end point (ex: http://localhost:1317) is used to gather information like latest block info, balances and staking related metrics.
+        Heimdall lcd end point is used to gather information about latest block info, balances and staking related metrics.
 
     - *heimdall_external_rpc*
 
