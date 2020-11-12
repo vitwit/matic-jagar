@@ -193,14 +193,14 @@ Information on all the dashboards can be found [here](./docs/dashboard-desc.md)
 ## Importing dashboards
 
 ### 1. Login to your Grafana dashboard
-- Open your web browser and go to http://<your_ip>:3000/. `3000` is the default HTTP port that Grafana listens to if you haven’t configured a different port.
+- Open your web browser and go to http://<your_ip>:3000/. `3000` is the default HTTP port that Grafana runs on if you haven’t configured a different port.
 - If you are a first time user type `admin` for the username and password in the login page.
 - You can change the password after login.
 
 ### 2. Create Datasources
 
 - Before importing the dashboards you have to create a datasource of **InfluxDBMatic**.
-- To create datasoruces go to configuration and select Data Sources.
+- To create datasources go to configuration and select Data Sources.
 - Click on `Add data source` and select InfluxDB from Time series databases section.
 - Name the datasource as`InfluxDBMatic`. Replace the URL with `http://localhost:8086`. In InfluxDB Details section replace Database name as `matic`.
 - Click on **Save & Test** . Now you have a working Datasource of InfluxDBMatic.
