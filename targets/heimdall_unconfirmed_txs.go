@@ -28,5 +28,5 @@ func GetUnconfimedTxns(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 	totalUnconfirmedTxns := unconfirmedTxns.Result.Total
 
 	_ = writeToInfluxDb(c, bp, "heimdall_unconfirmed_txns", map[string]string{}, map[string]interface{}{"unconfirmed_txns": totalUnconfirmedTxns})
-	log.Printf("No of unconfirmed txns: ", totalUnconfirmedTxns)
+	log.Printf("No of unconfirmed txns: %s", totalUnconfirmedTxns)
 }
