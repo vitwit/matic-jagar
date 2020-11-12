@@ -22,7 +22,7 @@
 
     - *heimdall_external_rpc*
 
-        Secondary RPC other than your own validator. useful to gather information about network info, validator voting power, unconfirmed txns etc.
+        Secondary RPC other than your own validator. Useful to gather information about network info, validator voting power, unconfirmed txns etc.
 
 - **[validator_details]**
 
