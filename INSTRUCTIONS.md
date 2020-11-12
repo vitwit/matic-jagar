@@ -23,7 +23,7 @@ $ sudo -S systemctl daemon-reload
 
 $ sudo -S systemctl start grafana-server
 
-Grafana will be running on port 3000 
+The default port that Grafana runs on is 3000. 
 ```
 
 ### Install InfluxDB
@@ -38,7 +38,7 @@ Start influxDB
 ```sh
 $ sudo systemctl start influxdb 
 
-The default port that runs the InfluxDB HTTP service is :8086
+The default port that runs the InfluxDB HTTP service is 8086
 ```
 
 Create an influxDB database:
@@ -50,7 +50,7 @@ $   influx
 $   exit
 ```
 
-**Note :** If you want cusomize the configuration, edit `influxdb.conf` at `/etc/influxdb/influxdb.conf` and restart the server after the changes. You can find a sample 'influxdb.conf' [file here](https://github.com/jheyman/influxdb/blob/master/influxdb.conf).
+**Note :** If you want to cusomize the configuration, edit `influxdb.conf` at `/etc/influxdb/influxdb.conf` and restart the server after the changes. You can find a sample 'influxdb.conf' [file here](https://github.com/jheyman/influxdb/blob/master/influxdb.conf).
 
 
 ### Install Prometheus 
@@ -85,7 +85,7 @@ $ sudo cp prometheus-2.22.1.linux-amd64/prometheus.yml $HOME
  sudo nano /lib/systemd/system/prometheus.service
  ```
  
- Copy-paste the following and make any relevant changes
+ Copy-paste the following and replace the <user> variable with your user.
  
  ```
  [Unit]
