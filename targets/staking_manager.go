@@ -1,7 +1,6 @@
 package targets
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
@@ -9,10 +8,12 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	"github.com/vitwit/matic-jagar/scraper"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 // GetContractAddress is to get the validator share contract address and self stake
-func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -31,11 +32,11 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	dataHash := subStr + valID
 
 	if dataHash != "" {
-		data := Payload{
+		data := types.Payload{
 			Jsonrpc: "2.0",
 			Method:  "eth_call",
 			Params: []interface{}{
-				Params{
+				types.Params{
 					To:   cfg.ValDetails.StakeManagerContract,
 					Data: dataHash,
 				},
@@ -45,24 +46,14 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		}
 
 		ops.Body = data
-
-		resp, err := HitHTTPTarget(ops)
+		hexData, err := scraper.GetHexData(ops)
 		if err != nil {
-			log.Printf("Error: %v", err)
+			log.Printf("Error in contract address: %v", err)
 			return
 		}
+		log.Println("hex data of eth_call error if any..", hexData.Error)
 
-		if resp.Body != nil {
-			var hexData EthResult
-			err = json.Unmarshal(resp.Body, &hexData)
-			if err != nil {
-				log.Printf("Error: %v", err)
-				return
-			}
-			log.Println("hex data of eth_call error if any..", hexData.Error)
-			if hexData.Result == "" {
-				return
-			}
+		if hexData.Result != "" {
 
 			valResp := DecodeEthCallResult(hexData.Result)
 			contractAddress := "0x" + valResp[6][24:]
@@ -80,7 +71,7 @@ func GetContractAddress(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 // GetCommissionRate is to get the commission rate
 // by calling method commissionRate() of validator share contract
-func GetCommissionRate(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetCommissionRate(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -122,7 +113,7 @@ func GetCommissionRate(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 // GetValidatorRewards is to get the rewards
 // by calling method validatorRewards() of validator share contract
-func GetValidatorRewards(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetValidatorRewards(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -174,7 +165,7 @@ func GetValContractAddress(cfg *config.Config, c client.Client) string {
 
 // GetEncodedData returns the sha3Hash
 //which will be calculated for the partcular method signature and by making a call of web3_sha3
-func GetEncodedData(ops HTTPOptions, cfg *config.Config, c client.Client, methodSignature string) string {
+func GetEncodedData(ops types.HTTPOptions, cfg *config.Config, c client.Client, methodSignature string) string {
 	signature := methodSignature
 
 	bytesData := []byte(signature)
@@ -182,16 +173,9 @@ func GetEncodedData(ops HTTPOptions, cfg *config.Config, c client.Client, method
 	ops.Body.Params = append(ops.Body.Params, hex)
 	ops.Body.Method = "web3_sha3"
 
-	resp, err := HitHTTPTarget(ops)
+	hexData, err := scraper.GetHexData(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
-		return ""
-	}
-
-	var hexData EthResult
-	err = json.Unmarshal(resp.Body, &hexData)
-	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in get encoded data: %v", err)
 		return ""
 	}
 
@@ -206,13 +190,13 @@ func GetEncodedData(ops HTTPOptions, cfg *config.Config, c client.Client, method
 }
 
 // EthCall will returns the validator share contract method response
-func EthCall(ops HTTPOptions, cfg *config.Config, c client.Client, dataHash string) (eth EthResult) {
+func EthCall(ops types.HTTPOptions, cfg *config.Config, c client.Client, dataHash string) (eth types.EthResult) {
 	contractAddress := GetValContractAddress(cfg, c)
-	data := Payload{
+	data := types.Payload{
 		Jsonrpc: "2.0",
 		Method:  "eth_call",
 		Params: []interface{}{
-			Params{
+			types.Params{
 				To:   contractAddress,
 				Data: dataHash,
 			},
@@ -223,17 +207,10 @@ func EthCall(ops HTTPOptions, cfg *config.Config, c client.Client, dataHash stri
 
 	ops.Body = data
 
-	resp, err := HitHTTPTarget(ops)
+	result, err := scraper.GetHexData(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
-		return eth
-	}
-
-	var result EthResult
-	err = json.Unmarshal(resp.Body, &result)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return eth
+		log.Printf("Error in eth call: %v", err)
+		return
 	}
 
 	return result

@@ -1,7 +1,6 @@
 package targets
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
@@ -10,25 +9,20 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	"github.com/vitwit/matic-jagar/scraper"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 // GetTotalCheckPointsCount to get total no of check points
-func GetTotalCheckPointsCount(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetTotalCheckPointsCount(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
-	resp, err := HitHTTPTarget(ops)
+	cp, err := scraper.GetTotalCheckPoints(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	var cp TotalCheckpoints
-	err = json.Unmarshal(resp.Body, &cp)
-	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in get total checkPoints: %v", err)
 		return
 	}
 
@@ -39,24 +33,13 @@ func GetTotalCheckPointsCount(ops HTTPOptions, cfg *config.Config, c client.Clie
 }
 
 // GetTotalCheckPointsCount to get latest check points details
-func GetLatestCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetLatestCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
-	resp, err := HitHTTPTarget(ops)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	var lcp LatestCheckpoints
-	err = json.Unmarshal(resp.Body, &lcp)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
+	lcp, err := scraper.GetLatestCheckpoints(ops)
 
 	startBlock := lcp.Result.StartBlock
 	endBlock := lcp.Result.EndBlock
@@ -66,22 +49,15 @@ func GetLatestCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client) 
 }
 
 // GetCheckpointsDuration to get checkpoints duration
-func GetCheckpointsDuration(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetCheckpointsDuration(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
-	resp, err := HitHTTPTarget(ops)
+	cpd, err := scraper.GetCheckpointsDuration(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	var cpd CheckpointsDuration
-	err = json.Unmarshal(resp.Body, &cpd)
-	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in get checkpoints duration: %v", err)
 		return
 	}
 
@@ -113,7 +89,7 @@ func GetLatestCheckPoint(cfg *config.Config, c client.Client) string {
 }
 
 // GetProposedCheckpoints to get proposed checkpoint and count
-func GetProposedCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetProposedCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -121,19 +97,11 @@ func GetProposedCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client
 
 	// Get latest checkpoint from db
 	latestCP := GetLatestCheckPoint(cfg, c)
-
 	ops.Endpoint = ops.Endpoint + latestCP
 
-	resp, err := HitHTTPTarget(ops)
+	proposedCP, err := scraper.GetProposedCheckpoints(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	var proposedCP ProposedCheckpoints
-	err = json.Unmarshal(resp.Body, &proposedCP)
-	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in get proposed checkpoints: %v", err)
 		return
 	}
 
@@ -148,7 +116,7 @@ func GetProposedCheckpoints(ops HTTPOptions, cfg *config.Config, c client.Client
 		}
 
 		_ = writeToInfluxDb(c, bp, "heimdall_proposed_checkpoint", map[string]string{}, map[string]interface{}{"last_proposed_cp": latestCP, "proposed_count": count})
-		log.Fatalf("Latest Proposed Checkpoint : %s Proposed Count : %d", latestCP, count)
+		log.Printf("Latest Proposed Checkpoint : %s Proposed Count : %d", latestCP, count)
 	}
 }
 

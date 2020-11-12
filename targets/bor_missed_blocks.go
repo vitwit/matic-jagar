@@ -1,7 +1,6 @@
 package targets
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
@@ -10,10 +9,12 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	"github.com/vitwit/matic-jagar/scraper"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 // SendSingleMissedBlockAlert sends missed block alert to telegram and email accounts
-func SendBorSingleMissedBlockAlert(ops HTTPOptions, cfg *config.Config, c client.Client, cbh string) error {
+func SendBorSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c client.Client, cbh string) error {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return err
@@ -43,30 +44,22 @@ func SendBorSingleMissedBlockAlert(ops HTTPOptions, cfg *config.Config, c client
 }
 
 // GetBorMissedBlocks sends alerts of missed blocks according to the threshold given by user
-func GetBorMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetBorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
 	borHeight := GetBorCurrentBlokHeightInHex(cfg, c)
-
 	if borHeight == "" {
 		return
 	}
 
 	ops.Body.Params = append(ops.Body.Params, borHeight)
 
-	resp, err := HitHTTPTarget(ops)
+	signers, err := scraper.BorSignersRes(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	var signers BorSignersRes
-	err = json.Unmarshal(resp.Body, &signers)
-	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in BorMissedBlocks: %v", err)
 		return
 	}
 
@@ -87,7 +80,7 @@ func GetBorMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 			}
 		}
 
-		log.Println("address exists and height......", addrExists, cbh)
+		log.Printf("address exists : %v, and height : %s ", addrExists, cbh)
 
 		if !addrExists {
 

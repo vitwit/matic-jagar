@@ -1,7 +1,6 @@
 package targets
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
@@ -10,25 +9,39 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	"github.com/vitwit/matic-jagar/scraper"
+	"github.com/vitwit/matic-jagar/types"
 )
 
-// ValidatorCaughtUp is to get validator syncing status
-func ValidatorCaughtUp(ops HTTPOptions, cfg *config.Config, c client.Client) {
+// NodeVersion to get application version and stores in db
+func NodeVersion(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
-	resp, err := HitHTTPTarget(ops)
+	applicationInfo, err := scraper.GetVersion(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in node version: %v", err)
 		return
 	}
 
-	var sync Caughtup
-	err = json.Unmarshal(resp.Body, &sync)
+	appVersion := applicationInfo.ApplicationVersion.Version
+
+	_ = writeToInfluxDb(c, bp, "heimdall_version", map[string]string{}, map[string]interface{}{"v": appVersion})
+	log.Printf("Version: %s", appVersion)
+}
+
+// ValidatorCaughtUp is to get validator syncing status
+func ValidatorCaughtUp(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
-		log.Printf("Error: %v", err)
+		return
+	}
+
+	sync, err := scraper.GetCaughtUpStatus(ops)
+	if err != nil {
+		log.Printf("Error in validator caughtup: %v", err)
 		return
 	}
 
@@ -49,21 +62,15 @@ func ValidatorCaughtUp(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	log.Printf("Heimdall Valiator Caught UP: %v", sync.Syncing)
 }
 
-// GetNodeStatus is to check if port number 26656 is in use or not
-func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
+// Status is to get response from rpc /status endpoint and stores node status
+//block height and operator info
+func Status(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
-	resp, err := HitHTTPTarget(ops)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	var status Status
-	err = json.Unmarshal(resp.Body, &status)
+	status, err := scraper.GetStatus(ops)
 	if err != nil {
 		_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
 
@@ -81,42 +88,16 @@ func GetNodeStatus(ops HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 1})
-}
-
-// GetOperatorInfo to get validator details like moniker and addresses
-func GetOperatorInfo(ops HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
-	if err != nil {
-		return
-	}
-	var pts []*client.Point
-
-	resp, err := HitHTTPTarget(ops)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	var status Status
-	err = json.Unmarshal(resp.Body, &status)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
 
 	var bh int
 	currentBlockHeight := status.Result.SyncInfo.LatestBlockHeight
 	if currentBlockHeight != "" {
 		bh, _ = strconv.Atoi(currentBlockHeight)
-		p2, err := createDataPoint("heimdall_current_block_height", map[string]string{}, map[string]interface{}{"height": bh})
-		if err == nil {
-			pts = append(pts, p2)
+		err = writeToInfluxDb(c, bp, "heimdall_current_block_height", map[string]string{}, map[string]interface{}{"height": bh})
+		if err != nil {
+			log.Printf("Error while stroing current block height : %v", err)
 		}
 	}
-
-	bp.AddPoints(pts)
-	_ = writeBatchPoints(c, bp)
-	log.Printf("\nCurrent Block Height: %s", currentBlockHeight)
 
 	// Store validator details such as moniker, signer address and hex address
 	moniker := status.Result.NodeInfo.Moniker
@@ -150,7 +131,7 @@ func GetValidatorBlock(cfg *config.Config, c client.Client) string {
 // GetNodeSync returns the syncing status of a node
 func GetNodeSync(cfg *config.Config, c client.Client) string {
 	var status, sync string
-	q := client.NewQuery("SELECT last(status) FROM heimdall_node_synced", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(synced) FROM heimdall_node_synced", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {

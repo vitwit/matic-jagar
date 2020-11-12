@@ -1,7 +1,6 @@
 package targets
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
@@ -10,28 +9,24 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	"github.com/vitwit/matic-jagar/scraper"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 // GetBlockTimeDifference to calculate block time difference of prev block and current block
-func GetBlockTimeDifference(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetBlockTimeDifference(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
 	}
 
-	currResp, err := HitHTTPTarget(ops)
+	currentBlockResp, err := scraper.LatestBlock(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in block time difference: %v", err)
 		return
 	}
 
-	var currentBlockResp LatestBlock
-	err = json.Unmarshal(currResp.Body, &currentBlockResp)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
 	currentBlockHeight, _ := strconv.Atoi(currentBlockResp.Block.Header.Height) //covert string to int
 	prevBlockHeight := currentBlockHeight - 1
 	prevBlockTime := GetPrevBlockTime(cfg, c, strconv.Itoa(prevBlockHeight)) // get previous block time

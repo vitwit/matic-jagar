@@ -1,7 +1,6 @@
 package targets
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
@@ -10,10 +9,12 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	"github.com/vitwit/matic-jagar/scraper"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 // SendSingleMissedBlockAlert sends missed block alert to telegram and email accounts
-func SendSingleMissedBlockAlert(ops HTTPOptions, cfg *config.Config, c client.Client, cbh string) error {
+func SendSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c client.Client, cbh string) error {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return err
@@ -38,27 +39,15 @@ func SendSingleMissedBlockAlert(ops HTTPOptions, cfg *config.Config, c client.Cl
 }
 
 // GetMissedBlocks sends alerts of missed blocks according to the threshold given by user
-func GetMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
-	resp, err := HitHTTPTarget(ops)
+	b, err := scraper.LatestBlock(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-	if err != nil {
-		log.Printf("Error getting details of current block: %v", err)
-		return
-	}
-
-	// var b CurrentBlockWithHeight
-	var b LatestBlock
-	err = json.Unmarshal(resp.Body, &b)
-	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in get missed blocks: %v", err)
 		return
 	}
 
@@ -72,7 +61,7 @@ func GetMissedBlocks(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 		cbh := b.Block.Header.Height
 
-		log.Println("address exists and height......", addrExists, cbh)
+		log.Printf("Address exists :%v, and height : %s", addrExists, cbh)
 
 		if !addrExists {
 

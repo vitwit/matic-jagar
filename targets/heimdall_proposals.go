@@ -1,9 +1,7 @@
 package targets
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"time"
@@ -11,25 +9,20 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	"github.com/vitwit/matic-jagar/scraper"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 // GetProposals to get all the proposals and send alerts accordingly
-func GetProposals(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetProposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
-	resp, err := HitHTTPTarget(ops)
+	p, err := scraper.GetProposals(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	var p Proposals
-	err = json.Unmarshal(resp.Body, &p)
-	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in proposals: %v", err)
 		return
 	}
 
@@ -122,20 +115,29 @@ func GetProposals(ops HTTPOptions, cfg *config.Config, c client.Client) {
 
 // GetValidatorVoted to check validator voted for the proposal or not
 func GetValidatorVoted(proposalID string, cfg *config.Config, c client.Client) string {
-	proposalURL := cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposalID + "/votes"
-	res, err := http.Get(proposalURL)
+	var ops types.HTTPOptions
+	ops.Endpoint = cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposalID + "/votes"
+	ops.Method = http.MethodGet
+
+	voters, err := scraper.GetProposalVoters(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in proposal voters: %v", err)
 	}
 
-	var voters ProposalVoters
-	if res != nil {
-		body, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			fmt.Println("Error while reading resp body ", err)
-		}
-		_ = json.Unmarshal(body, &voters)
-	}
+	// proposalURL := cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposalID + "/votes"
+	// res, err := http.Get(proposalURL)
+	// if err != nil {
+	// 	log.Printf("Error: %v", err)
+	// }
+
+	// var voters types.ProposalVoters
+	// if res != nil {
+	// 	body, err := ioutil.ReadAll(res.Body)
+	// 	if err != nil {
+	// 		fmt.Println("Error while reading resp body ", err)
+	// 	}
+	// 	_ = json.Unmarshal(body, &voters)
+	// }
 
 	// Get id using the signer address
 	valID := GetValID(cfg, c)
@@ -151,39 +153,24 @@ func GetValidatorVoted(proposalID string, cfg *config.Config, c client.Client) s
 
 // SendVotingPeriodProposalAlerts which send alerts of voting period proposals
 func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
-	proposalURL := cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals?status=voting_period"
-	res, err := http.Get(proposalURL)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return err
-	}
+	var ops types.HTTPOptions
+	ops.Endpoint = cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals?status=voting_period"
+	ops.Method = http.MethodGet
 
-	var p Proposals
-	if res != nil {
-		body, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			fmt.Println("Error while reading resp body ", err)
-			return err
-		}
-		_ = json.Unmarshal(body, &p)
+	p, err := scraper.GetProposals(ops)
+	if err != nil {
+		log.Printf("Error in voting period proposals: %v", err)
+		return err
 	}
 
 	for _, proposal := range p.Result {
 		proposalVotesURL := cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposal.ID + "/votes"
-		res, err := http.Get(proposalVotesURL)
-		if err != nil {
-			log.Printf("Error: %v", err)
-			return err
-		}
+		ops.Endpoint = proposalVotesURL
+		ops.Method = http.MethodGet
 
-		var voters ProposalVoters
-		if res != nil {
-			body, err := ioutil.ReadAll(res.Body)
-			if err != nil {
-				fmt.Println("Error while reading resp body ", err)
-				return err
-			}
-			_ = json.Unmarshal(body, &voters)
+		voters, err := scraper.GetProposalVoters(ops)
+		if err != nil {
+			log.Printf("Error in proposal voters: %v", err)
 		}
 
 		// Get id using the signer address
@@ -215,19 +202,14 @@ func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
 
 // GetValidatorDeposited to check validator deposited for the proposal or not
 func GetValidatorDeposited(proposalID string, cfg *config.Config, c client.Client) string {
+	var ops types.HTTPOptions
 	proposalURL := cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposalID + "/deposits"
-	res, err := http.Get(proposalURL)
-	if err != nil {
-		log.Printf("Error: %v", err)
-	}
+	ops.Endpoint = proposalURL
+	ops.Method = http.MethodGet
 
-	var depositors Depositors
-	if res != nil {
-		body, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			fmt.Println("Error while reading resp body ", err)
-		}
-		_ = json.Unmarshal(body, &depositors)
+	depositors, err := scraper.GetProposalDepositors(ops)
+	if err != nil {
+		log.Printf("Error in proposal depositors: %v", err)
 	}
 
 	// Get id using the signer address
@@ -244,7 +226,7 @@ func GetValidatorDeposited(proposalID string, cfg *config.Config, c client.Clien
 
 // DeleteDepoitEndProposals to delete proposals from db
 //which are not present in lcd resposne
-func DeleteDepoitEndProposals(cfg *config.Config, c client.Client, p Proposals) error {
+func DeleteDepoitEndProposals(cfg *config.Config, c client.Client, p types.Proposals) error {
 	var ID string
 	found := false
 	q := client.NewQuery("SELECT * FROM heimdall_proposals where proposal_status='DepositPeriod'", cfg.InfluxDB.Database, "")

@@ -1,29 +1,23 @@
 package targets
 
 import (
-	"encoding/json"
 	"log"
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	"github.com/vitwit/matic-jagar/scraper"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 // GetBorParams to get span duration and producer count
-func GetBorParams(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetBorParams(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
-	resp, err := HitHTTPTarget(ops)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	var params BorParams
-	err = json.Unmarshal(resp.Body, &params)
+	params, err := scraper.BorParams(ops)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return

@@ -9,10 +9,11 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 // TelegramAlerting
-func TelegramAlerting(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func TelegramAlerting(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	if strings.ToUpper(cfg.EnableAlerts.EnableTelegramAlerts) == "NO" {
 		return
 	}

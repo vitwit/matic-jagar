@@ -10,25 +10,20 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	"github.com/vitwit/matic-jagar/scraper"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 // GetBorLatestSpan to get latest span id and also calcualte span validator count
-func GetBorLatestSpan(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetBorLatestSpan(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
-	resp, err := HitHTTPTarget(ops)
+	latestSpan, err := scraper.BorLatestSpan(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	var latestSpan BorLatestSpan
-	err = json.Unmarshal(resp.Body, &latestSpan)
-	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in BorLatestSpan: %v", err)
 		return
 	}
 
@@ -116,7 +111,7 @@ func GetBorSpanValidatorCountFromDb(cfg *config.Config, c client.Client) string 
 
 // GetBlockProducer is to get the proucer counts and checks
 //weather the validator is part of block producer or not
-func GetBlockProducer(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetBlockProducer(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -132,7 +127,7 @@ func GetBlockProducer(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
-	var spanProducers BorSpanProducers
+	var spanProducers types.BorSpanProducers
 	err = json.Unmarshal(resp.Body, &spanProducers)
 	if err != nil {
 		log.Printf("Error: %v", err)

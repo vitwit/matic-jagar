@@ -10,6 +10,7 @@ import (
 
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/targets"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 func main() {
@@ -34,7 +35,7 @@ func main() {
 	var wg sync.WaitGroup
 	for _, tg := range m.List {
 		wg.Add(1)
-		go func(target targets.Target) {
+		go func(target types.Target) {
 			scrapeRate, err := time.ParseDuration(target.ScraperRate)
 			if err != nil {
 				log.Fatal(err)

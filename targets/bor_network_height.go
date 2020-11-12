@@ -1,7 +1,6 @@
 package targets
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
@@ -10,28 +9,24 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	"github.com/vitwit/matic-jagar/scraper"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 // BorNetworkHeight which returns the network height of bor
-func BorNetworkHeight(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
-	resp, err := HitHTTPTarget(ops)
+	cbh, err := scraper.BorValidatorHeight(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in BorNetworkHeight: %v", err)
 		return
 	}
 
-	if resp.Body != nil {
-		var cbh BorValHeight
-		err = json.Unmarshal(resp.Body, &cbh)
-		if err != nil {
-			log.Printf("Error: %v", err)
-			return
-		}
+	if &cbh != nil {
 
 		networkHeight, err := HexToIntConversion(cbh.Result)
 		if err != nil {

@@ -1,7 +1,6 @@
 package targets
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"strings"
@@ -9,29 +8,25 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	"github.com/vitwit/matic-jagar/scraper"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 // GetEthBalance to get eth balance
-func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
+func GetEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
 	ops.Body.Params = append(ops.Body.Params, cfg.ValDetails.SignerAddress, "latest")
-	resp, err := HitHTTPTarget(ops)
+	balance, err := scraper.EthResult(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error in GetEthBalance method: %v", err)
 		return
 	}
 
-	if resp != nil {
-		var balance EthResult
-		err = json.Unmarshal(resp.Body, &balance)
-		if err != nil {
-			log.Printf("Error: %v", err)
-			return
-		}
+	if &balance != nil {
 
 		bal, er := HexToBigInt(balance.Result[2:])
 		if !er {
@@ -64,7 +59,6 @@ func GetEthBalance(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		_ = writeToInfluxDb(c, bp, "matic_eth_balance", map[string]string{}, map[string]interface{}{"balance": balWithDenom, "amount": ethBalance})
 		log.Printf("Eth Current Balance: %s", ethBalance)
 	}
-
 }
 
 // GetBorBalanceFRomDB returns bor validator balance from db
