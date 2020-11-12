@@ -2,7 +2,7 @@
 
     - *eth_rpc_endpoint*
 
-        Ethereum rpc endpoint used to gather information about validator staking rewards, balance, commission rate and to query valiator share contract address.
+        Ethereum rpc endpoint is used to gather information about validator staking rewards, balance, commission rate and to query valiator share contract address.
 
     - *bor_rpc_end_point*
 
