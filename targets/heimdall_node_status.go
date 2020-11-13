@@ -44,7 +44,6 @@ func ValidatorCaughtUp(ops HTTPOptions, cfg *config.Config, c client.Client) {
 		synced = 1
 	}
 
-	// _ = writeToInfluxDb(c, bp, "heimdall_val_caughtup", map[string]string{}, map[string]interface{}{"synced": synced})
 	_ = writeToInfluxDb(c, bp, "heimdall_node_synced", map[string]string{}, map[string]interface{}{"synced": synced})
 	log.Printf("Heimdall Valiator Caught UP: %v", sync.Syncing)
 }
@@ -150,7 +149,7 @@ func GetValidatorBlock(cfg *config.Config, c client.Client) string {
 // GetNodeSync returns the syncing status of a node
 func GetNodeSync(cfg *config.Config, c client.Client) string {
 	var status, sync string
-	q := client.NewQuery("SELECT last(status) FROM heimdall_node_synced", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(synced) FROM heimdall_node_synced", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {
