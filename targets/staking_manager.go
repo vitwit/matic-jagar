@@ -12,8 +12,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetContractAddress is to get the validator share contract address and self stake
-func GetContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// ContractAddress is to get the validator share contract address, self stake and stores it in db
+func ContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return

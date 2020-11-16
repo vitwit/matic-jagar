@@ -13,7 +13,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// BorNetworkHeight which returns the network height of bor
+// BorNetworkHeight is to get the network height of bor and stores in db
+// Alerter will notify whenever bock diff of network and validator reaches configured threshold
 func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -55,7 +56,7 @@ func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client
 		if int64(heightDiff) >= cfg.AlertingThresholds.BlockDiffThreshold && strings.ToUpper(cfg.AlerterPreferences.BlockDiffAlerts) == "YES" {
 			_ = SendTelegramAlert(fmt.Sprintf("Bor Block Difference Alert: Block Difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
 			_ = SendEmailAlert(fmt.Sprintf("Bor Block Difference Alert : Block difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
-			log.Println("Sent alert of block height difference")
+			log.Println("Sent alert of bor block height difference")
 		}
 	}
 

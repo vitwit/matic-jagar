@@ -12,8 +12,9 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetEthBalance to get eth balance
-func GetEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// CurrentEthBalance is to query the eth_getBalance and stores the current balance in db
+// Alerter will alerts if the current balance reaches the configure threshold
+func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return

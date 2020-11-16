@@ -12,7 +12,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// ValidatorStatusAlert to send alerts to telegram and email about validator status
+// ValidatorStatusAlert will checks whether the validator is voting or jailed
+// Alerter will send alerts according to the timings of regualr status alerting configured in config.toml
 func ValidatorStatusAlert(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -53,9 +54,13 @@ func ValidatorStatusAlert(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 		}
 		_ = writeToInfluxDb(c, bp, "heimdall_val_status", map[string]string{}, map[string]interface{}{"status": 1, "val_id": valID})
 	} else {
-		_ = SendTelegramAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValDetails.ValidatorName), cfg)
-		_ = SendEmailAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValDetails.ValidatorName), cfg)
-		log.Println("Sent validator status alert")
+		for _, statusAlertTime := range alertsArray {
+			if currentTime == statusAlertTime {
+				_ = SendTelegramAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValDetails.ValidatorName), cfg)
+				_ = SendEmailAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValDetails.ValidatorName), cfg)
+				log.Println("Sent validator status alert")
+			}
+		}
 
 		_ = writeToInfluxDb(c, bp, "heimdall_val_status", map[string]string{}, map[string]interface{}{"status": 0, "val_id": valID})
 	}

@@ -10,8 +10,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetBorPendingTransactions is to get the pending transactions of bor
-func GetBorPendingTransactions(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// BorPendingTransactions is to get the pending transactions of bor and stores in db
+func BorPendingTransactions(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return

@@ -13,7 +13,7 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// NodeVersion to get application version and stores in db
+// NodeVersion is to get application version and stores in db
 func NodeVersion(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -32,7 +32,8 @@ func NodeVersion(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	log.Printf("Version: %s", appVersion)
 }
 
-// ValidatorCaughtUp is to get validator syncing status
+// ValidatorCaughtUp is to get validator syncing status and stores it in db
+// Alerter will alerts when the node is not synced
 func ValidatorCaughtUp(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -63,7 +64,8 @@ func ValidatorCaughtUp(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 }
 
 // Status is to get response from rpc /status endpoint and stores node status
-//block height and operator info
+// block height and operator info
+// Alerter will notify about the node status i.e., validator instance is running or not by checking status resonse
 func Status(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -108,7 +110,7 @@ func Status(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	log.Printf("Moniker:%s ", moniker)
 }
 
-// GetValidatorBlock returns validator current block height
+// GetValidatorBlock returns validator current block height from db
 func GetValidatorBlock(cfg *config.Config, c client.Client) string {
 	var validatorHeight string
 	q := client.NewQuery("SELECT last(height) FROM heimdall_current_block_height", cfg.InfluxDB.Database, "")
@@ -128,7 +130,7 @@ func GetValidatorBlock(cfg *config.Config, c client.Client) string {
 	return validatorHeight
 }
 
-// GetNodeSync returns the syncing status of a node
+// GetNodeSync returns the syncing status of a node from db
 func GetNodeSync(cfg *config.Config, c client.Client) string {
 	var status, sync string
 	q := client.NewQuery("SELECT last(synced) FROM heimdall_node_synced", cfg.InfluxDB.Database, "")

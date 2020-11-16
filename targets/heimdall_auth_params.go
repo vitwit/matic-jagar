@@ -10,8 +10,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetValidatorGas is to get validator max tx gas
-func GetValidatorGas(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// ValidatorGas is to get validator max tx gas and stores in db
+func ValidatorGas(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return

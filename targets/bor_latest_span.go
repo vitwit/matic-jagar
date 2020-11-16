@@ -14,8 +14,9 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetBorLatestSpan to get latest span id and also calcualte span validator count
-func GetBorLatestSpan(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// BorLatestSpan is to get latest span id, also calcualtes span validator count and stores it in db
+// Span validator count will be inceremented if the signer address is in validator set
+func BorLatestSpan(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -109,9 +110,9 @@ func GetBorSpanValidatorCountFromDb(cfg *config.Config, c client.Client) string 
 	return count
 }
 
-// GetBlockProducer is to get the proucer counts and checks
-//weather the validator is part of block producer or not
-func GetBlockProducer(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// BlockProducer is to get the proucer counts and checks validator is part of block producer or not and stores in db
+// If the signer address is in result of selected producers then validator is part of it otheriwse no
+func BlockProducer(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return

@@ -13,8 +13,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetBorCurrentProposer to get current proposer and calculate no of blocks produced
-func GetBorCurrentProposer(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// BorCurrentProposer is to get current proposer, counts blocks produced count and stores it in db
+func BorCurrentProposer(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return

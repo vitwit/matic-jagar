@@ -13,8 +13,9 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetProposals to get all the proposals and send alerts accordingly
-func GetProposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// Proposals is to get all the proposals and stores it in db
+// Alerter will send alerts if there is any new proposal or any change in proposal status
+func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -27,8 +28,8 @@ func GetProposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	for _, proposal := range p.Result {
-		validatorVoted := GetValidatorVoted(proposal.ID, cfg, c)
-		validatorDeposited := GetValidatorDeposited(proposal.ID, cfg, c)
+		validatorVoted := CheckValidatorVoted(proposal.ID, cfg, c)
+		validatorDeposited := CheckValidatorDeposited(proposal.ID, cfg, c)
 		err = SendVotingPeriodProposalAlerts(cfg, c)
 		if err != nil {
 			log.Printf("Error while sending voting period alert: %v", err)
@@ -113,8 +114,8 @@ func GetProposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 }
 
-// GetValidatorVoted to check validator voted for the proposal or not
-func GetValidatorVoted(proposalID string, cfg *config.Config, c client.Client) string {
+// CheckValidatorVoted is to check validator voted for the proposal or not and returns the status
+func CheckValidatorVoted(proposalID string, cfg *config.Config, c client.Client) string {
 	var ops types.HTTPOptions
 	ops.Endpoint = cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposalID + "/votes"
 	ops.Method = http.MethodGet
@@ -123,21 +124,6 @@ func GetValidatorVoted(proposalID string, cfg *config.Config, c client.Client) s
 	if err != nil {
 		log.Printf("Error in proposal voters: %v", err)
 	}
-
-	// proposalURL := cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposalID + "/votes"
-	// res, err := http.Get(proposalURL)
-	// if err != nil {
-	// 	log.Printf("Error: %v", err)
-	// }
-
-	// var voters types.ProposalVoters
-	// if res != nil {
-	// 	body, err := ioutil.ReadAll(res.Body)
-	// 	if err != nil {
-	// 		fmt.Println("Error while reading resp body ", err)
-	// 	}
-	// 	_ = json.Unmarshal(body, &voters)
-	// }
 
 	// Get id using the signer address
 	valID := GetValID(cfg, c)
@@ -200,8 +186,8 @@ func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
 	return nil
 }
 
-// GetValidatorDeposited to check validator deposited for the proposal or not
-func GetValidatorDeposited(proposalID string, cfg *config.Config, c client.Client) string {
+// CheckValidatorDeposited is to check validator deposited for the proposal or not and returns the status
+func CheckValidatorDeposited(proposalID string, cfg *config.Config, c client.Client) string {
 	var ops types.HTTPOptions
 	proposalURL := cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposalID + "/deposits"
 	ops.Endpoint = proposalURL
@@ -224,8 +210,7 @@ func GetValidatorDeposited(proposalID string, cfg *config.Config, c client.Clien
 	return validateDeposit
 }
 
-// DeleteDepoitEndProposals to delete proposals from db
-//which are not present in lcd resposne
+// DeleteDepoitEndProposals is to delete proposals from db which are not present in response anymore
 func DeleteDepoitEndProposals(cfg *config.Config, c client.Client, p types.Proposals) error {
 	var ID string
 	found := false

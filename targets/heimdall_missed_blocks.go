@@ -13,7 +13,7 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// SendSingleMissedBlockAlert sends missed block alert to telegram and email accounts
+// SendSingleMissedBlockAlert is to alert about single missed block if threshold value is 1 and also stores it in db
 func SendSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c client.Client, cbh string) error {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -38,8 +38,10 @@ func SendSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c cli
 	return nil
 }
 
-// GetMissedBlocks sends alerts of missed blocks according to the threshold given by user
-func GetMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// MissedBlocks is to get the current block precommits and checks whether the validator is signed the block or not
+// if not signed then it will be considered as missed block and stores it in db
+// Alerter will notify when the missed blocks count reaches to the configured threshold
+func MissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return

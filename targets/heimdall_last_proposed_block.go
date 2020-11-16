@@ -12,8 +12,10 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetLatestProposedBlockAndTime to get latest proposed block height and time
-func GetLatestProposedBlockAndTime(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// LatestProposedBlockAndTime is to get latest proposed block height, time and checks
+// whether the validator hex address is equals to proposals address if yes then stores in it db
+// Also stores latest block height and chain id in db
+func LatestProposedBlockAndTime(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		log.Printf("Error: %v", err)

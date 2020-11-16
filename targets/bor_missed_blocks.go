@@ -13,7 +13,7 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// SendSingleMissedBlockAlert sends missed block alert to telegram and email accounts
+// SendSingleMissedBlockAlert is to send signle missed block alerts and stores it in db
 func SendBorSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c client.Client, cbh string) error {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
@@ -43,8 +43,10 @@ func SendBorSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c 
 	return nil
 }
 
-// GetBorMissedBlocks sends alerts of missed blocks according to the threshold given by user
-func GetBorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// BorMissedBlocks is to get the current block precommits and checks whether the validator is signed the block or not
+// if not signed then it will be considered as missed block and stores it in db
+// Alerter will notify when the missed blocks count reaches to the configured threshold
+func BorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -133,7 +135,7 @@ func GetBorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 	}
 }
 
-// GetContinuousMissedBlock returns the latest missed block from the db
+// GetContinuousMissedBlock returns the latest missed block from db
 func GetBorContinuousMissedBlock(cfg *config.Config, c client.Client) string {
 	var blocks string
 	q := client.NewQuery("SELECT last(block_height) FROM matic_bor_missed_blocks", cfg.InfluxDB.Database, "")

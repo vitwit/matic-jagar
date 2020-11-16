@@ -13,8 +13,10 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetNetworkLatestBlock to get latest block height of a network
-func GetNetworkLatestBlock(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// NetworkLatestBlock is to get latest block height of a network
+// Calcualtes height difference of validator and network height and stores it in db
+// Alerter will alerts when the block diff thresholds meets the height diff
+func NetworkLatestBlock(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		log.Printf("Error: %v", err)

@@ -13,8 +13,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetTotalCheckPointsCount to get total no of check points
-func GetTotalCheckPointsCount(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// TotalCheckPointsCount is to get total no of check points and stores in db
+func TotalCheckPointsCount(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -32,8 +32,8 @@ func GetTotalCheckPointsCount(ops types.HTTPOptions, cfg *config.Config, c clien
 	log.Printf("Checkpoints total count: %d", count)
 }
 
-// GetTotalCheckPointsCount to get latest check points details
-func GetLatestCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// LatestCheckpoints is to get latest check point and stores in db
+func LatestCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -48,8 +48,8 @@ func GetLatestCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 	log.Printf("Latest checkpoint Start Block: %d and End Block: %d", startBlock, endBlock)
 }
 
-// GetCheckpointsDuration to get checkpoints duration
-func GetCheckpointsDuration(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// CheckpointsDuration is to get checkpoints duration and stores in db
+func CheckpointsDuration(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -88,8 +88,8 @@ func GetLatestCheckPoint(cfg *config.Config, c client.Client) string {
 	return count
 }
 
-// GetProposedCheckpoints to get proposed checkpoint and count
-func GetProposedCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// ProposedCheckpoints is to get proposed checkpoint, counts no of proposed checkpoints by validator and stores in db
+func ProposedCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -120,7 +120,7 @@ func GetProposedCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.
 	}
 }
 
-// GetProposedCount returns the count of proposed checkpoints
+// GetProposedCount returns the count of proposed checkpoints from db
 func GetProposedCount(cfg *config.Config, c client.Client) string {
 	var count string
 	q := client.NewQuery("SELECT last(proposed_count) FROM heimdall_proposed_checkpoint", cfg.InfluxDB.Database, "")

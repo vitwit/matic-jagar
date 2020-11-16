@@ -14,8 +14,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetNetInfo to get no.of peers and addresses
-func GetNetInfo(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// NetInfo is to get no.of peers, addresses and also calculates it's alatency and stores it in db
+func NetInfo(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
@@ -57,15 +57,15 @@ func GetNetInfo(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	log.Printf("No. of peers: %d \n", numPeers)
 
 	// Calling funtion to get peer latency
-	err = GetLatency(ops, cfg, c)
+	err = PeerLatency(ops, cfg, c)
 	if err != nil {
 		log.Printf("Error while calculating peer latency : %v", err)
 		return
 	}
 }
 
-// GetLatency to calculate latency of a peer address
-func GetLatency(_ types.HTTPOptions, cfg *config.Config, c client.Client) error {
+// PeerLatency is to calculate latency of a peer address and stores it in db
+func PeerLatency(_ types.HTTPOptions, cfg *config.Config, c client.Client) error {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return err

@@ -11,8 +11,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// BorCurrentHeight which returns the current height of bor validator
-func BorCurrentHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// CurrentBlockNumber is to get the bor current height and stores it in db
+func CurrentBlockNumber(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return

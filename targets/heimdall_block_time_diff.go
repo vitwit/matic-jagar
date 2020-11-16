@@ -13,8 +13,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetBlockTimeDifference to calculate block time difference of prev block and current block
-func GetBlockTimeDifference(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// BlockTimeDifference is to calcualte block time difference of prev block and current block and stores in db
+func BlockTimeDifference(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		log.Printf("Error: %v", err)

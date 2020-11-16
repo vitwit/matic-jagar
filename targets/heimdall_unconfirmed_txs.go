@@ -11,8 +11,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetUnconfimedTxns to get the no of uncofirmed txns
-func GetUnconfimedTxns(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// UnconfimedTxns is to get the no of uncofirmed txns and stores it in db
+func UnconfimedTxns(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		log.Printf("Error: %v", err)

@@ -12,8 +12,9 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetValidatorVotingPower to get voting power of a validator
-func GetValidatorVotingPower(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// ValidatorVotingPower is to get voting power of a validator and stores it in db
+// Alerter will notify if there is any change in voting power
+func ValidatorVotingPower(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return

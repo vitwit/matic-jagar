@@ -10,8 +10,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// GetBorParams to get span duration and producer count
-func GetBorParams(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
+// BorParams is to get span duration, producer count and stores it in db
+func BorParams(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return

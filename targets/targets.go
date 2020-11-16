@@ -37,7 +37,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallRPCEndpoint + "/net_info?",
 				Method:   http.MethodGet,
 			},
-			Func:        GetNetInfo,
+			Func:        NetInfo,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -57,7 +57,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/bank/balances/" + cfg.ValDetails.SignerAddress,
 				Method:   http.MethodGet,
 			},
-			Func:        GetHeimdallCurrentBal,
+			Func:        HeimdallCurrentBal,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -77,7 +77,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals",
 				Method:   http.MethodGet,
 			},
-			Func:        GetProposals,
+			Func:        Proposals,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -87,7 +87,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/blocks/latest",
 				Method:   http.MethodGet,
 			},
-			Func:        GetLatestProposedBlockAndTime,
+			Func:        LatestProposedBlockAndTime,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -97,7 +97,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallExternalRPC + "/status?",
 				Method:   http.MethodGet,
 			},
-			Func:        GetNetworkLatestBlock,
+			Func:        NetworkLatestBlock,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -107,27 +107,27 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/staking/signer/" + cfg.ValDetails.SignerAddress,
 				Method:   http.MethodGet,
 			},
-			Func:        GetValidatorVotingPower,
+			Func:        ValidatorVotingPower,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
 			ExecutionType: "http",
-			Name:          "Block Time Difference",
+			Name:          "Calcualte Block Time Difference",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/blocks/latest",
 				Method:   http.MethodGet,
 			},
-			Func:        GetBlockTimeDifference,
+			Func:        BlockTimeDifference,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
 			ExecutionType: "http",
-			Name:          "Get Missed Blocks",
+			Name:          "Get Missed Blocks and send alerts",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/blocks/latest",
 				Method:   http.MethodGet,
 			},
-			Func:        GetMissedBlocks,
+			Func:        MissedBlocks,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -137,7 +137,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallRPCEndpoint + "/num_unconfirmed_txs?",
 				Method:   http.MethodGet,
 			},
-			Func:        GetUnconfimedTxns,
+			Func:        UnconfimedTxns,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -147,12 +147,12 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/auth/params",
 				Method:   http.MethodGet,
 			},
-			Func:        GetValidatorGas,
+			Func:        ValidatorGas,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
 			ExecutionType: "http",
-			Name:          "Get Validator status",
+			Name:          "Validator Status Alerts",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/staking/signer/" + cfg.ValDetails.SignerAddress,
 				Method:   http.MethodGet,
@@ -167,7 +167,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/checkpoints/count",
 				Method:   http.MethodGet,
 			},
-			Func:        GetTotalCheckPointsCount,
+			Func:        TotalCheckPointsCount,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -177,7 +177,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/checkpoints/latest",
 				Method:   http.MethodGet,
 			},
-			Func:        GetLatestCheckpoints,
+			Func:        LatestCheckpoints,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -187,7 +187,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/checkpoints/params",
 				Method:   http.MethodGet,
 			},
-			Func:        GetCheckpointsDuration,
+			Func:        CheckpointsDuration,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -197,7 +197,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/bor/params",
 				Method:   http.MethodGet,
 			},
-			Func:        GetBorParams,
+			Func:        BorParams,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -207,7 +207,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/bor/latest-span",
 				Method:   http.MethodGet,
 			},
-			Func:        GetBorLatestSpan,
+			Func:        BorLatestSpan,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -218,7 +218,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Method:   http.MethodPost,
 				Body:     types.Payload{Jsonrpc: "2.0", Method: "eth_blockNumber", ID: 83},
 			},
-			Func:        BorCurrentHeight,
+			Func:        CurrentBlockNumber,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -229,7 +229,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Method:   http.MethodPost,
 				Body:     types.Payload{Jsonrpc: "2.0", Method: "bor_getSigners", ID: 1},
 			},
-			Func:        GetBorMissedBlocks,
+			Func:        BorMissedBlocks,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -240,7 +240,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Method:   http.MethodPost,
 				Body:     types.Payload{Jsonrpc: "2.0", Method: "eth_getBalance", ID: 1},
 			},
-			Func:        GetEthBalance,
+			Func:        CurrentEthBalance,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -251,7 +251,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Method:   http.MethodPost,
 				Body:     types.Payload{Jsonrpc: "2.0", Method: "bor_getCurrentProposer", ID: 1},
 			},
-			Func:        GetBorCurrentProposer,
+			Func:        BorCurrentProposer,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -262,11 +262,11 @@ func InitTargets(cfg *config.Config) *types.Targets {
 		},
 		{
 			ExecutionType: "curl",
-			Name:          "Get Contract Address",
+			Name:          "Get and Store Validator Share Contract Address",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.EthRPCEndpoint,
 			},
-			Func:        GetContractAddress,
+			Func:        ContractAddress,
 			ScraperRate: cfg.Scraper.ContractRate,
 		},
 		{
@@ -295,7 +295,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Method:   http.MethodPost,
 				Body:     types.Payload{Jsonrpc: "2.0", Method: "eth_pendingTransactions", ID: 64},
 			},
-			Func:        GetBorPendingTransactions,
+			Func:        BorPendingTransactions,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -305,7 +305,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/bor/span/",
 				Method:   http.MethodGet,
 			},
-			Func:        GetBlockProducer,
+			Func:        BlockProducer,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
@@ -315,7 +315,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/checkpoints/",
 				Method:   http.MethodGet,
 			},
-			Func:        GetProposedCheckpoints,
+			Func:        ProposedCheckpoints,
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
