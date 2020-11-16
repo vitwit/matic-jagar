@@ -25,29 +25,31 @@ func ValidatorStatusAlert(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 		return
 	}
 
-	alertTime1 := cfg.RegularStatusAlerts.AlertTime1
-	alertTime2 := cfg.RegularStatusAlerts.AlertTime2
-
-	t1, _ := time.Parse(time.Kitchen, alertTime1)
-	t2, _ := time.Parse(time.Kitchen, alertTime2)
-
 	now := time.Now().UTC()
-	t := now.Format(time.Kitchen)
+	currentTime := now.Format(time.Kitchen)
 
-	a1 := t1.Format(time.Kitchen)
-	a2 := t2.Format(time.Kitchen)
+	var alertsArray []string
 
-	log.Println("a1, a2 and present time : ", a1, a2, t)
+	for _, value := range cfg.RegularStatusAlerts.AlertTimings {
+		t, _ := time.Parse(time.Kitchen, value)
+		alertTime := t.Format(time.Kitchen)
+
+		alertsArray = append(alertsArray, alertTime)
+	}
+
+	log.Printf("current time : %s, and Status Alert Timings : %v", currentTime, alertsArray)
 
 	valID := validatorResp.Result.ID
 	validatorStatus := validatorResp.Result.Jailed
 	log.Println("val status: ", validatorStatus)
 
 	if !validatorStatus {
-		if t == a1 || t == a2 {
-			_ = SendTelegramAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValDetails.ValidatorName), cfg)
-			_ = SendEmailAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValDetails.ValidatorName), cfg)
-			log.Println("Sent validator status alert")
+		for _, statusAlertTime := range alertsArray {
+			if currentTime == statusAlertTime {
+				_ = SendTelegramAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValDetails.ValidatorName), cfg)
+				_ = SendEmailAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValDetails.ValidatorName), cfg)
+				log.Println("Sent validator status alert")
+			}
 		}
 		_ = writeToInfluxDb(c, bp, "heimdall_val_status", map[string]string{}, map[string]interface{}{"status": 1, "val_id": valID})
 	} else {

@@ -59,10 +59,9 @@ type (
 		EnableEmailAlerts    string `mapstructure:"enable_email_alerts"`
 	}
 
-	// RegularStatusAlerts defines time-slots to receive validator status alerts (twice a day)
+	// RegularStatusAlerts defines time-slots to receive validator status alerts
 	RegularStatusAlerts struct {
-		AlertTime1 string `mapstructure:"alert_time1"`
-		AlertTime2 string `mapstructure:"alert_time2"`
+		AlertTimings []string `mapstructure:"alert_timings"`
 	}
 
 	// AlerterPreferences stores individual alert settings to enable/disable particular alert
@@ -92,8 +91,8 @@ type (
 		Endpoints           Endpoints           `mapstructure:"rpc_and_lcd_endpoints"`
 		ValDetails          ValDetails          `mapstructure:"validator_details"`
 		EnableAlerts        EnableAlerts        `mapstructure:"enable_alerts"`
-		RegularStatusAlerts RegularStatusAlerts `mapstructure:"daily_alert"`
-		AlerterPreferences  AlerterPreferences  `mapstructure:"choose_alerts"`
+		RegularStatusAlerts RegularStatusAlerts `mapstructure:"regular_status_alerts"`
+		AlerterPreferences  AlerterPreferences  `mapstructure:"alerter_preferences"`
 		AlertingThresholds  AlertingThreshold   `mapstructure:"alerting_threholds"`
 		Scraper             Scraper             `mapstructure:"scraper"`
 		Telegram            Telegram            `mapstructure:"telegram"`
