@@ -48,7 +48,7 @@ func ValidatorCaughtUp(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 	var synced int
 	caughtUp := !sync.Syncing
 	if !caughtUp {
-		if strings.ToUpper(cfg.ChooseAlerts.NodeSyncAlert) == "YES" {
+		if strings.ToUpper(cfg.AlerterPreferences.NodeSyncAlert) == "YES" {
 			_ = SendTelegramAlert("Your validator node is not synced!", cfg)
 			_ = SendEmailAlert("Your validator node is not synced!", cfg)
 		}
@@ -79,7 +79,7 @@ func Status(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	if &status.Result == nil {
-		if strings.ToUpper(cfg.ChooseAlerts.NodeStatusAlert) == "YES" {
+		if strings.ToUpper(cfg.AlerterPreferences.NodeStatusAlert) == "YES" {
 			_ = SendTelegramAlert("Your validator instance is not running", cfg)
 			_ = SendEmailAlert("Your validator instance is not running", cfg)
 		}

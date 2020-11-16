@@ -8,8 +8,8 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
-	"github.com/vitwit/matic-jagar/types"
 	"github.com/vitwit/matic-jagar/scraper"
+	"github.com/vitwit/matic-jagar/types"
 )
 
 // ValidatorStatusAlert to send alerts to telegram and email about validator status
@@ -25,8 +25,8 @@ func ValidatorStatusAlert(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 		return
 	}
 
-	alertTime1 := cfg.DailyAlert.AlertTime1
-	alertTime2 := cfg.DailyAlert.AlertTime2
+	alertTime1 := cfg.RegularStatusAlerts.AlertTime1
+	alertTime2 := cfg.RegularStatusAlerts.AlertTime2
 
 	t1, _ := time.Parse(time.Kitchen, alertTime1)
 	t2, _ := time.Parse(time.Kitchen, alertTime2)

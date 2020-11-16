@@ -9,7 +9,7 @@ import (
 )
 
 // SendTelegramAlert sends the alert to telegram account
-//by checking user's choice
+// check's alert setting before sending the alert
 func SendTelegramAlert(msg string, cfg *config.Config) error {
 	if strings.ToUpper(cfg.EnableAlerts.EnableTelegramAlerts) == "YES" {
 		if err := alerter.NewTelegramAlerter().SendTelegramMessage(msg, cfg.Telegram.BotToken, cfg.Telegram.ChatID); err != nil {

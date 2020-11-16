@@ -27,7 +27,7 @@ type (
 		ContractRate  string `mapstructure:"contract_rate"`
 	}
 
-	// InfluxDB details
+	// InfluxDB stores influxDB credntials
 	InfluxDB struct {
 		Port     string `mapstructure:"port"`
 		Database string `mapstructure:"database"`
@@ -35,7 +35,7 @@ type (
 		Password string `mapstructure:"password"`
 	}
 
-	// Endpoints is RPC and LCD endpoints struct
+	// Endpoints defines multiple API base-urls to fetch the data
 	Endpoints struct {
 		EthRPCEndpoint      string `mapstructure:"eth_rpc_endpoint"`
 		BorRPCEndpoint      string `mapstructure:"bor_rpc_end_point"`
@@ -45,7 +45,7 @@ type (
 		HeimdallExternalRPC string `mapstructure:"heimdall_external_rpc"`
 	}
 
-	// ValDetails struct
+	// ValDetails stores the validator meta details
 	ValDetails struct {
 		ValidatorHexAddress  string `mapstructure:"validator_hex_addr"`
 		SignerAddress        string `mapstructure:"signer_address"`
@@ -59,14 +59,14 @@ type (
 		EnableEmailAlerts    string `mapstructure:"enable_email_alerts"`
 	}
 
-	// DailyAlert which holds parameters to send validator statu alerts(twice a day)
-	DailyAlert struct {
+	// RegularStatusAlerts defines time-slots to receive validator status alerts (twice a day)
+	RegularStatusAlerts struct {
 		AlertTime1 string `mapstructure:"alert_time1"`
 		AlertTime2 string `mapstructure:"alert_time2"`
 	}
 
-	// ChooseAlerts struct
-	ChooseAlerts struct {
+	// AlerterPreferences stores individual alert settings to enable/disable particular alert
+	AlerterPreferences struct {
 		BalanceChangeAlerts string `mapstructure:"balance_change_alerts"`
 		VotingPowerAlerts   string `mapstructure:"voting_power_alerts"`
 		ProposalAlerts      string `mapstructure:"proposal_alerts"`
@@ -78,7 +78,8 @@ type (
 		EthLowBalanceAlert  string `mapstructure:"eth_low_balance_alert"`
 	}
 
-	// AlertingThreshold
+	//  AlertingThreshold defines threshold condition for different alert-cases.
+	// `Alerter` will send alerts if the condition reaches the threshold
 	AlertingThreshold struct {
 		NumPeersThreshold     int64   `mapstructure:"num_peers_threshold"`
 		MissedBlocksThreshold int64   `mapstructure:"missed_blocks_threshold"`
@@ -86,19 +87,19 @@ type (
 		EthBalanceThreshold   float64 `mapstructure:"eth_balance_threshold"`
 	}
 
-	// Config struct which holds all the configuration feilds and structs
+	// Config defines all the configurations required for the app
 	Config struct {
-		Endpoints          Endpoints         `mapstructure:"rpc_and_lcd_endpoints"`
-		ValDetails         ValDetails        `mapstructure:"validator_details"`
-		EnableAlerts       EnableAlerts      `mapstructure:"enable_alerts"`
-		DailyAlert         DailyAlert        `mapstructure:"daily_alert"`
-		ChooseAlerts       ChooseAlerts      `mapstructure:"choose_alerts"`
-		AlertingThresholds AlertingThreshold `mapstructure:"alerting_threholds"`
-		Scraper            Scraper           `mapstructure:"scraper"`
-		Telegram           Telegram          `mapstructure:"telegram"`
-		SendGrid           SendGrid          `mapstructure:"sendgrid"`
-		InfluxDB           InfluxDB          `mapstructure:"influxdb"`
-		PagerdutyEmail     string            `mapstructure:"pagerduty_email"`
+		Endpoints           Endpoints           `mapstructure:"rpc_and_lcd_endpoints"`
+		ValDetails          ValDetails          `mapstructure:"validator_details"`
+		EnableAlerts        EnableAlerts        `mapstructure:"enable_alerts"`
+		RegularStatusAlerts RegularStatusAlerts `mapstructure:"daily_alert"`
+		AlerterPreferences  AlerterPreferences  `mapstructure:"choose_alerts"`
+		AlertingThresholds  AlertingThreshold   `mapstructure:"alerting_threholds"`
+		Scraper             Scraper             `mapstructure:"scraper"`
+		Telegram            Telegram            `mapstructure:"telegram"`
+		SendGrid            SendGrid            `mapstructure:"sendgrid"`
+		InfluxDB            InfluxDB            `mapstructure:"influxdb"`
+		PagerdutyEmail      string              `mapstructure:"pagerduty_email"`
 	}
 )
 

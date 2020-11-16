@@ -21,7 +21,7 @@ func SendBorSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c 
 	}
 
 	if cfg.AlertingThresholds.MissedBlocksThreshold == 1 {
-		if strings.ToUpper(cfg.ChooseAlerts.MissedBlockAlerts) == "YES" {
+		if strings.ToUpper(cfg.AlerterPreferences.MissedBlockAlerts) == "YES" {
 			err = SendTelegramAlert(fmt.Sprintf("%s validator on bor node missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
 			err = SendEmailAlert(fmt.Sprintf("%s validator on bor node missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
 			err = writeToInfluxDb(c, bp, "bor_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": cbh, "range": cbh})
@@ -100,7 +100,7 @@ func GetBorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 				log.Printf("Error while sending missed block alert: %v", err)
 
 			}
-			if cfg.AlertingThresholds.MissedBlocksThreshold > 1 && strings.ToUpper(cfg.ChooseAlerts.MissedBlockAlerts) == "YES" {
+			if cfg.AlertingThresholds.MissedBlocksThreshold > 1 && strings.ToUpper(cfg.AlerterPreferences.MissedBlockAlerts) == "YES" {
 				if int64(len(blocksArray))-1 >= cfg.AlertingThresholds.MissedBlocksThreshold {
 					missedBlocks := strings.Split(blocks, ",")
 					_ = SendTelegramAlert(fmt.Sprintf("%s validator on bor node missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)

@@ -20,7 +20,7 @@ func SendSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c cli
 		return err
 	}
 
-	if cfg.AlertingThresholds.MissedBlocksThreshold == 1 && strings.ToUpper(cfg.ChooseAlerts.MissedBlockAlerts) == "YES" {
+	if cfg.AlertingThresholds.MissedBlocksThreshold == 1 && strings.ToUpper(cfg.AlerterPreferences.MissedBlockAlerts) == "YES" {
 		err = SendTelegramAlert(fmt.Sprintf("%s validator missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
 		err = SendEmailAlert(fmt.Sprintf("%s validator missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
 		err = writeToInfluxDb(c, bp, "heimdall_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": cbh, "range": cbh})
@@ -81,7 +81,7 @@ func GetMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 				log.Printf("Error while sending missed block alert: %v", err)
 
 			}
-			if cfg.AlertingThresholds.MissedBlocksThreshold > 1 && strings.ToUpper(cfg.ChooseAlerts.MissedBlockAlerts) == "YES" {
+			if cfg.AlertingThresholds.MissedBlocksThreshold > 1 && strings.ToUpper(cfg.AlerterPreferences.MissedBlockAlerts) == "YES" {
 				if int64(len(blocksArray))-1 >= cfg.AlertingThresholds.MissedBlocksThreshold {
 					missedBlocks := strings.Split(blocks, ",")
 					_ = SendTelegramAlert(fmt.Sprintf("%s validator missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
