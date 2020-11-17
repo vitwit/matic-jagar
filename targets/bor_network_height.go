@@ -3,7 +3,7 @@ package targets
 import (
 	"fmt"
 	"log"
-	"strconv"
+	"net/http"
 	"strings"
 
 	client "github.com/influxdata/influxdb1-client/v2"
@@ -38,15 +38,30 @@ func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client
 		_ = writeToInfluxDb(c, bp, "bor_network_height", map[string]string{}, map[string]interface{}{"block_height": networkHeight, "height_in_hex": cbh.Result})
 		log.Printf("Bor Network Block Height: %d", networkHeight)
 
-		// Calling function to get validator latest
-		// block height
-		validatorHeight := GetBorCurrentBlokHeight(cfg, c)
-		if validatorHeight == "" {
-			log.Println("Error while fetching validator block height of bor from db ", validatorHeight)
+		// Get validator block height
+		HTTPOptions := types.HTTPOptions{
+			Endpoint: cfg.Endpoints.BorRPCEndpoint,
+			Method:   http.MethodPost,
+			Body:     types.Payload{Jsonrpc: "2.0", Method: "eth_blockNumber", ID: 83},
+		}
+
+		cbh, err := scraper.EthBlockNumber(HTTPOptions)
+		if err != nil {
+			log.Printf("Error in bor validator height : %v", err)
 			return
 		}
 
-		vaidatorBlockHeight, _ := strconv.Atoi(validatorHeight)
+		if &cbh == nil || cbh.Result == "" {
+			log.Println("Got an empty response from bor rpc !")
+			return
+		}
+
+		vaidatorBlockHeight, err := HexToIntConversion(cbh.Result)
+		if err != nil {
+			log.Printf("Error while converting bor current height from hex to int : %v", err)
+			return
+		}
+
 		heightDiff := networkHeight - vaidatorBlockHeight
 
 		_ = writeToInfluxDb(c, bp, "bor_height_difference", map[string]string{}, map[string]interface{}{"difference": heightDiff})

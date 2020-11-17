@@ -3,6 +3,7 @@ package targets
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 	"strings"
 
@@ -38,13 +39,22 @@ func NetworkLatestBlock(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 		_ = writeToInfluxDb(c, bp, "heimdall_network_latest_block", map[string]string{}, map[string]interface{}{"block_height": networkBlockHeight})
 		log.Printf("Network height: %d", networkBlockHeight)
 
-		// Calling function to get validator latest
-		// block height
-		validatorHeight := GetValidatorBlock(cfg, c)
-		if validatorHeight == "" {
-			log.Println("Error while fetching validator block height from db ", validatorHeight)
+		// Get validator block height
+		ops.Endpoint = ops.Endpoint + cfg.Endpoints.HeimdallRPCEndpoint + "/status?"
+		ops.Endpoint = ops.Endpoint + http.MethodGet
+
+		valStatus, err := scraper.GetStatus(ops)
+		if err != nil {
+			log.Printf("Validator Status Error: %v", err)
 			return
 		}
+
+		if &valStatus == nil {
+			log.Println("Got an empty response from validator rpc !")
+			return
+		}
+
+		validatorHeight := valStatus.Result.SyncInfo.LatestBlockHeight
 
 		vaidatorBlockHeight, _ := strconv.Atoi(validatorHeight)
 		heightDiff := networkBlockHeight - vaidatorBlockHeight
