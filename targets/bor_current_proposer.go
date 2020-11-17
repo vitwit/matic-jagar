@@ -13,7 +13,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// BorCurrentProposer is to get current proposer, counts blocks produced count and stores it in db
+// BorCurrentProposer is to get current proposer and counts blocks proposed count and stores it in db
+// Block proposed count will be calculated if the signer address exists in proposer result
 func BorCurrentProposer(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := createBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {

@@ -3708,7 +3708,7 @@
       "targets": [
         {
           "groupBy": [],
-          "measurement": "matic_eth_balance",
+          "measurement": "bor_eth_balance",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",

@@ -8,7 +8,7 @@ import (
 )
 
 // HeimdallCurrentBal will request the given endpoint and unmarshals the data
-// and returns the account bal response or error if any
+// Returns the account bal response or error if any
 func HeimdallCurrentBal(ops types.HTTPOptions) (types.AccountBalResp, error) {
 	var accResp types.AccountBalResp
 	resp, err := HitHTTPTarget(ops)
@@ -27,7 +27,7 @@ func HeimdallCurrentBal(ops types.HTTPOptions) (types.AccountBalResp, error) {
 }
 
 // AuthParams will request the given endpoint and unmarshals the data
-// and returns the auth params such as max tax gas etc or error if any
+// Returns the auth params such as max tax gas etc or error if any
 func AuthParams(ops types.HTTPOptions) (types.AuthParams, error) {
 	var authParam types.AuthParams
 	resp, err := HitHTTPTarget(ops)
@@ -46,7 +46,7 @@ func AuthParams(ops types.HTTPOptions) (types.AuthParams, error) {
 }
 
 // LatestBlock will request the given endpoint and unmarshals the data
-// and returns the latest block details or error if any
+// Returns the latest block details or error if any
 func LatestBlock(ops types.HTTPOptions) (types.LatestBlock, error) {
 	var result types.LatestBlock
 	currResp, err := HitHTTPTarget(ops)
@@ -65,7 +65,7 @@ func LatestBlock(ops types.HTTPOptions) (types.LatestBlock, error) {
 }
 
 // GetTotalCheckPoints will request the given endpoint and unmarshals the data
-// and returns the latest block details or error if any
+// Returns the latest block details or error if any
 func GetTotalCheckPoints(ops types.HTTPOptions) (types.TotalCheckpoints, error) {
 	var result types.TotalCheckpoints
 	resp, err := HitHTTPTarget(ops)
@@ -84,7 +84,7 @@ func GetTotalCheckPoints(ops types.HTTPOptions) (types.TotalCheckpoints, error) 
 }
 
 // GetLatestCheckpoints will request the given endpoint and unmarshals the data
-// and returns the latest checkpoint details or error if any
+// Returns the latest checkpoint details or error if any
 func GetLatestCheckpoints(ops types.HTTPOptions) (types.LatestCheckpoints, error) {
 	var lcp types.LatestCheckpoints
 	resp, err := HitHTTPTarget(ops)
@@ -103,7 +103,7 @@ func GetLatestCheckpoints(ops types.HTTPOptions) (types.LatestCheckpoints, error
 }
 
 // GetCheckpointsDuration will request the given endpoint and unmarshals the data
-// and returns the latest checkpoint details or error if any
+// Returns the latest checkpoint details or error if any
 func GetCheckpointsDuration(ops types.HTTPOptions) (types.CheckpointsDuration, error) {
 	var cpd types.CheckpointsDuration
 	resp, err := HitHTTPTarget(ops)
@@ -122,7 +122,7 @@ func GetCheckpointsDuration(ops types.HTTPOptions) (types.CheckpointsDuration, e
 }
 
 // GetProposedCheckpoints will request the given endpoint and unmarshals the data
-// and returns the proposed checkpoint details or error if any
+// Returns the proposed checkpoint details or error if any
 func GetProposedCheckpoints(ops types.HTTPOptions) (types.ProposedCheckpoints, error) {
 	var proposedCP types.ProposedCheckpoints
 	resp, err := HitHTTPTarget(ops)
@@ -140,7 +140,7 @@ func GetProposedCheckpoints(ops types.HTTPOptions) (types.ProposedCheckpoints, e
 }
 
 // GetNetInfo will request the given endpoint and unmarshals the data
-// and returns the net info details such as no.of peers and addresses or error if any
+// Returns the net info details such as no.of peers and addresses or error if any
 func GetNetInfo(ops types.HTTPOptions) (types.NetInfo, error) {
 	var result types.NetInfo
 	resp, err := HitHTTPTarget(ops)
@@ -159,7 +159,7 @@ func GetNetInfo(ops types.HTTPOptions) (types.NetInfo, error) {
 }
 
 // GetStatus will request the given endpoint and unmarshals the data
-// and returns the status and addresses or error if any
+// Returns the status and addresses or error if any
 func GetStatus(ops types.HTTPOptions) (types.Status, error) {
 	var result types.Status
 	resp, err := HitHTTPTarget(ops)
@@ -178,7 +178,7 @@ func GetStatus(ops types.HTTPOptions) (types.Status, error) {
 }
 
 // GetCaughtUpStatus will request the given endpoint and unmarshals the data
-// and returns the validator caughtup status or error if any
+// Returns the validator caughtup status or error if any
 func GetCaughtUpStatus(ops types.HTTPOptions) (types.Caughtup, error) {
 	var sync types.Caughtup
 	resp, err := HitHTTPTarget(ops)
@@ -197,7 +197,7 @@ func GetCaughtUpStatus(ops types.HTTPOptions) (types.Caughtup, error) {
 }
 
 // GetVersion will request the given endpoint and unmarshals the data
-// and returns the application info such as version or error if any
+// Returns the application info such as version or error if any
 func GetVersion(ops types.HTTPOptions) (types.ApplicationInfo, error) {
 	var applicationInfo types.ApplicationInfo
 	resp, err := HitHTTPTarget(ops)
@@ -216,7 +216,7 @@ func GetVersion(ops types.HTTPOptions) (types.ApplicationInfo, error) {
 }
 
 // GetProposals will request the given endpoint and unmarshals the data
-// and returns the proposals or error if any
+// Returns the proposals or error if any
 func GetProposals(ops types.HTTPOptions) (types.Proposals, error) {
 	var p types.Proposals
 	resp, err := HitHTTPTarget(ops)
@@ -235,7 +235,7 @@ func GetProposals(ops types.HTTPOptions) (types.Proposals, error) {
 }
 
 // GetProposalVoters will request the given endpoint and unmarshals the data
-// and returns the voters of proposal or error if any
+// Returns the voters of proposal or error if any
 func GetProposalVoters(ops types.HTTPOptions) (types.ProposalVoters, error) {
 	var voters types.ProposalVoters
 	resp, err := HitHTTPTarget(ops)
@@ -254,7 +254,7 @@ func GetProposalVoters(ops types.HTTPOptions) (types.ProposalVoters, error) {
 }
 
 // GetProposalDepositors will request the given endpoint and unmarshals the data
-// and returns the deposits of a proposals or error if any
+// Returns the deposits of a proposals or error if any
 func GetProposalDepositors(ops types.HTTPOptions) (types.Depositors, error) {
 	var depositors types.Depositors
 	resp, err := HitHTTPTarget(ops)
@@ -273,7 +273,7 @@ func GetProposalDepositors(ops types.HTTPOptions) (types.Depositors, error) {
 }
 
 // GetUnconfirmedTxs will request the given endpoint and unmarshals the data
-// and returns the unconfirmed transactions or error if any
+// Returns the unconfirmed transactions or error if any
 func GetUnconfirmedTxs(ops types.HTTPOptions) (types.UnconfirmedTxns, error) {
 	var txs types.UnconfirmedTxns
 	resp, err := HitHTTPTarget(ops)
@@ -291,7 +291,7 @@ func GetUnconfirmedTxs(ops types.HTTPOptions) (types.UnconfirmedTxns, error) {
 }
 
 // GetValStatus will request the given endpoint and unmarshals the data
-// and returns thevalidator status whether it's voting/jailed or error if any
+// Returns thevalidator status whether it's voting/jailed or error if any
 func GetValStatus(ops types.HTTPOptions) (types.ValStatusResp, error) {
 	var result types.ValStatusResp
 	resp, err := HitHTTPTarget(ops)

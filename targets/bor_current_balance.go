@@ -57,7 +57,7 @@ func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 		}
 
 		balWithDenom := ethBalance + "ETH"
-		_ = writeToInfluxDb(c, bp, "matic_eth_balance", map[string]string{}, map[string]interface{}{"balance": balWithDenom, "amount": ethBalance})
+		_ = writeToInfluxDb(c, bp, "bor_eth_balance", map[string]string{}, map[string]interface{}{"balance": balWithDenom, "amount": ethBalance})
 		log.Printf("Eth Current Balance: %s", ethBalance)
 	} else {
 		log.Println("Got an empty response from eth rpc endpoint !")
@@ -68,7 +68,7 @@ func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 // GetBorBalanceFRomDB returns bor validator balance from db
 func GetBorBalanceFromDB(cfg *config.Config, c client.Client) string {
 	var balance string
-	q := client.NewQuery("SELECT last(amount) FROM matic_eth_balance", cfg.InfluxDB.Database, "")
+	q := client.NewQuery("SELECT last(amount) FROM bor_eth_balance", cfg.InfluxDB.Database, "")
 	if response, err := c.Query(q); err == nil && response.Error() == nil {
 		for _, r := range response.Results {
 			if len(r.Series) != 0 {

@@ -211,7 +211,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
-			ExecutionType: "curl cmd",
+			ExecutionType: "http",
 			Name:          "Get Current Block Height of Bor Node",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.BorRPCEndpoint,
@@ -222,7 +222,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
-			ExecutionType: "curl cmd",
+			ExecutionType: "http",
 			Name:          "Get Missed Blocks",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.BorRPCEndpoint,
@@ -233,7 +233,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
-			ExecutionType: "curl cmd",
+			ExecutionType: "http",
 			Name:          "Get Eth Balance",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.EthRPCEndpoint,
@@ -244,7 +244,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
-			ExecutionType: "curl cmd",
+			ExecutionType: "http",
 			Name:          "Get Bor Current Proposer",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.BorRPCEndpoint,
@@ -261,7 +261,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ScraperRate:   "2s",
 		},
 		{
-			ExecutionType: "curl",
+			ExecutionType: "http",
 			Name:          "Get and Store Validator Share Contract Address",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.EthRPCEndpoint,
@@ -270,7 +270,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ScraperRate: cfg.Scraper.ContractRate,
 		},
 		{
-			ExecutionType: "curl",
+			ExecutionType: "http",
 			Name:          "Get Commission Rate",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.EthRPCEndpoint,
@@ -279,7 +279,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
-			ExecutionType: "curl",
+			ExecutionType: "http",
 			Name:          "Get Validator Rewards",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.EthRPCEndpoint,
@@ -288,7 +288,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
-			ExecutionType: "curl cmd",
+			ExecutionType: "http",
 			Name:          "Get Bor Pending Transactions",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.BorRPCEndpoint,
@@ -319,7 +319,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
-			ExecutionType: "curl cmd",
+			ExecutionType: "http",
 			Name:          "Get Network Height of Bor",
 			HTTPOptions: types.HTTPOptions{
 				Endpoint: cfg.Endpoints.BorExternalRPC,
