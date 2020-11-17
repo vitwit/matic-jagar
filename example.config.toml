@@ -47,8 +47,10 @@ tg_chat_id = 228288878 # Replace your chat id here
 tg_bot_token = "1117273891:AAEtr3ZU5x4JRj5YSF4LBeu1fPF0T4xj-UI" # Replace your bot token here
 
 [sendgrid]
-sendgrid_token = "SG.J4dl16RST9OM9Nc2Tbvh6A.L_FPSzlqvBesPPQ06XGhVTTEt5Hs8TUzo9D1AZlRk"
-email_address = "xyz@domain.com"
+sendgrid_token = "SG.J4dl16RST9OM9Nc2Tbvh6A.L_FPSzlqvBesPPQP72hATEt5Hs8TUzo9Dl3ohG8Rk"
+to_email_address = "xyz@domain.com"
+account_email = "xyz@domain.com"
+sendgrid_account_name = "xyz"
 
 [influxdb]
 port = "8086"

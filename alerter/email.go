@@ -6,10 +6,10 @@ import (
 )
 
 // SendEmail to send mail alert
-func (e emailAlert) SendEmail(msg, token, toEmail string) error {
-	from := mail.NewEmail("ICF Tool", "icf@vitwit.com")
+func (e emailAlert) SendEmail(msg, token, toEmail, fromEmail, accountName string) error {
+	from := mail.NewEmail(accountName, fromEmail) //mail.NewEmail("Matic Tool", "matic@vitwit.com")
 	subject := msg
-	to := mail.NewEmail("IFC Tool", toEmail)
+	to := mail.NewEmail(accountName, toEmail) //mail.NewEmail("Matic Tool", toEmail)
 	plainTextContent := msg
 	htmlContent := msg
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)

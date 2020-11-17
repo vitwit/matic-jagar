@@ -86,12 +86,6 @@ func BorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 
 		if !addrExists {
 
-			// // Calling SendEmeregencyAlerts to send emeregency alerts
-			// err := SendEmeregencyAlerts(cfg, c, cbh)
-			// if err != nil {
-			// 	log.Println("Error while sending emeregecny missed block alerts...", err)
-			// }
-
 			blocks := GetBorContinuousMissedBlock(cfg, c)
 			currentHeightFromDb := GetBorlatestCurrentHeightFromDB(cfg, c)
 			blocksArray := strings.Split(blocks, ",")

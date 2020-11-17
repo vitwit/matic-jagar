@@ -25,19 +25,10 @@ func SendTelegramAlert(msg string, cfg *config.Config) error {
 //by checking user's choice
 func SendEmailAlert(msg string, cfg *config.Config) error {
 	if strings.ToUpper(strconv.FormatBool(cfg.EnableAlerts.EnableEmailAlerts)) == "TRUE" {
-		if err := alerter.NewEmailAlerter().SendEmail(msg, cfg.SendGrid.Token, cfg.SendGrid.EmailAddress); err != nil {
+		fromMail := cfg.SendGrid.SendgridEmail
+		accountName := cfg.SendGrid.SendgridName
+		if err := alerter.NewEmailAlerter().SendEmail(msg, cfg.SendGrid.Token, cfg.SendGrid.ToEmailAddress, fromMail, accountName); err != nil {
 			log.Printf("failed to send email alert: %v", err)
-			return err
-		}
-	}
-	return nil
-}
-
-// SendEmergencyEmailAlert sends alert pager duty account
-func SendEmergencyEmailAlert(msg string, cfg *config.Config) error {
-	if strings.ToUpper(strconv.FormatBool(cfg.EnableAlerts.EnableEmailAlerts)) == "TRUE" {
-		if err := alerter.NewEmailAlerter().SendEmail(msg, cfg.SendGrid.Token, cfg.PagerdutyEmail); err != nil {
-			log.Printf("failed to send email alert to pager duty: %v", err)
 			return err
 		}
 	}

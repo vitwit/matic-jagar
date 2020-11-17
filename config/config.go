@@ -15,8 +15,10 @@ type (
 
 	// SendGrid stores sendgrid API credentials
 	SendGrid struct {
-		Token        string `mapstructure:"sendgrid_token"`
-		EmailAddress string `mapstructure:"email_address"`
+		Token          string `mapstructure:"sendgrid_token"`
+		ToEmailAddress string `mapstructure:"to_email_address"`
+		SendgridEmail  string `mapstructure:"account_email"`
+		SendgridName   string `mapstructure:"sendgrid_account_name"`
 	}
 
 	// Scraper defines the time intervals for multiple scrapers to fetch the data
@@ -56,8 +58,9 @@ type (
 
 	// EnableAlerts struct which holds options to enalbe/disable alerts
 	EnableAlerts struct {
-		EnableTelegramAlerts bool `mapstructure:"enable_telegram_alerts"`
-		EnableEmailAlerts    bool `mapstructure:"enable_email_alerts"`
+		EnableTelegramAlerts  bool `mapstructure:"enable_telegram_alerts"`
+		EnableEmailAlerts     bool `mapstructure:"enable_email_alerts"`
+		EnablePagerdutyAlerts bool `mapstructure:"enable_pagerduty_alerts"`
 	}
 
 	// RegularStatusAlerts defines time-slots to receive validator status alerts
