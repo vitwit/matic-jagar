@@ -52,5 +52,6 @@ email_address = "xyz@domain.com"
 
 [influxdb]
 port = "8086"
+ip = "http://localhost"
 database = "matic"
 username = ""

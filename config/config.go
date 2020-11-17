@@ -30,6 +30,7 @@ type (
 	// InfluxDB stores influxDB credntials
 	InfluxDB struct {
 		Port     string `mapstructure:"port"`
+		IP       string `mapstructure:"ip"`
 		Database string `mapstructure:"database"`
 		Username string `mapstructure:"username"`
 		Password string `mapstructure:"password"`
