@@ -65,6 +65,9 @@ func ContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 
 			_ = writeToInfluxDb(c, bp, "heimdall_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
 			log.Printf("Contract Address: %s and Self Stake Amount : %s", contractAddress, amount)
+		} else {
+			log.Println("Got an empty response from eth rpc endpoint ! ")
+			return
 		}
 	}
 }
@@ -94,7 +97,6 @@ func GetCommissionRate(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 				return
 			}
 
-			// rate := ConvertWeiToEth(commissionRate) + MaticDenom
 			rate := ConvertWeiToEth(commissionRate)
 
 			var fee float64

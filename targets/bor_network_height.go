@@ -58,6 +58,9 @@ func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client
 			_ = SendEmailAlert(fmt.Sprintf("Bor Block Difference Alert : Block difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
 			log.Println("Sent alert of bor block height difference")
 		}
+	} else {
+		log.Println("Got an empty response from bor external rpc !")
+		return
 	}
 
 }

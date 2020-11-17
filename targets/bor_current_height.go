@@ -34,6 +34,9 @@ func CurrentBlockNumber(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 
 		_ = writeToInfluxDb(c, bp, "bor_current_height", map[string]string{}, map[string]interface{}{"block_height": height, "height_in_hex": cbh.Result})
 		log.Printf("Bor Current Block Height: %d", height)
+	} else {
+		log.Println("Got an empty response from bor rpc !")
+		return
 	}
 
 }

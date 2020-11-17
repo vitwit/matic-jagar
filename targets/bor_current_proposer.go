@@ -26,6 +26,11 @@ func BorCurrentProposer(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 		return
 	}
 
+	if &currentProposer == nil {
+		log.Println("Got an empty response from bor rpc !")
+		return
+	}
+
 	prevCount := GetBlocksProducedCountFromDB(cfg, c)
 	if prevCount == "" {
 		prevCount = "0"

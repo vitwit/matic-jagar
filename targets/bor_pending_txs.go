@@ -28,5 +28,8 @@ func BorPendingTransactions(ops types.HTTPOptions, cfg *config.Config, c client.
 
 		_ = writeToInfluxDb(c, bp, "bor_pending_txns", map[string]string{}, map[string]interface{}{"pending_txns": pendingTxns})
 		log.Printf("Pending Transactions: %d", pendingTxns)
+	} else {
+		log.Println("Got an empty response from bor rpc !")
+		return
 	}
 }

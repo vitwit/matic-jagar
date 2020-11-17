@@ -28,6 +28,11 @@ func NetInfo(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
+	if &ni.Result == nil {
+		log.Println("Got an empty response from validator rpc !")
+		return
+	}
+
 	numPeers, err := strconv.Atoi(ni.Result.NPeers)
 	if err != nil {
 		log.Printf("Error converting num_peers to int: %v", err)

@@ -58,6 +58,9 @@ func NetworkLatestBlock(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 			_ = SendEmailAlert(fmt.Sprintf("Heimdall Block Difference Alert : Block difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
 			log.Println("Sent alert of block height difference")
 		}
+	} else {
+		log.Println("Got an empty response from external rpc !")
+		return
 	}
 }
 

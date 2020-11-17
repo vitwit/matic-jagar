@@ -25,6 +25,11 @@ func UnconfimedTxns(ops types.HTTPOptions, cfg *config.Config, c client.Client) 
 		return
 	}
 
+	if &unconfirmedTxns.Result == nil {
+		log.Println("Got an empty response from validator rpc !")
+		return
+	}
+
 	totalUnconfirmedTxns := unconfirmedTxns.Result.Total
 
 	_ = writeToInfluxDb(c, bp, "heimdall_unconfirmed_txns", map[string]string{}, map[string]interface{}{"unconfirmed_txns": totalUnconfirmedTxns})

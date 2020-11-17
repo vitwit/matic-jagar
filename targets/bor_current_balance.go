@@ -59,6 +59,9 @@ func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 		balWithDenom := ethBalance + "ETH"
 		_ = writeToInfluxDb(c, bp, "matic_eth_balance", map[string]string{}, map[string]interface{}{"balance": balWithDenom, "amount": ethBalance})
 		log.Printf("Eth Current Balance: %s", ethBalance)
+	} else {
+		log.Println("Got an empty response from eth rpc endpoint !")
+		return
 	}
 }
 
