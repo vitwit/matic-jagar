@@ -56,8 +56,8 @@ type (
 
 	// EnableAlerts struct which holds options to enalbe/disable alerts
 	EnableAlerts struct {
-		EnableTelegramAlerts string `mapstructure:"enable_telegram_alerts"`
-		EnableEmailAlerts    string `mapstructure:"enable_email_alerts"`
+		EnableTelegramAlerts bool `mapstructure:"enable_telegram_alerts"`
+		EnableEmailAlerts    bool `mapstructure:"enable_email_alerts"`
 	}
 
 	// RegularStatusAlerts defines time-slots to receive validator status alerts

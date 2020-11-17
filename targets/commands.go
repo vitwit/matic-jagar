@@ -3,6 +3,7 @@ package targets
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -14,7 +15,7 @@ import (
 
 // TelegramAlerting
 func TelegramAlerting(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	if strings.ToUpper(cfg.EnableAlerts.EnableTelegramAlerts) == "NO" {
+	if strings.ToUpper(strconv.FormatBool(cfg.EnableAlerts.EnableTelegramAlerts)) == "FALSE" {
 		return
 	}
 	bot, err := tgbotapi.NewBotAPI(cfg.Telegram.BotToken)
