@@ -38,7 +38,6 @@ eth_balance_threshold = 0.1
 
 [scraper]
 rate = "6s"
-port = ":8080"
 validator_rate = "60s"
 contract_rate = "300s"
 

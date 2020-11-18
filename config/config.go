@@ -9,32 +9,45 @@ import (
 type (
 	// Telegram bot details struct
 	Telegram struct {
+		// BotToken is the token of your telegram bot
 		BotToken string `mapstructure:"tg_bot_token"`
-		ChatID   int64  `mapstructure:"tg_chat_id"`
+		// ChatID is the id of telegarm chat which will be used to get alerts
+		ChatID int64 `mapstructure:"tg_chat_id"`
 	}
 
 	// SendGrid stores sendgrid API credentials
 	SendGrid struct {
-		Token          string `mapstructure:"sendgrid_token"`
+		// Token of sendgrid account
+		Token string `mapstructure:"sendgrid_token"`
+		// ToEmailAddress is the email to which all the alerts will be sent
 		ToEmailAddress string `mapstructure:"to_email_address"`
-		SendgridEmail  string `mapstructure:"account_email"`
-		SendgridName   string `mapstructure:"sendgrid_account_name"`
+		// SendgridEmail is the email of sendgrid account which will be used to send mail alerts
+		SendgridEmail string `mapstructure:"account_email"`
+		// SendgridName is the name of sendgrid account which will be used to send mail alerts
+		SendgridName string `mapstructure:"sendgrid_account_name"`
 	}
 
 	// Scraper defines the time intervals for multiple scrapers to fetch the data
 	Scraper struct {
-		Rate          string `mapstructure:"rate"`
-		Port          string `mapstructure:"port"`
+		// Rate is to call and get the data for specified targets on that particular time interval
+		Rate string `mapstructure:"rate"`
+		// ValidatorRate is to call and fetch the data from validatorStatus target on that time interval
 		ValidatorRate string `mapstructure:"validator_rate"`
-		ContractRate  string `mapstructure:"contract_rate"`
+		// ContractRate is to call and fetch the data from smart contract realted targets on that time interval
+		ContractRate string `mapstructure:"contract_rate"`
 	}
 
 	// InfluxDB stores influxDB credntials
 	InfluxDB struct {
-		Port     string `mapstructure:"port"`
-		IP       string `mapstructure:"ip"`
+		// Port on which influxdb is running
+		Port string `mapstructure:"port"`
+		// IP to connect to influxdb where it is running
+		IP string `mapstructure:"ip"`
+		// Database is the name of the influxdb database to store the data
 		Database string `mapstructure:"database"`
+		// Username is the name of the user of influxdb
 		Username string `mapstructure:"username"`
+		// Password of influxdb
 		Password string `mapstructure:"password"`
 	}
 
@@ -50,9 +63,13 @@ type (
 
 	// ValDetails stores the validator meta details
 	ValDetails struct {
-		ValidatorHexAddress  string `mapstructure:"validator_hex_addr"`
-		SignerAddress        string `mapstructure:"signer_address"`
-		ValidatorName        string `mapstructure:"validator_name"`
+		// ValidatorHexAddress will be used to get account balances, proposals and used to check missed blocks, etc
+		ValidatorHexAddress string `mapstructure:"validator_hex_addr"`
+		// SignerAddress will be used to get latest block, current poposer etc
+		SignerAddress string `mapstructure:"signer_address"`
+		// ValidatorName is the moniker of your validator which will be used to display in alerts messages
+		ValidatorName string `mapstructure:"validator_name"`
+		// StakeManagerContract is the address of stake manager contract which will be used to get vaidator share contract etc
 		StakeManagerContract string `mapstructure:"stake_manager_contract"`
 	}
 
@@ -65,6 +82,7 @@ type (
 
 	// RegularStatusAlerts defines time-slots to receive validator status alerts
 	RegularStatusAlerts struct {
+		// AlertTimings is the array of time slots to send validator status alerts
 		AlertTimings []string `mapstructure:"alert_timings"`
 	}
 
@@ -84,10 +102,16 @@ type (
 	//  AlertingThreshold defines threshold condition for different alert-cases.
 	// `Alerter` will send alerts if the condition reaches the threshold
 	AlertingThreshold struct {
-		NumPeersThreshold     int64   `mapstructure:"num_peers_threshold"`
-		MissedBlocksThreshold int64   `mapstructure:"missed_blocks_threshold"`
-		BlockDiffThreshold    int64   `mapstructure:"block_diff_threshold"`
-		EthBalanceThreshold   float64 `mapstructure:"eth_balance_threshold"`
+		// NumPeersThreshold is to alert when the connected peers falls below this threshold
+		NumPeersThreshold int64 `mapstructure:"num_peers_threshold"`
+		// MissedBlocksThreshold is to alert when validator misses continuous missed bocks
+		// Alerter will send alerts when the missed blocks count reaches the configured threshold
+		MissedBlocksThreshold int64 `mapstructure:"missed_blocks_threshold"`
+		// BlockDiffThreshold is to send alerts when the difference b/w network and validator
+		// block height reaches the given threshold
+		BlockDiffThreshold int64 `mapstructure:"block_diff_threshold"`
+		// EthBalanceThreshold is to send alerts when the etherium balance falls below the configured threshold
+		EthBalanceThreshold float64 `mapstructure:"eth_balance_threshold"`
 	}
 
 	// Config defines all the configurations required for the app
@@ -102,7 +126,6 @@ type (
 		Telegram            Telegram            `mapstructure:"telegram"`
 		SendGrid            SendGrid            `mapstructure:"sendgrid"`
 		InfluxDB            InfluxDB            `mapstructure:"influxdb"`
-		PagerdutyEmail      string              `mapstructure:"pagerduty_email"`
 	}
 )
 
