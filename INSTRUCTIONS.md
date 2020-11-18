@@ -223,7 +223,7 @@ Information on all the dashboards can be found [here](./docs/dashboard-desc.md)
 
 - Select the datasources and click on import.
 
-- Follow the same steps to import **system_monitoring_metrics.json**, **heimdall_network_metrics.json**, **bor.json**, **summary.json**. 
+- Follow the same steps to import **system_monitoring_metrics.json**, **setup_overview.json**, **bor.json**, **summary.json**. 
 
 
 - *For more info about grafana dashboard imports you can refer https://grafana.com/docs/grafana/latest/reference/export_import/*
