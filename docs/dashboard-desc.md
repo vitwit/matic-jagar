@@ -54,15 +54,14 @@ This dashboard displays a quick information summary of validator details and sys
 - Validator summary (Node Status, Validator Status, Voting Power, Height Difference and No.Of peers) are the metrics being displayed from Validator details.
 - Server uptime,CPU usage, RAM Usage, Memory usage and information about disk usage are the metrics being displayed from System details.
  
-### 4. Heimdall network metrics
+### 4. Setup Overview
 
-This dashboard displays the tendermint prometheus metrics.
+This dashboard displays the tendermint prometheus metrics of validator and sentries.
 
- - Total txs : Count of txs on the network
- - Block size : Graphical display of block size.
- - Validators : Gauge display of count of **Active**, **Missing** and **Byzantine** validators.
- - Failed txs : Count of failed txs on the node
- - Total network I/O : Bar graph of total network throughput. 
+ - Block height : Displays the current block height of validator and sentries. 
+ - Block time : Displays the current block time of validator and sentries.
+ - Unconfirmed txs : Count of txs in mempool of of validator and sentries.
+ - Connected peers : Count of number of peers connected to validator and sentries. 
 ### 5. System Monitoring Metrics
 These metrics are are collected by the node_exporter and displays all the metrics related to 
  
