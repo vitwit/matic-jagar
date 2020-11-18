@@ -63,11 +63,11 @@ $ sudo cp prometheus-2.22.1.linux-amd64/prometheus $GOBIN
 $ sudo cp prometheus-2.22.1.linux-amd64/prometheus.yml $HOME
 ```
 
-- Add the following in prometheus.yml using your editor of choice
+- Add the following in prometheus.yml using your editor of choice and replace the values of `<sentry-IP>` with the IP addresses of your sentries.
 
 ```sh
  scrape_configs:
- 
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: 'validator'
 
     static_configs:
@@ -78,6 +78,16 @@ $ sudo cp prometheus-2.22.1.linux-amd64/prometheus.yml $HOME
 
     static_configs:
     - targets: ['localhost:9100']
+
+  - job_name: 'sentry-1'
+
+    static_configs:
+    - targets: ['<sentry-1-IP>:26660']
+
+  - job_name: 'sentry-2'
+
+    static_configs:
+    - targets: ['<sentry-2-IP>:26660']
 ```
 
 - Setup Prometheus System service
@@ -185,7 +195,7 @@ The repo provides five dashboards
 2. Bor - Displays the bor metrics of validator which are calculated and stored in influxdb.
 3. System Metrics - Displays the metrics related to your validator server on which this tool is hosted on.
 4. Summary - Displays a quick overview of heimdall, bor and system metrics.
-5. Heimdall network metrics - Displays tendermint prometheus metrics emmitted by the node.
+5. Setup Overview - Displays current block height, block time, number of connected peers and number of unconfirmed transactions.
 
 Information on all the dashboards can be found [here](./docs/dashboard-desc.md)
 
