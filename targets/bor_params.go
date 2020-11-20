@@ -25,6 +25,9 @@ func BorParams(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 
 	spanDuration := params.Result.SpanDuration
 
-	_ = writeToInfluxDb(c, bp, "bor_params", map[string]string{}, map[string]interface{}{"span_duration": spanDuration})
+	err = writeToInfluxDb(c, bp, "bor_params", map[string]string{}, map[string]interface{}{"span_duration": spanDuration})
+	if err != nil {
+		log.Printf("Error while storing span duration : %v", err)
+	}
 	log.Printf("Span Duration: %d ", spanDuration)
 }

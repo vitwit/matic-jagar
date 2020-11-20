@@ -9,7 +9,7 @@ heimdall_external_rpc = "http://<sentry-ip>:26657" # Replace the IP address with
 [validator_details]
 validator_hex_addr = "E4B8E9225842401AD16D4D826732953DAF07C7E2" # Replace this address with your validator hex address. You can get it by running this cmd on validator- heimdallcli status | jq .validator_info.address
 signer_address = "0xE4b8e9222705621aD16d4d826732953DAf07C7E2" # Replace this with your valdiator signer address
-validator_name = "Matic" # Moniker
+validator_name = "Matic" # Yur validator moniker
 stake_manager_contract = "0x00200eA4Ee292E253E6Ca07dBA5EdC07c8Aa37A3" # Stake manager contract address on Goerli testnet
 
 [enable_alerts]
