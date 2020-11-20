@@ -103,7 +103,7 @@ Description=Prometheus
 After=network-online.target
 
 [Service]
-User=<user>
+Type=simple
 ExecStart=/home/<user>/go/bin/prometheus --config.file=/home/<user>/prometheus.yml
 Restart=always
 RestartSec=3
@@ -144,7 +144,7 @@ Description=Node_exporter
 After=network-online.target
 
 [Service]
-User=<user>
+Type=simple
 ExecStart=/home/<user>/go/bin/node_exporter
 Restart=always
 RestartSec=3
