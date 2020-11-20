@@ -47,7 +47,7 @@ tg_bot_token = "1117273891:AAEtr3ZU5x4JRj5YSF4LBeu1fPF0T4xj-UI" # Replace your b
 
 [sendgrid]
 sendgrid_token = "SG.J4dl16RST9OM9Nc2Tbvh6A.L_FPSzlqvBesPPQP72hATEt5Hs8TUzo9Dl3ohG8Rk"
-to_email_address = "xyz@domain.com"
+receiver_email_address = "xyz@example.com"
 account_email = "xyz@domain.com"
 sendgrid_account_name = "xyz"
 

@@ -25,9 +25,7 @@ func SendTelegramAlert(msg string, cfg *config.Config) error {
 //by checking user's choice
 func SendEmailAlert(msg string, cfg *config.Config) error {
 	if strings.ToUpper(strconv.FormatBool(cfg.EnableAlerts.EnableEmailAlerts)) == "TRUE" {
-		fromMail := cfg.SendGrid.SendgridEmail
-		accountName := cfg.SendGrid.SendgridName
-		if err := alerter.NewEmailAlerter().SendEmail(msg, cfg.SendGrid.Token, cfg.SendGrid.ToEmailAddress, fromMail, accountName); err != nil {
+		if err := alerter.NewEmailAlerter().SendEmail(msg, cfg); err != nil {
 			log.Printf("failed to send email alert: %v", err)
 			return err
 		}

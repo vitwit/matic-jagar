@@ -20,7 +20,7 @@ type (
 		// Token of sendgrid account
 		Token string `mapstructure:"sendgrid_token"`
 		// ToEmailAddress is the email to which all the alerts will be sent
-		ToEmailAddress string `mapstructure:"to_email_address"`
+		ReceiverEmailAddress string `mapstructure:"receiver_email_address"`
 		// SendgridEmail is the email of sendgrid account which will be used to send mail alerts
 		SendgridEmail string `mapstructure:"account_email"`
 		// SendgridName is the name of sendgrid account which will be used to send mail alerts
