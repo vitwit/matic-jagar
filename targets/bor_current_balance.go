@@ -7,6 +7,7 @@ import (
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
+	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
@@ -42,8 +43,8 @@ func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 		}
 		if prevBal != ethBalance {
 			if strings.ToUpper(cfg.AlerterPreferences.BalanceChangeAlerts) == "YES" {
-				_ = SendTelegramAlert(fmt.Sprintf("Bor Balance Change Alert : Your account balance has changed from  %s to %s", prevBal+"ETH", ethBalance+"ETH"), cfg)
-				_ = SendEmailAlert(fmt.Sprintf("Bor Balance Change Alert : Your Bor account balance has changed from  %s to %s", prevBal+"ETH", ethBalance+"ETH"), cfg)
+				_ = alerter.SendTelegramAlert(fmt.Sprintf("Bor Balance Change Alert : Your account balance has changed from  %s to %s", prevBal+"ETH", ethBalance+"ETH"), cfg)
+				_ = alerter.SendEmailAlert(fmt.Sprintf("Bor Balance Change Alert : Your Bor account balance has changed from  %s to %s", prevBal+"ETH", ethBalance+"ETH"), cfg)
 			}
 		}
 
@@ -51,8 +52,8 @@ func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 
 		if ethBalance <= balThreshold {
 			if strings.ToUpper(cfg.AlerterPreferences.EthLowBalanceAlert) == "YES" {
-				_ = SendTelegramAlert(fmt.Sprintf("Eth Low Balance Alert : Your account balance has reached to your configured thershold %s", ethBalance+"ETH"), cfg)
-				_ = SendEmailAlert(fmt.Sprintf("Eth Low Balance Alert : Your Bor account balance has  reached to your configured thershold %s", ethBalance+"ETH"), cfg)
+				_ = alerter.SendTelegramAlert(fmt.Sprintf("Eth Low Balance Alert : Your account balance has reached to your configured thershold %s", ethBalance+"ETH"), cfg)
+				_ = alerter.SendEmailAlert(fmt.Sprintf("Eth Low Balance Alert : Your Bor account balance has  reached to your configured thershold %s", ethBalance+"ETH"), cfg)
 			}
 		}
 

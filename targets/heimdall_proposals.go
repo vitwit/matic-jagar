@@ -8,6 +8,7 @@ import (
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
+	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
@@ -74,14 +75,14 @@ func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 				_ = writeToInfluxDb(c, bp, "heimdall_proposals", tag, fields)
 
 				if proposal.ProposalStatus == "Rejected" || proposal.ProposalStatus == "Passed" {
-					_ = SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been %s", proposal.ID, proposal.ProposalStatus), cfg)
-					_ = SendEmailAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been = %s", proposal.ID, proposal.ProposalStatus), cfg)
+					_ = alerter.SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been %s", proposal.ID, proposal.ProposalStatus), cfg)
+					_ = alerter.SendEmailAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been = %s", proposal.ID, proposal.ProposalStatus), cfg)
 				} else if proposal.ProposalStatus == "VotingPeriod" {
-					_ = SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
-					_ = SendEmailAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
+					_ = alerter.SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
+					_ = alerter.SendEmailAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
 				} else {
-					_ = SendTelegramAlert(fmt.Sprintf("A new proposal "+proposal.Content.Type+" has been added to "+proposal.ProposalStatus+" with proposal id = %s", proposal.ID), cfg)
-					_ = SendEmailAlert(fmt.Sprintf("A new proposal "+proposal.Content.Type+" has been added to "+proposal.ProposalStatus+" with proposal id = %s", proposal.ID), cfg)
+					_ = alerter.SendTelegramAlert(fmt.Sprintf("A new proposal "+proposal.Content.Type+" has been added to "+proposal.ProposalStatus+" with proposal id = %s", proposal.ID), cfg)
+					_ = alerter.SendEmailAlert(fmt.Sprintf("A new proposal "+proposal.Content.Type+" has been added to "+proposal.ProposalStatus+" with proposal id = %s", proposal.ID), cfg)
 				}
 			} else {
 				q := client.NewQuery(fmt.Sprintf("DELETE FROM heimdall_proposals WHERE id = '%s'", proposal.ID), cfg.InfluxDB.Database, "")
@@ -95,11 +96,11 @@ func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 				_ = writeToInfluxDb(c, bp, "heimdall_proposals", tag, fields)
 				if proposal.ProposalStatus != proposalStatus {
 					if proposal.ProposalStatus == "Rejected" || proposal.ProposalStatus == "Passed" {
-						_ = SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been %s", proposal.ID, proposal.ProposalStatus), cfg)
-						_ = SendEmailAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been = %s", proposal.ID, proposal.ProposalStatus), cfg)
+						_ = alerter.SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been %s", proposal.ID, proposal.ProposalStatus), cfg)
+						_ = alerter.SendEmailAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been = %s", proposal.ID, proposal.ProposalStatus), cfg)
 					} else {
-						_ = SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
-						_ = SendEmailAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
+						_ = alerter.SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
+						_ = alerter.SendEmailAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
 					}
 				}
 			}
@@ -176,8 +177,8 @@ func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
 			log.Println("timeDiff...", timeDiff.Hours())
 
 			if timeDiff.Hours() <= 24 {
-				_ = SendTelegramAlert(fmt.Sprintf("%s validator has not voted on proposal = %s", cfg.ValDetails.ValidatorName, proposal.ID), cfg)
-				_ = SendEmailAlert(fmt.Sprintf("%s validator has not voted on proposal = %s", cfg.ValDetails.ValidatorName, proposal.ID), cfg)
+				_ = alerter.SendTelegramAlert(fmt.Sprintf("%s validator has not voted on proposal = %s", cfg.ValDetails.ValidatorName, proposal.ID), cfg)
+				_ = alerter.SendEmailAlert(fmt.Sprintf("%s validator has not voted on proposal = %s", cfg.ValDetails.ValidatorName, proposal.ID), cfg)
 
 				log.Println("Sent alert of voting period proposals")
 			}

@@ -7,6 +7,7 @@ import (
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
+	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
@@ -31,8 +32,8 @@ func ValidatorVotingPower(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 	previousVP, _ := strconv.Atoi(prevVotingPower)
 
 	if previousVP != vp {
-		_ = SendTelegramAlert(fmt.Sprintf("Voting Power Alert : Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
-		_ = SendEmailAlert(fmt.Sprintf("Voting Power Alert : Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
+		_ = alerter.SendTelegramAlert(fmt.Sprintf("Voting Power Alert : Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
+		_ = alerter.SendEmailAlert(fmt.Sprintf("Voting Power Alert : Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
 	}
 
 	_ = writeToInfluxDb(c, bp, "heimdall_voting_power", map[string]string{}, map[string]interface{}{"power": vp})

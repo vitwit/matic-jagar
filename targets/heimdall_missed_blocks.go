@@ -8,6 +8,7 @@ import (
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
+	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
@@ -21,8 +22,8 @@ func SendSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c cli
 	}
 
 	if cfg.AlertingThresholds.MissedBlocksThreshold == 1 && strings.ToUpper(cfg.AlerterPreferences.MissedBlockAlerts) == "YES" {
-		err = SendTelegramAlert(fmt.Sprintf("%s validator missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
-		err = SendEmailAlert(fmt.Sprintf("%s validator missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
+		err = alerter.SendTelegramAlert(fmt.Sprintf("%s validator missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
+		err = alerter.SendEmailAlert(fmt.Sprintf("%s validator missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
 		err = writeToInfluxDb(c, bp, "heimdall_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": cbh, "range": cbh})
 		err = writeToInfluxDb(c, bp, "matic_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
 		err = writeToInfluxDb(c, bp, "heimdall_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
@@ -80,8 +81,8 @@ func MissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 			if cfg.AlertingThresholds.MissedBlocksThreshold > 1 && strings.ToUpper(cfg.AlerterPreferences.MissedBlockAlerts) == "YES" {
 				if int64(len(blocksArray))-1 >= cfg.AlertingThresholds.MissedBlocksThreshold {
 					missedBlocks := strings.Split(blocks, ",")
-					_ = SendTelegramAlert(fmt.Sprintf("%s validator missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
-					_ = SendEmailAlert(fmt.Sprintf("%s validator missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
+					_ = alerter.SendTelegramAlert(fmt.Sprintf("%s validator missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
+					_ = alerter.SendEmailAlert(fmt.Sprintf("%s validator missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
 					_ = writeToInfluxDb(c, bp, "heimdall_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": blocks, "range": missedBlocks[0] + " - " + missedBlocks[len(missedBlocks)-2]})
 					_ = writeToInfluxDb(c, bp, "matic_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": "", "current_height": cbh})
 					return

@@ -7,6 +7,7 @@ import (
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
+	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
@@ -47,8 +48,8 @@ func ValidatorStatusAlert(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 	if !validatorStatus {
 		for _, statusAlertTime := range alertsArray {
 			if currentTime == statusAlertTime {
-				_ = SendTelegramAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValDetails.ValidatorName), cfg)
-				_ = SendEmailAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValDetails.ValidatorName), cfg)
+				_ = alerter.SendTelegramAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValDetails.ValidatorName), cfg)
+				_ = alerter.SendEmailAlert(fmt.Sprintf("Your validator %s is currently voting", cfg.ValDetails.ValidatorName), cfg)
 				log.Println("Sent validator status alert")
 			}
 		}
@@ -56,8 +57,8 @@ func ValidatorStatusAlert(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 	} else {
 		for _, statusAlertTime := range alertsArray {
 			if currentTime == statusAlertTime {
-				_ = SendTelegramAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValDetails.ValidatorName), cfg)
-				_ = SendEmailAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValDetails.ValidatorName), cfg)
+				_ = alerter.SendTelegramAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValDetails.ValidatorName), cfg)
+				_ = alerter.SendEmailAlert(fmt.Sprintf("Your validator %s is in jailed status", cfg.ValDetails.ValidatorName), cfg)
 				log.Println("Sent validator status alert")
 			}
 		}

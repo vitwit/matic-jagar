@@ -8,6 +8,7 @@ import (
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
+	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
@@ -50,8 +51,8 @@ func ValidatorCaughtUp(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 	caughtUp := !sync.Syncing
 	if !caughtUp {
 		if strings.ToUpper(cfg.AlerterPreferences.NodeSyncAlert) == "YES" {
-			_ = SendTelegramAlert("Your validator node is not synced!", cfg)
-			_ = SendEmailAlert("Your validator node is not synced!", cfg)
+			_ = alerter.SendTelegramAlert("Your validator node is not synced!", cfg)
+			_ = alerter.SendEmailAlert("Your validator node is not synced!", cfg)
 		}
 		synced = 0
 	} else {
@@ -82,8 +83,8 @@ func Status(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 
 	if &status.Result == nil {
 		if strings.ToUpper(cfg.AlerterPreferences.NodeStatusAlert) == "YES" {
-			_ = SendTelegramAlert("Your validator instance is not running", cfg)
-			_ = SendEmailAlert("Your validator instance is not running", cfg)
+			_ = alerter.SendTelegramAlert("Your validator instance is not running", cfg)
+			_ = alerter.SendEmailAlert("Your validator instance is not running", cfg)
 		}
 		_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
 		return

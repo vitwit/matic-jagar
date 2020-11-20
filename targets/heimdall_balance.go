@@ -7,6 +7,7 @@ import (
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
+	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
@@ -37,8 +38,8 @@ func HeimdallCurrentBal(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 
 		if prevAmount != amount {
 			if strings.ToUpper(cfg.AlerterPreferences.BalanceChangeAlerts) == "YES" {
-				_ = SendTelegramAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+MaticDenom, amount+MaticDenom), cfg)
-				_ = SendEmailAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+MaticDenom, amount+MaticDenom), cfg)
+				_ = alerter.SendTelegramAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+MaticDenom, amount+MaticDenom), cfg)
+				_ = alerter.SendEmailAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+MaticDenom, amount+MaticDenom), cfg)
 			}
 		}
 

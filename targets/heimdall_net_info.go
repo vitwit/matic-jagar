@@ -9,6 +9,7 @@ import (
 
 	client "github.com/influxdata/influxdb1-client/v2"
 
+	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
@@ -38,8 +39,8 @@ func NetInfo(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 		log.Printf("Error converting num_peers to int: %v", err)
 		numPeers = 0
 	} else if int64(numPeers) < cfg.AlertingThresholds.NumPeersThreshold && strings.ToUpper(cfg.AlerterPreferences.NumPeersAlerts) == "YES" {
-		_ = SendTelegramAlert(fmt.Sprintf("Number of peers connected to your validator has fallen below %d", cfg.AlertingThresholds.NumPeersThreshold), cfg)
-		_ = SendEmailAlert(fmt.Sprintf("Number of peers connected to your validator has fallen below %d", cfg.AlertingThresholds.NumPeersThreshold), cfg)
+		_ = alerter.SendTelegramAlert(fmt.Sprintf("Number of peers connected to your validator has fallen below %d", cfg.AlertingThresholds.NumPeersThreshold), cfg)
+		_ = alerter.SendEmailAlert(fmt.Sprintf("Number of peers connected to your validator has fallen below %d", cfg.AlertingThresholds.NumPeersThreshold), cfg)
 	}
 	p1, err := createDataPoint("heimdall_num_peers", map[string]string{}, map[string]interface{}{"count": numPeers})
 	if err == nil {
