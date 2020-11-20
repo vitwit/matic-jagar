@@ -139,3 +139,21 @@ func BorPendingTransactions(ops types.HTTPOptions) (types.EthPendingTransactions
 
 	return txs, nil
 }
+
+// GetSpanProducers will request the given endpoint and unmarshals the data
+// Returns span producer details or error if any
+func GetSpanProducers(ops types.HTTPOptions) (types.BorSpanProducers, error) {
+	var spanProducers types.BorSpanProducers
+	resp, err := HitHTTPTarget(ops)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return spanProducers, err
+	}
+
+	err = json.Unmarshal(resp.Body, &spanProducers)
+	if err != nil {
+		log.Printf("Error: %v", err)
+		return spanProducers, err
+	}
+	return spanProducers, nil
+}

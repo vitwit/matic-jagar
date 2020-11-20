@@ -1,7 +1,6 @@
 package targets
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"strconv"
@@ -122,14 +121,7 @@ func BlockProducer(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 
 	ops.Endpoint = ops.Endpoint + currentSpan
 
-	resp, err := HitHTTPTarget(ops)
-	if err != nil {
-		log.Printf("Error: %v", err)
-		return
-	}
-
-	var spanProducers types.BorSpanProducers
-	err = json.Unmarshal(resp.Body, &spanProducers)
+	spanProducers, err := scraper.GetSpanProducers(ops)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
