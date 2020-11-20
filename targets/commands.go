@@ -24,7 +24,6 @@ func TelegramAlerting(ops types.HTTPOptions, cfg *config.Config, c client.Client
 	}
 
 	bot.Debug = true
-
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
 	u := tgbotapi.NewUpdate(0)

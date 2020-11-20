@@ -112,7 +112,6 @@ func BorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 			blocks := GetBorContinuousMissedBlock(cfg, c)
 			currentHeightFromDb := GetBorlatestCurrentHeightFromDB(cfg, c)
 			blocksArray := strings.Split(blocks, ",")
-			fmt.Println("blocks length ", int64(len(blocksArray)), currentHeightFromDb)
 			// calling function to store single blocks
 			err = SendBorSingleMissedBlockAlert(ops, cfg, c, cbh)
 			if err != nil {
@@ -140,12 +139,18 @@ func BorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 						blocks = ""
 					}
 				}
-				_ = writeToInfluxDb(c, bp, "matic_bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": blocks, "current_height": cbh})
-				return
-
+				err = writeToInfluxDb(c, bp, "matic_bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": blocks, "current_height": cbh})
+				if err != nil {
+					log.Printf("Error while storing missed blocks : %v ", err)
+					return
+				}
 			}
 		} else {
-			_ = writeToInfluxDb(c, bp, "bor_val_signed_blocks", map[string]string{}, map[string]interface{}{"signed_block_height": cbh})
+			err = writeToInfluxDb(c, bp, "bor_val_signed_blocks", map[string]string{}, map[string]interface{}{"signed_block_height": cbh})
+			if err != nil {
+				log.Printf("Error while storing validator signed blocks : %v ", err)
+				return
+			}
 		}
 	} else {
 		log.Println("Got an empty response from bor rpc !")
