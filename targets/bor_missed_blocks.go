@@ -24,19 +24,41 @@ func SendBorSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c 
 	if cfg.AlertingThresholds.MissedBlocksThreshold == 1 {
 		if strings.ToUpper(cfg.AlerterPreferences.MissedBlockAlerts) == "YES" {
 			err = alerter.SendTelegramAlert(fmt.Sprintf("%s validator on bor node missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
+			if err != nil {
+				log.Printf("Error while sending missed blocks telegram alert : %v", err)
+				return err
+			}
 			err = alerter.SendEmailAlert(fmt.Sprintf("%s validator on bor node missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
+			if err != nil {
+				log.Printf("Error while sending missed blocks email alert : %v", err)
+				return err
+			}
 			err = writeToInfluxDb(c, bp, "bor_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": cbh, "range": cbh})
+			if err != nil {
+				log.Printf("Error while storing continuous missed blocks : %v", err)
+				return err
+			}
 			err = writeToInfluxDb(c, bp, "matic_bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
+			if err != nil {
+				log.Printf("Error while storing missed blocks : %v", err)
+				return err
+			}
 			err = writeToInfluxDb(c, bp, "bor_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
 			if err != nil {
+				log.Printf("Error while stroing missed blocks : %v", err)
 				return err
 			}
 		}
 
 	} else {
 		err = writeToInfluxDb(c, bp, "bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh})
+		if err != nil {
+			log.Printf("Error while stroing missed blocks : %v", err)
+			return err
+		}
 		err = writeToInfluxDb(c, bp, "bor_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
 		if err != nil {
+			log.Printf("Error while stroing total missed blocks : %v", err)
 			return err
 		}
 	}
@@ -55,6 +77,7 @@ func BorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 
 	borHeight := GetBorCurrentBlokHeightInHex(cfg, c)
 	if borHeight == "" {
+		log.Println("Got empty block height of bor from db")
 		return
 	}
 
@@ -75,18 +98,17 @@ func BorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 	cbh := strconv.Itoa(height)
 
 	if signers.Result != nil {
-		addrExists := false
+		isSigned := false
 
 		for _, addr := range signers.Result {
 			if strings.EqualFold(addr, cfg.ValDetails.SignerAddress) {
-				addrExists = true
+				isSigned = true
 			}
 		}
 
-		log.Printf("address exists : %v, and height : %s ", addrExists, cbh)
+		log.Printf("block signed status : %v, and height : %s ", isSigned, cbh)
 
-		if !addrExists {
-
+		if !isSigned {
 			blocks := GetBorContinuousMissedBlock(cfg, c)
 			currentHeightFromDb := GetBorlatestCurrentHeightFromDB(cfg, c)
 			blocksArray := strings.Split(blocks, ",")
