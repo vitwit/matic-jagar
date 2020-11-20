@@ -12,6 +12,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
+	"github.com/vitwit/matic-jagar/utils"
 )
 
 // LatestProposedBlockAndTime is to get latest proposed block height, time and checks
@@ -31,7 +32,7 @@ func LatestProposedBlockAndTime(ops types.HTTPOptions, cfg *config.Config, c cli
 	}
 
 	time := blockResp.Block.Header.Time
-	blockTime := GetUserDateFormat(time) //convert time to user readable format
+	blockTime := utils.GetUserDateFormat(time) //convert time to user readable format
 	blockHeight := blockResp.Block.Header.Height
 	log.Printf("last proposed block time : %s,  height : %s", blockTime, blockHeight)
 

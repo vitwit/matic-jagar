@@ -12,6 +12,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
+	"github.com/vitwit/matic-jagar/utils"
 )
 
 // BorNetworkHeight is to get the network height of bor and stores in db
@@ -30,7 +31,7 @@ func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client
 
 	if &cbh != nil {
 
-		networkHeight, err := HexToIntConversion(cbh.Result)
+		networkHeight, err := utils.HexToIntConversion(cbh.Result)
 		if err != nil {
 			log.Printf("Error while converting bor n/w height from hex to int : %v", err)
 			return
@@ -57,7 +58,7 @@ func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client
 			return
 		}
 
-		vaidatorBlockHeight, err := HexToIntConversion(cbh.Result)
+		vaidatorBlockHeight, err := utils.HexToIntConversion(cbh.Result)
 		if err != nil {
 			log.Printf("Error while converting bor current height from hex to int : %v", err)
 			return

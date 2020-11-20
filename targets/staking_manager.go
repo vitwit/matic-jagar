@@ -10,6 +10,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
+	"github.com/vitwit/matic-jagar/utils"
 )
 
 // ContractAddress is to get the validator share contract address, self stake and stores it in db
@@ -55,13 +56,13 @@ func ContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 
 		if hexData.Result != "" {
 
-			valResp := DecodeEthCallResult(hexData.Result)
+			valResp := utils.DecodeEthCallResult(hexData.Result)
 			contractAddress := "0x" + valResp[6][24:]
-			stakeAmount, er := HexToBigInt(valResp[0][24:])
+			stakeAmount, er := utils.HexToBigInt(valResp[0][24:])
 			if !er {
 				return
 			}
-			amount := ConvertWeiToEth(stakeAmount) + MaticDenom
+			amount := utils.ConvertWeiToEth(stakeAmount) + utils.MaticDenom
 
 			_ = writeToInfluxDb(c, bp, "heimdall_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
 			log.Printf("Contract Address: %s and Self Stake Amount : %s", contractAddress, amount)
@@ -92,12 +93,12 @@ func GetCommissionRate(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 	if dataHash != "" {
 		result := EthCall(ops, cfg, c, dataHash)
 		if result.Result != "" {
-			commissionRate, er := HexToBigInt(result.Result[2:])
+			commissionRate, er := utils.HexToBigInt(result.Result[2:])
 			if !er {
 				return
 			}
 
-			rate := ConvertWeiToEth(commissionRate)
+			rate := utils.ConvertWeiToEth(commissionRate)
 
 			var fee float64
 			f, err := strconv.ParseFloat(rate, 64)
@@ -133,11 +134,11 @@ func GetValidatorRewards(ops types.HTTPOptions, cfg *config.Config, c client.Cli
 	if dataHash != "" {
 		result := EthCall(ops, cfg, c, dataHash)
 		if result.Result != "" {
-			rewards, er := HexToBigInt(result.Result[2:])
+			rewards, er := utils.HexToBigInt(result.Result[2:])
 			if !er {
 				return
 			}
-			rewradsInEth := ConvertWeiToEth(rewards) + MaticDenom
+			rewradsInEth := utils.ConvertWeiToEth(rewards) + utils.MaticDenom
 
 			_ = writeToInfluxDb(c, bp, "heimdall_validator_rewards", map[string]string{}, map[string]interface{}{"val_rewards": rewradsInEth})
 			log.Printf("Validator Rewards: %s", rewradsInEth)
@@ -171,7 +172,7 @@ func GetEncodedData(ops types.HTTPOptions, cfg *config.Config, c client.Client, 
 	signature := methodSignature
 
 	bytesData := []byte(signature)
-	hex := EncodeToHex(bytesData)
+	hex := utils.EncodeToHex(bytesData)
 	ops.Body.Params = append(ops.Body.Params, hex)
 	ops.Body.Method = "web3_sha3"
 

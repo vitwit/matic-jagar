@@ -12,6 +12,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
+	"github.com/vitwit/matic-jagar/utils"
 )
 
 // Proposals is to get all the proposals and stores it in db
@@ -44,11 +45,11 @@ func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 			"content_value_description": proposal.Content.Value.Description,
 			"proposal_status":           proposal.ProposalStatus,
 			"final_tally_result":        proposal.FinalTallyResult,
-			"submit_time":               GetUserDateFormat(proposal.SubmitTime),
-			"deposit_end_time":          GetUserDateFormat(proposal.DepositEndTime),
+			"submit_time":               utils.GetUserDateFormat(proposal.SubmitTime),
+			"deposit_end_time":          utils.GetUserDateFormat(proposal.DepositEndTime),
 			"total_deposit":             proposal.TotalDeposit,
-			"voting_start_time":         GetUserDateFormat(proposal.VotingStartTime),
-			"voting_end_time":           GetUserDateFormat(proposal.VotingEndTime),
+			"voting_start_time":         utils.GetUserDateFormat(proposal.VotingStartTime),
+			"voting_end_time":           utils.GetUserDateFormat(proposal.VotingEndTime),
 			"validator_voted":           validatorVoted,
 			"validator_deposited":       validatorDeposited,
 		}

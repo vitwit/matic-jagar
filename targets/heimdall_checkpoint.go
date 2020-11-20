@@ -11,6 +11,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
+	"github.com/vitwit/matic-jagar/utils"
 )
 
 // TotalCheckPointsCount is to get total no of check points and stores in db
@@ -62,7 +63,7 @@ func CheckpointsDuration(ops types.HTTPOptions, cfg *config.Config, c client.Cli
 	}
 
 	duration := cpd.Result.CheckpointBufferTime
-	minutes := ConvertNanoSecToMinutes(duration) //covert nano seconds to minutes
+	minutes := utils.ConvertNanoSecToMinutes(duration) //covert nano seconds to minutes
 
 	_ = writeToInfluxDb(c, bp, "heimdall_checkpoint_duration", map[string]string{}, map[string]interface{}{"duration": minutes})
 	log.Printf("Checkpoints Duration in nano seconds: %d", duration)

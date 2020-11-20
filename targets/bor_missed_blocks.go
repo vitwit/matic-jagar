@@ -12,6 +12,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
+	"github.com/vitwit/matic-jagar/utils"
 )
 
 // SendSingleMissedBlockAlert is to send signle missed block alerts and stores it in db
@@ -89,7 +90,7 @@ func BorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 		return
 	}
 
-	height, err := HexToIntConversion(borHeight)
+	height, err := utils.HexToIntConversion(borHeight)
 	if err != nil {
 		log.Printf("Error while converting bor height from hex to int : %v", err)
 		return

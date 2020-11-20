@@ -11,6 +11,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
+	"github.com/vitwit/matic-jagar/utils"
 )
 
 // CurrentEthBalance is to query the eth_getBalance and stores the current balance in db
@@ -30,14 +31,14 @@ func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 
 	if &balance != nil {
 
-		bal, er := HexToBigInt(balance.Result[2:])
+		bal, er := utils.HexToBigInt(balance.Result[2:])
 		if !er {
 			log.Printf("Error conversion from hex to big int : %v", er)
 			return
 		}
 
-		ethBalance := ConvertWeiToEth(bal)     // current balance
-		prevBal := GetBorBalanceFromDB(cfg, c) // previous balance from db
+		ethBalance := utils.ConvertWeiToEth(bal) // current balance
+		prevBal := GetBorBalanceFromDB(cfg, c)   // previous balance from db
 		if prevBal == "" {
 			prevBal = "0"
 		}

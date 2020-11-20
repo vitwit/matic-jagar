@@ -1,4 +1,4 @@
-package targets
+package utils
 
 import (
 	"encoding/hex"
@@ -24,9 +24,9 @@ func ConvertToMatic(amount string) string {
 	return bal
 }
 
-// convertToCommaSeparated converts value into comma seperated
+// ConvertToCommaSeparated converts value into comma seperated
 //for user friendly
-func convertToCommaSeparated(amt string) string {
+func ConvertToCommaSeparated(amt string) string {
 	a, err := strconv.Atoi(amt)
 	if err != nil {
 		return amt

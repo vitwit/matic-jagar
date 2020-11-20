@@ -11,6 +11,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
+	"github.com/vitwit/matic-jagar/utils"
 )
 
 // HeimdallCurrentBal is to get current balance information using signer address and stores it in db
@@ -29,21 +30,22 @@ func HeimdallCurrentBal(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 	}
 
 	if len(accResp.Result) > 0 {
-		amount := ConvertToMatic(accResp.Result[0].Amount) // curent amount
-		prevAmount := GetAccountBalFromDb(cfg, c)          // amount from db
+		amount := utils.ConvertToMatic(accResp.Result[0].Amount) // curent amount
+		prevAmount := GetAccountBalFromDb(cfg, c)                // amount from db
 
 		if prevAmount == "" {
 			prevAmount = "0"
 		}
 
 		if prevAmount != amount {
+			denom := utils.MaticDenom
 			if strings.ToUpper(cfg.AlerterPreferences.BalanceChangeAlerts) == "YES" {
-				_ = alerter.SendTelegramAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+MaticDenom, amount+MaticDenom), cfg)
-				_ = alerter.SendEmailAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+MaticDenom, amount+MaticDenom), cfg)
+				_ = alerter.SendTelegramAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+denom, amount+denom), cfg)
+				_ = alerter.SendEmailAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+denom, amount+denom), cfg)
 			}
 		}
 
-		addressBalance := convertToCommaSeparated(amount) + strings.ToUpper(accResp.Result[0].Denom)
+		addressBalance := utils.ConvertToCommaSeparated(amount) + strings.ToUpper(accResp.Result[0].Denom)
 		_ = writeToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": addressBalance, "balance": amount})
 		log.Printf("Address Balance: %s", addressBalance)
 	}

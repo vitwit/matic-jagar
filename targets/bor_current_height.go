@@ -9,6 +9,7 @@ import (
 	"github.com/vitwit/matic-jagar/config"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
+	"github.com/vitwit/matic-jagar/utils"
 )
 
 // CurrentBlockNumber is to get the bor current height and stores it in db
@@ -26,7 +27,7 @@ func CurrentBlockNumber(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 
 	if &cbh != nil {
 
-		height, err := HexToIntConversion(cbh.Result)
+		height, err := utils.HexToIntConversion(cbh.Result)
 		if err != nil {
 			log.Printf("Error while converting bor current height from hex to int : %v", err)
 			return
