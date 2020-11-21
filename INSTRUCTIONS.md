@@ -250,7 +250,8 @@ UID of dashboards are as follows:
 - **13442**: Bor metrics dashboard
 - **13441**: Validator monitoring dashboard
 - **13443**: Summary dashboard
-- **13444**: Setup overview
+- **13444**: Setup overview dashboard
+- **13445**: System monitoring metrics dashboard
 
 *For more info about grafana dashboard imports you can refer https://grafana.com/docs/grafana/latest/reference/export_import/*
 
