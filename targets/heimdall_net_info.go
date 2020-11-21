@@ -11,13 +11,14 @@ import (
 
 	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 )
 
 // NetInfo is to get no.of peers, addresses and also calculates it's alatency and stores it in db
 func NetInfo(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -42,7 +43,7 @@ func NetInfo(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 		_ = alerter.SendTelegramAlert(fmt.Sprintf("Number of peers connected to your validator has fallen below %d", cfg.AlertingThresholds.NumPeersThreshold), cfg)
 		_ = alerter.SendEmailAlert(fmt.Sprintf("Number of peers connected to your validator has fallen below %d", cfg.AlertingThresholds.NumPeersThreshold), cfg)
 	}
-	p1, err := createDataPoint("heimdall_num_peers", map[string]string{}, map[string]interface{}{"count": numPeers})
+	p1, err := db.CreateDataPoint("heimdall_num_peers", map[string]string{}, map[string]interface{}{"count": numPeers})
 	if err == nil {
 		pts = append(pts, p1)
 	}
@@ -53,13 +54,13 @@ func NetInfo(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	addrs := strings.Join(peerAddrs[:], ",  ")
-	p2, err := createDataPoint("heimdall_peer_addresses", map[string]string{"addresses_count": strconv.Itoa(numPeers)}, map[string]interface{}{"addresses": addrs})
+	p2, err := db.CreateDataPoint("heimdall_peer_addresses", map[string]string{"addresses_count": strconv.Itoa(numPeers)}, map[string]interface{}{"addresses": addrs})
 	if err == nil {
 		pts = append(pts, p2)
 	}
 
 	bp.AddPoints(pts)
-	_ = writeBatchPoints(c, bp)
+	_ = db.WriteBatchPoints(c, bp)
 	log.Printf("No. of peers: %d \n", numPeers)
 
 	// Calling funtion to get peer latency
@@ -72,7 +73,7 @@ func NetInfo(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 
 // PeerLatency is to calculate latency of a peer address and stores it in db
 func PeerLatency(_ types.HTTPOptions, cfg *config.Config, c client.Client) error {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return err
 	}
@@ -103,7 +104,7 @@ func PeerLatency(_ types.HTTPOptions, cfg *config.Config, c client.Client) error
 			splitString := strings.Split(rtt, "/")
 			avgRtt := splitString[1]
 			log.Println("Writing address latency in db ", addr, avgRtt)
-			err = writeToInfluxDb(c, bp, "heimdall_validator_latency", map[string]string{"peer_address": addr}, map[string]interface{}{"address": addr, "avg_rtt": avgRtt})
+			err = db.WriteToInfluxDb(c, bp, "heimdall_validator_latency", map[string]string{"peer_address": addr}, map[string]interface{}{"address": addr, "avg_rtt": avgRtt})
 			if err != nil {
 				return err
 			}

@@ -9,6 +9,7 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 )
@@ -16,7 +17,7 @@ import (
 // BorLatestSpan is to get latest span id, also calcualtes span validator count and stores it in db
 // Span validator count will be inceremented if the signer address is in validator set
 func BorLatestSpan(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -65,7 +66,7 @@ func BorLatestSpan(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 		}
 	}
 
-	_ = writeToInfluxDb(c, bp, "bor_latest_span", map[string]string{}, map[string]interface{}{"span_id": spanID, "span_val_count": spanValCount})
+	_ = db.WriteToInfluxDb(c, bp, "bor_latest_span", map[string]string{}, map[string]interface{}{"span_id": spanID, "span_val_count": spanValCount})
 	log.Printf("Bor Latest Span ID: %d and Span Val Count : %d", spanID, spanValCount)
 }
 
@@ -112,7 +113,7 @@ func GetBorSpanValidatorCountFromDb(cfg *config.Config, c client.Client) string 
 // BlockProducer is to get the proucer counts and checks validator is part of block producer or not and stores in db
 // If the signer address is in result of selected producers then validator is part of it otheriwse no
 func BlockProducer(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -136,6 +137,6 @@ func BlockProducer(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	producerCount := len(spanProducers.Result.SelectedProducers)
-	_ = writeToInfluxDb(c, bp, "bor_block_producer", map[string]string{}, map[string]interface{}{"val_part_of_block_producer": addrExists, "producer_count": producerCount})
+	_ = db.WriteToInfluxDb(c, bp, "bor_block_producer", map[string]string{}, map[string]interface{}{"val_part_of_block_producer": addrExists, "producer_count": producerCount})
 	log.Printf("Validator is part of block producer : %s\n and Producer Count: %d", addrExists, producerCount)
 }

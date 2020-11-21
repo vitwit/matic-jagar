@@ -9,6 +9,7 @@ import (
 
 	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 )
@@ -16,7 +17,7 @@ import (
 // ValidatorStatusAlert will checks whether the validator is voting or jailed
 // Alerter will send alerts according to the timings of regualr status alerting configured in config.toml
 func ValidatorStatusAlert(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -53,7 +54,7 @@ func ValidatorStatusAlert(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 				log.Println("Sent validator status alert")
 			}
 		}
-		_ = writeToInfluxDb(c, bp, "heimdall_val_status", map[string]string{}, map[string]interface{}{"status": 1, "val_id": valID})
+		_ = db.WriteToInfluxDb(c, bp, "heimdall_val_status", map[string]string{}, map[string]interface{}{"status": 1, "val_id": valID})
 	} else {
 		for _, statusAlertTime := range alertsArray {
 			if currentTime == statusAlertTime {
@@ -63,7 +64,7 @@ func ValidatorStatusAlert(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 			}
 		}
 
-		_ = writeToInfluxDb(c, bp, "heimdall_val_status", map[string]string{}, map[string]interface{}{"status": 0, "val_id": valID})
+		_ = db.WriteToInfluxDb(c, bp, "heimdall_val_status", map[string]string{}, map[string]interface{}{"status": 0, "val_id": valID})
 	}
 	return
 }

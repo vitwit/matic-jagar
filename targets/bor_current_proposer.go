@@ -9,6 +9,7 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 )
@@ -16,7 +17,7 @@ import (
 // BorCurrentProposer is to get current proposer and counts blocks proposed count and stores it in db
 // Block proposed count will be calculated if the signer address exists in proposer result
 func BorCurrentProposer(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -47,7 +48,7 @@ func BorCurrentProposer(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 		count = count + 1
 	}
 
-	_ = writeToInfluxDb(c, bp, "bor_current_proposer", map[string]string{}, map[string]interface{}{"blocks_produced": count, "current_proposer": proposer, "proposer": proposer[2:]})
+	_ = db.WriteToInfluxDb(c, bp, "bor_current_proposer", map[string]string{}, map[string]interface{}{"blocks_produced": count, "current_proposer": proposer, "proposer": proposer[2:]})
 	log.Printf("No of Blocks Proposed: %d and currnt Proposer : %s", count, proposer)
 }
 

@@ -10,13 +10,14 @@ import (
 
 	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 )
 
 // SendSingleMissedBlockAlert is to alert about single missed block if threshold value is 1 and also stores it in db
 func SendSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c client.Client, cbh string) error {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return err
 	}
@@ -30,23 +31,23 @@ func SendSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c cli
 		if err != nil {
 			log.Printf("Error while sending heimdall missed blocks alerts : %v", err)
 		}
-		err = writeToInfluxDb(c, bp, "heimdall_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": cbh, "range": cbh})
+		err = db.WriteToInfluxDb(c, bp, "heimdall_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": cbh, "range": cbh})
 		if err != nil {
 			log.Printf("Error while storing heimdall continuous blocks : %v", err)
 		}
-		err = writeToInfluxDb(c, bp, "matic_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
+		err = db.WriteToInfluxDb(c, bp, "matic_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
 		if err != nil {
 			log.Printf("Error while storing heimdall missed blocks : %v", err)
 		}
-		err = writeToInfluxDb(c, bp, "heimdall_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
+		err = db.WriteToInfluxDb(c, bp, "heimdall_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
 		if err != nil {
 			log.Printf("Error while storing heimdall total missed blocks : %v", err)
 		}
 
 		return err
 	}
-	err = writeToInfluxDb(c, bp, "heimdall_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh})
-	err1 := writeToInfluxDb(c, bp, "heimdall_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
+	err = db.WriteToInfluxDb(c, bp, "heimdall_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh})
+	err1 := db.WriteToInfluxDb(c, bp, "heimdall_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
 	if err != nil || err1 != nil {
 		log.Printf(" Error while storing heimdal missed blocks : %v : %v", err, err1)
 		return err
@@ -59,7 +60,7 @@ func SendSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c cli
 // if not signed then it will be considered as missed block and stores it in db
 // Alerter will notify when the missed blocks count reaches to the configured threshold
 func MissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -99,8 +100,8 @@ func MissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 					missedBlocks := strings.Split(blocks, ",")
 					_ = alerter.SendTelegramAlert(fmt.Sprintf("%s validator missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
 					_ = alerter.SendEmailAlert(fmt.Sprintf("%s validator missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
-					_ = writeToInfluxDb(c, bp, "heimdall_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": blocks, "range": missedBlocks[0] + " - " + missedBlocks[len(missedBlocks)-2]})
-					_ = writeToInfluxDb(c, bp, "matic_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": "", "current_height": cbh})
+					_ = db.WriteToInfluxDb(c, bp, "heimdall_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": blocks, "range": missedBlocks[0] + " - " + missedBlocks[len(missedBlocks)-2]})
+					_ = db.WriteToInfluxDb(c, bp, "matic_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": "", "current_height": cbh})
 					return
 				}
 				if len(blocksArray) == 1 {
@@ -115,7 +116,7 @@ func MissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 						blocks = ""
 					}
 				}
-				_ = writeToInfluxDb(c, bp, "matic_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": blocks, "current_height": cbh})
+				_ = db.WriteToInfluxDb(c, bp, "matic_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": blocks, "current_height": cbh})
 				return
 
 			}

@@ -10,13 +10,14 @@ import (
 
 	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 )
 
 // NodeVersion is to get application version and stores in db
 func NodeVersion(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -29,14 +30,14 @@ func NodeVersion(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 
 	appVersion := applicationInfo.ApplicationVersion.Version
 
-	_ = writeToInfluxDb(c, bp, "heimdall_version", map[string]string{}, map[string]interface{}{"v": appVersion})
+	_ = db.WriteToInfluxDb(c, bp, "heimdall_version", map[string]string{}, map[string]interface{}{"v": appVersion})
 	log.Printf("Version: %s", appVersion)
 }
 
 // ValidatorCaughtUp is to get validator syncing status and stores it in db
 // Alerter will alerts when the node is not synced
 func ValidatorCaughtUp(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -59,8 +60,8 @@ func ValidatorCaughtUp(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 		synced = 1
 	}
 
-	// _ = writeToInfluxDb(c, bp, "heimdall_val_caughtup", map[string]string{}, map[string]interface{}{"synced": synced})
-	_ = writeToInfluxDb(c, bp, "heimdall_node_synced", map[string]string{}, map[string]interface{}{"synced": synced})
+	// _ = db.WriteToInfluxDb(c, bp, "heimdall_val_caughtup", map[string]string{}, map[string]interface{}{"synced": synced})
+	_ = db.WriteToInfluxDb(c, bp, "heimdall_node_synced", map[string]string{}, map[string]interface{}{"synced": synced})
 	log.Printf("Heimdall Valiator Caught UP: %v", sync.Syncing)
 }
 
@@ -68,14 +69,14 @@ func ValidatorCaughtUp(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 // block height and operator info
 // Alerter will notify about the node status i.e., validator instance is running or not by checking status resonse
 func Status(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
 
 	status, err := scraper.GetStatus(ops)
 	if err != nil {
-		_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
+		_ = db.WriteToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
 
 		log.Printf("Validator Error: %v", err)
 		return
@@ -86,17 +87,17 @@ func Status(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 			_ = alerter.SendTelegramAlert("Your validator instance is not running", cfg)
 			_ = alerter.SendEmailAlert("Your validator instance is not running", cfg)
 		}
-		_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
+		_ = db.WriteToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
 		return
 	}
 
-	_ = writeToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 1})
+	_ = db.WriteToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 1})
 
 	var bh int
 	currentBlockHeight := status.Result.SyncInfo.LatestBlockHeight
 	if currentBlockHeight != "" {
 		bh, _ = strconv.Atoi(currentBlockHeight)
-		err = writeToInfluxDb(c, bp, "heimdall_current_block_height", map[string]string{}, map[string]interface{}{"height": bh})
+		err = db.WriteToInfluxDb(c, bp, "heimdall_current_block_height", map[string]string{}, map[string]interface{}{"height": bh})
 		if err != nil {
 			log.Printf("Error while stroing current block height : %v", err)
 		}
@@ -106,7 +107,7 @@ func Status(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	moniker := status.Result.NodeInfo.Moniker
 	hexAddress := status.Result.ValidatorInfo.Address
 	signerAddress := cfg.ValDetails.SignerAddress
-	_ = writeToInfluxDb(c, bp, "heimdall_val_desc", map[string]string{}, map[string]interface{}{"moniker": moniker, "hex_address": hexAddress, "signer_address": signerAddress, "address": signerAddress[2:]})
+	_ = db.WriteToInfluxDb(c, bp, "heimdall_val_desc", map[string]string{}, map[string]interface{}{"moniker": moniker, "hex_address": hexAddress, "signer_address": signerAddress, "address": signerAddress[2:]})
 
 	log.Printf("Moniker:%s ", moniker)
 }

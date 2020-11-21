@@ -11,6 +11,7 @@ import (
 
 	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 )
@@ -19,7 +20,7 @@ import (
 // Calcualtes height difference of validator and network height and stores it in db
 // Alerter will alerts when the block diff thresholds meets the height diff
 func NetworkLatestBlock(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
@@ -37,7 +38,7 @@ func NetworkLatestBlock(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 		if err != nil {
 			log.Println("Error while converting network height from string to int ", err)
 		}
-		_ = writeToInfluxDb(c, bp, "heimdall_network_latest_block", map[string]string{}, map[string]interface{}{"block_height": networkBlockHeight})
+		_ = db.WriteToInfluxDb(c, bp, "heimdall_network_latest_block", map[string]string{}, map[string]interface{}{"block_height": networkBlockHeight})
 		log.Printf("Network height: %d", networkBlockHeight)
 
 		// Get validator block height
@@ -60,7 +61,7 @@ func NetworkLatestBlock(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 		vaidatorBlockHeight, _ := strconv.Atoi(validatorHeight)
 		heightDiff := networkBlockHeight - vaidatorBlockHeight
 
-		_ = writeToInfluxDb(c, bp, "heimdall_height_difference", map[string]string{}, map[string]interface{}{"difference": heightDiff})
+		_ = db.WriteToInfluxDb(c, bp, "heimdall_height_difference", map[string]string{}, map[string]interface{}{"difference": heightDiff})
 		log.Printf("Network height: %d and Validator Height: %d", networkBlockHeight, vaidatorBlockHeight)
 
 		// Send alert

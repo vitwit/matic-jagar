@@ -10,6 +10,7 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 	"github.com/vitwit/matic-jagar/utils"
@@ -19,7 +20,7 @@ import (
 // whether the validator hex address is equals to proposals address if yes then stores in it db
 // Also stores latest block height and chain id in db
 func LatestProposedBlockAndTime(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
@@ -41,14 +42,14 @@ func LatestProposedBlockAndTime(ops types.HTTPOptions, cfg *config.Config, c cli
 			"height":     blockHeight,
 			"block_time": blockTime,
 		}
-		_ = writeToInfluxDb(c, bp, "heimdall_last_proposed_block", map[string]string{}, fields)
+		_ = db.WriteToInfluxDb(c, bp, "heimdall_last_proposed_block", map[string]string{}, fields)
 	}
 
-	_ = writeToInfluxDb(c, bp, "heimdall_lastest_block", map[string]string{}, map[string]interface{}{"height": blockHeight, "block_time": time})
+	_ = db.WriteToInfluxDb(c, bp, "heimdall_lastest_block", map[string]string{}, map[string]interface{}{"height": blockHeight, "block_time": time})
 
 	// Store chainID in database
 	chainID := blockResp.Block.Header.ChainID
-	_ = writeToInfluxDb(c, bp, "heimdall_chain_id", map[string]string{}, map[string]interface{}{"chain_id": chainID})
+	_ = db.WriteToInfluxDb(c, bp, "heimdall_chain_id", map[string]string{}, map[string]interface{}{"chain_id": chainID})
 	log.Printf("Chain ID : %s ", chainID)
 }
 
@@ -74,7 +75,7 @@ func GetPrevBlockTime(cfg *config.Config, c client.Client, height string) string
 
 // BlockTimeDifference is to calcualte block time difference of prev block and current block and stores in db
 func BlockTimeDifference(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		log.Printf("Error: %v", err)
 		return
@@ -98,7 +99,7 @@ func BlockTimeDifference(ops types.HTTPOptions, cfg *config.Config, c client.Cli
 		timeDiff := convertedCurrentTime.Sub(conevrtedPrevBlockTime)
 		diffSeconds := fmt.Sprintf("%.2f", timeDiff.Seconds())
 
-		_ = writeToInfluxDb(c, bp, "heimdall_block_time_diff", map[string]string{}, map[string]interface{}{"time_diff": diffSeconds})
+		_ = db.WriteToInfluxDb(c, bp, "heimdall_block_time_diff", map[string]string{}, map[string]interface{}{"time_diff": diffSeconds})
 		log.Printf("time diff: %s", diffSeconds)
 	}
 

@@ -7,6 +7,7 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 	"github.com/vitwit/matic-jagar/utils"
@@ -14,7 +15,7 @@ import (
 
 // CurrentBlockNumber is to get the bor current height and stores it in db
 func CurrentBlockNumber(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -33,7 +34,7 @@ func CurrentBlockNumber(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 			return
 		}
 
-		_ = writeToInfluxDb(c, bp, "bor_current_height", map[string]string{}, map[string]interface{}{"block_height": height, "height_in_hex": cbh.Result})
+		_ = db.WriteToInfluxDb(c, bp, "bor_current_height", map[string]string{}, map[string]interface{}{"block_height": height, "height_in_hex": cbh.Result})
 		log.Printf("Bor Current Block Height: %d", height)
 	} else {
 		log.Println("Got an empty response from bor rpc !")

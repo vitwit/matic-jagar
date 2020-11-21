@@ -10,6 +10,7 @@ import (
 
 	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 	"github.com/vitwit/matic-jagar/utils"
@@ -18,7 +19,7 @@ import (
 // Proposals is to get all the proposals and stores it in db
 // Alerter will send alerts if there is any new proposal or any change in proposal status
 func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -73,7 +74,7 @@ func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 
 			if newProposal {
 				log.Printf("New Proposal Came: %s", proposal.ID)
-				_ = writeToInfluxDb(c, bp, "heimdall_proposals", tag, fields)
+				_ = db.WriteToInfluxDb(c, bp, "heimdall_proposals", tag, fields)
 
 				if proposal.ProposalStatus == "Rejected" || proposal.ProposalStatus == "Passed" {
 					_ = alerter.SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been %s", proposal.ID, proposal.ProposalStatus), cfg)
@@ -94,7 +95,7 @@ func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 					log.Printf("Reason for proposal deletion failure %v", response)
 				}
 				log.Printf("Writing the proposal: %s", proposal.ID)
-				_ = writeToInfluxDb(c, bp, "heimdall_proposals", tag, fields)
+				_ = db.WriteToInfluxDb(c, bp, "heimdall_proposals", tag, fields)
 				if proposal.ProposalStatus != proposalStatus {
 					if proposal.ProposalStatus == "Rejected" || proposal.ProposalStatus == "Passed" {
 						_ = alerter.SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been %s", proposal.ID, proposal.ProposalStatus), cfg)

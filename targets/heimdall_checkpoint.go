@@ -9,6 +9,7 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 	"github.com/vitwit/matic-jagar/utils"
@@ -16,7 +17,7 @@ import (
 
 // TotalCheckPointsCount is to get total no of check points and stores in db
 func TotalCheckPointsCount(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -29,13 +30,13 @@ func TotalCheckPointsCount(ops types.HTTPOptions, cfg *config.Config, c client.C
 
 	count := cp.Result.Result
 
-	_ = writeToInfluxDb(c, bp, "heimdall_total_checkpoints", map[string]string{}, map[string]interface{}{"total_count": count})
+	_ = db.WriteToInfluxDb(c, bp, "heimdall_total_checkpoints", map[string]string{}, map[string]interface{}{"total_count": count})
 	log.Printf("Checkpoints total count: %d", count)
 }
 
 // LatestCheckpoints is to get latest check point and stores in db
 func LatestCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -45,13 +46,13 @@ func LatestCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 	startBlock := lcp.Result.StartBlock
 	endBlock := lcp.Result.EndBlock
 
-	_ = writeToInfluxDb(c, bp, "heimdall_latest_checkpoint", map[string]string{}, map[string]interface{}{"start_block": startBlock, "end_block": endBlock})
+	_ = db.WriteToInfluxDb(c, bp, "heimdall_latest_checkpoint", map[string]string{}, map[string]interface{}{"start_block": startBlock, "end_block": endBlock})
 	log.Printf("Latest checkpoint Start Block: %d and End Block: %d", startBlock, endBlock)
 }
 
 // CheckpointsDuration is to get checkpoints duration and stores in db
 func CheckpointsDuration(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -65,7 +66,7 @@ func CheckpointsDuration(ops types.HTTPOptions, cfg *config.Config, c client.Cli
 	duration := cpd.Result.CheckpointBufferTime
 	minutes := utils.ConvertNanoSecToMinutes(duration) //covert nano seconds to minutes
 
-	_ = writeToInfluxDb(c, bp, "heimdall_checkpoint_duration", map[string]string{}, map[string]interface{}{"duration": minutes})
+	_ = db.WriteToInfluxDb(c, bp, "heimdall_checkpoint_duration", map[string]string{}, map[string]interface{}{"duration": minutes})
 	log.Printf("Checkpoints Duration in nano seconds: %d", duration)
 }
 
@@ -91,7 +92,7 @@ func GetLatestCheckPoint(cfg *config.Config, c client.Client) string {
 
 // ProposedCheckpoints is to get proposed checkpoint, counts no of proposed checkpoints by validator and stores in db
 func ProposedCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -116,7 +117,7 @@ func ProposedCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Cli
 			count++
 		}
 
-		_ = writeToInfluxDb(c, bp, "heimdall_proposed_checkpoint", map[string]string{}, map[string]interface{}{"last_proposed_cp": latestCP, "proposed_count": count})
+		_ = db.WriteToInfluxDb(c, bp, "heimdall_proposed_checkpoint", map[string]string{}, map[string]interface{}{"last_proposed_cp": latestCP, "proposed_count": count})
 		log.Printf("Latest Proposed Checkpoint : %s Proposed Count : %d", latestCP, count)
 	}
 }

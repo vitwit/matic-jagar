@@ -1,4 +1,4 @@
-package targets
+package influxdb
 
 import (
 	"log"
@@ -7,8 +7,8 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 )
 
-// createDataPoint to create a data point
-func createDataPoint(name string, tags map[string]string, fields map[string]interface{}) (*client.Point, error) {
+// CreateDataPoint to create a data point
+func CreateDataPoint(name string, tags map[string]string, fields map[string]interface{}) (*client.Point, error) {
 	p, err := client.NewPoint(name, tags, fields, time.Now())
 	if err != nil {
 		log.Printf("Error creating data point: %v", err)
@@ -17,8 +17,8 @@ func createDataPoint(name string, tags map[string]string, fields map[string]inte
 	return p, nil
 }
 
-// createBatchPoints to create batch points
-func createBatchPoints(db string) (client.BatchPoints, error) {
+// CreateBatchPoints to create batch points
+func CreateBatchPoints(db string) (client.BatchPoints, error) {
 	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
 		Database:  db,
 		Precision: "s",
@@ -30,7 +30,8 @@ func createBatchPoints(db string) (client.BatchPoints, error) {
 	return bp, nil
 }
 
-func writeBatchPoints(c client.Client, bp client.BatchPoints) error {
+// WriteBatchPoints is to write data into influx db
+func WriteBatchPoints(c client.Client, bp client.BatchPoints) error {
 	if err := c.Write(bp); err != nil {
 		log.Printf("err writing batch points to client: %v", err)
 		return err
@@ -38,15 +39,15 @@ func writeBatchPoints(c client.Client, bp client.BatchPoints) error {
 	return nil
 }
 
-// writeToInfluxDb to write points into db
-func writeToInfluxDb(c client.Client, bp client.BatchPoints, name string, tags map[string]string,
+// WriteToInfluxDb is to create data points and writes the data into influxdb by calling WriteBatchPoints
+func WriteToInfluxDb(c client.Client, bp client.BatchPoints, name string, tags map[string]string,
 	fields map[string]interface{}) error {
-	p, err := createDataPoint(name, tags, fields)
+	p, err := CreateDataPoint(name, tags, fields)
 	if err != nil {
 		return err
 	}
 	bp.AddPoint(p)
-	err = writeBatchPoints(c, bp)
+	err = WriteBatchPoints(c, bp)
 	if err != nil {
 		return err
 	}

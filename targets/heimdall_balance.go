@@ -9,6 +9,7 @@ import (
 
 	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 	"github.com/vitwit/matic-jagar/utils"
@@ -17,7 +18,7 @@ import (
 // HeimdallCurrentBal is to get current balance information using signer address and stores it in db
 // Alerter will alerts whenever there is a change in balance
 func HeimdallCurrentBal(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -25,7 +26,7 @@ func HeimdallCurrentBal(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 	accResp, err := scraper.HeimdallCurrentBal(ops)
 	if err != nil {
 		log.Printf("Error in heimdall current balance: %v", err)
-		_ = writeToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": "NA"})
+		_ = db.WriteToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": "NA"})
 		return
 	}
 
@@ -46,7 +47,7 @@ func HeimdallCurrentBal(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 		}
 
 		addressBalance := utils.ConvertToCommaSeparated(amount) + strings.ToUpper(accResp.Result[0].Denom)
-		_ = writeToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": addressBalance, "balance": amount})
+		_ = db.WriteToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": addressBalance, "balance": amount})
 		log.Printf("Address Balance: %s", addressBalance)
 	}
 }

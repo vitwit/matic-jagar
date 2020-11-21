@@ -9,6 +9,7 @@ import (
 
 	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 )
@@ -16,7 +17,7 @@ import (
 // ValidatorVotingPower is to get voting power of a validator and stores it in db
 // Alerter will notify if there is any change in voting power
 func ValidatorVotingPower(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -36,7 +37,7 @@ func ValidatorVotingPower(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 		_ = alerter.SendEmailAlert(fmt.Sprintf("Voting Power Alert : Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
 	}
 
-	_ = writeToInfluxDb(c, bp, "heimdall_voting_power", map[string]string{}, map[string]interface{}{"power": vp})
+	_ = db.WriteToInfluxDb(c, bp, "heimdall_voting_power", map[string]string{}, map[string]interface{}{"power": vp})
 	log.Println("Voting Power \n", vp)
 }
 

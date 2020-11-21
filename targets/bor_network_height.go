@@ -10,6 +10,7 @@ import (
 
 	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 	"github.com/vitwit/matic-jagar/utils"
@@ -18,7 +19,7 @@ import (
 // BorNetworkHeight is to get the network height of bor and stores in db
 // Alerter will notify whenever bock diff of network and validator reaches configured threshold
 func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -37,7 +38,7 @@ func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client
 			return
 		}
 
-		_ = writeToInfluxDb(c, bp, "bor_network_height", map[string]string{}, map[string]interface{}{"block_height": networkHeight, "height_in_hex": cbh.Result})
+		_ = db.WriteToInfluxDb(c, bp, "bor_network_height", map[string]string{}, map[string]interface{}{"block_height": networkHeight, "height_in_hex": cbh.Result})
 		log.Printf("Bor Network Block Height: %d", networkHeight)
 
 		// Get validator block height
@@ -66,7 +67,7 @@ func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client
 
 		heightDiff := networkHeight - vaidatorBlockHeight
 
-		_ = writeToInfluxDb(c, bp, "bor_height_difference", map[string]string{}, map[string]interface{}{"difference": heightDiff})
+		_ = db.WriteToInfluxDb(c, bp, "bor_height_difference", map[string]string{}, map[string]interface{}{"difference": heightDiff})
 		log.Printf("BOR :: Network height: %d and Validator Height: %d", networkHeight, vaidatorBlockHeight)
 
 		// Send alert

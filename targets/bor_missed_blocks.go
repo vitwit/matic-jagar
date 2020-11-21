@@ -10,6 +10,7 @@ import (
 
 	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 	"github.com/vitwit/matic-jagar/utils"
@@ -17,7 +18,7 @@ import (
 
 // SendSingleMissedBlockAlert is to send signle missed block alerts and stores it in db
 func SendBorSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c client.Client, cbh string) error {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return err
 	}
@@ -34,17 +35,17 @@ func SendBorSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c 
 				log.Printf("Error while sending missed blocks email alert : %v", err)
 				return err
 			}
-			err = writeToInfluxDb(c, bp, "bor_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": cbh, "range": cbh})
+			err = db.WriteToInfluxDb(c, bp, "bor_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": cbh, "range": cbh})
 			if err != nil {
 				log.Printf("Error while storing continuous missed blocks : %v", err)
 				return err
 			}
-			err = writeToInfluxDb(c, bp, "matic_bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
+			err = db.WriteToInfluxDb(c, bp, "matic_bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
 			if err != nil {
 				log.Printf("Error while storing missed blocks : %v", err)
 				return err
 			}
-			err = writeToInfluxDb(c, bp, "bor_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
+			err = db.WriteToInfluxDb(c, bp, "bor_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
 			if err != nil {
 				log.Printf("Error while stroing missed blocks : %v", err)
 				return err
@@ -52,12 +53,12 @@ func SendBorSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c 
 		}
 
 	} else {
-		err = writeToInfluxDb(c, bp, "bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh})
+		err = db.WriteToInfluxDb(c, bp, "bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh})
 		if err != nil {
 			log.Printf("Error while stroing missed blocks : %v", err)
 			return err
 		}
-		err = writeToInfluxDb(c, bp, "bor_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
+		err = db.WriteToInfluxDb(c, bp, "bor_total_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": cbh, "current_height": cbh})
 		if err != nil {
 			log.Printf("Error while stroing total missed blocks : %v", err)
 			return err
@@ -71,7 +72,7 @@ func SendBorSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c 
 // if not signed then it will be considered as missed block and stores it in db
 // Alerter will notify when the missed blocks count reaches to the configured threshold
 func BorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -124,8 +125,8 @@ func BorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 					missedBlocks := strings.Split(blocks, ",")
 					_ = alerter.SendTelegramAlert(fmt.Sprintf("%s validator on bor node missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
 					_ = alerter.SendEmailAlert(fmt.Sprintf("%s validator on bor node missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
-					_ = writeToInfluxDb(c, bp, "bor_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": blocks, "range": missedBlocks[0] + " - " + missedBlocks[len(missedBlocks)-2]})
-					_ = writeToInfluxDb(c, bp, "matic_bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": "", "current_height": cbh})
+					_ = db.WriteToInfluxDb(c, bp, "bor_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": blocks, "range": missedBlocks[0] + " - " + missedBlocks[len(missedBlocks)-2]})
+					_ = db.WriteToInfluxDb(c, bp, "matic_bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": "", "current_height": cbh})
 					return
 				}
 				if len(blocksArray) == 1 {
@@ -140,14 +141,14 @@ func BorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 						blocks = ""
 					}
 				}
-				err = writeToInfluxDb(c, bp, "matic_bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": blocks, "current_height": cbh})
+				err = db.WriteToInfluxDb(c, bp, "matic_bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": blocks, "current_height": cbh})
 				if err != nil {
 					log.Printf("Error while storing missed blocks : %v ", err)
 					return
 				}
 			}
 		} else {
-			err = writeToInfluxDb(c, bp, "bor_val_signed_blocks", map[string]string{}, map[string]interface{}{"signed_block_height": cbh})
+			err = db.WriteToInfluxDb(c, bp, "bor_val_signed_blocks", map[string]string{}, map[string]interface{}{"signed_block_height": cbh})
 			if err != nil {
 				log.Printf("Error while storing validator signed blocks : %v ", err)
 				return

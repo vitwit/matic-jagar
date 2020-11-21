@@ -8,6 +8,7 @@ import (
 	client "github.com/influxdata/influxdb1-client/v2"
 
 	"github.com/vitwit/matic-jagar/config"
+	db "github.com/vitwit/matic-jagar/influxdb"
 	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 	"github.com/vitwit/matic-jagar/utils"
@@ -15,7 +16,7 @@ import (
 
 // ContractAddress is to get the validator share contract address, self stake and stores it in db
 func ContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -64,7 +65,7 @@ func ContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 			}
 			amount := utils.ConvertWeiToEth(stakeAmount) + utils.MaticDenom
 
-			_ = writeToInfluxDb(c, bp, "heimdall_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
+			_ = db.WriteToInfluxDb(c, bp, "heimdall_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
 			log.Printf("Contract Address: %s and Self Stake Amount : %s", contractAddress, amount)
 		} else {
 			log.Println("Got an empty response from eth rpc endpoint ! ")
@@ -76,7 +77,7 @@ func ContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 // GetCommissionRate is to get the commission rate
 // by calling method commissionRate() of validator share contract
 func GetCommissionRate(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -108,7 +109,7 @@ func GetCommissionRate(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 				fee = f * 100
 			}
 
-			_ = writeToInfluxDb(c, bp, "heimdall_commission_rate", map[string]string{}, map[string]interface{}{"commission_rate": fee})
+			_ = db.WriteToInfluxDb(c, bp, "heimdall_commission_rate", map[string]string{}, map[string]interface{}{"commission_rate": fee})
 			log.Printf("Contract Rate: %f", fee)
 		}
 	}
@@ -117,7 +118,7 @@ func GetCommissionRate(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 // GetValidatorRewards is to get the rewards
 // by calling method validatorRewards() of validator share contract
 func GetValidatorRewards(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
-	bp, err := createBatchPoints(cfg.InfluxDB.Database)
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
 		return
 	}
@@ -140,7 +141,7 @@ func GetValidatorRewards(ops types.HTTPOptions, cfg *config.Config, c client.Cli
 			}
 			rewradsInEth := utils.ConvertWeiToEth(rewards) + utils.MaticDenom
 
-			_ = writeToInfluxDb(c, bp, "heimdall_validator_rewards", map[string]string{}, map[string]interface{}{"val_rewards": rewradsInEth})
+			_ = db.WriteToInfluxDb(c, bp, "heimdall_validator_rewards", map[string]string{}, map[string]interface{}{"val_rewards": rewradsInEth})
 			log.Printf("Validator Rewards: %s", rewradsInEth)
 		}
 	}
