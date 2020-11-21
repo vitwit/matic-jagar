@@ -26,6 +26,11 @@ $ sudo -S systemctl start grafana-server
 The default port that Grafana runs on is 3000. 
 ```
 
+You can view the `grafana` logs using this:
+```
+journalctl -u grafana-server -f
+```
+
 ### Install InfluxDB
 
 ```sh
@@ -59,8 +64,8 @@ $   exit
 $ cd $HOME
 $ wget https://github.com/prometheus/prometheus/releases/download/v2.22.1/prometheus-2.22.1.linux-amd64.tar.gz
 $ tar -xvf prometheus-2.22.1.linux-amd64.tar.gz
-$ sudo cp prometheus-2.22.1.linux-amd64/prometheus $GOBIN
-$ sudo cp prometheus-2.22.1.linux-amd64/prometheus.yml $HOME
+$ cp prometheus-2.22.1.linux-amd64/prometheus $GOBIN
+$ cp prometheus-2.22.1.linux-amd64/prometheus.yml $HOME
 ```
 
 - Add the following in prometheus.yml using your editor of choice and replace the values of `<sentry-IP>` with the IP addresses of your sentries.
@@ -89,13 +94,17 @@ $ sudo cp prometheus-2.22.1.linux-amd64/prometheus.yml $HOME
     static_configs:
     - targets: ['<sentry-2-IP>:26660']
 ```
+Indentations in the `prometheus.yml` file are important. You can find a sample configuration file [here](./docs/prometheus.yml)
+
 
 - Setup Prometheus System service
  ```
  sudo nano /lib/systemd/system/prometheus.service
  ```
  
- Copy-paste the following and replace the <user> variable with your user.
+ Copy-paste the following.
+ **Note :** It is assumed for this setup purposes you are running the services as `ubuntu`. If your `user` is different please make the necessary changes in systemd file.
+ 
  
  ```
  [Unit]
@@ -104,7 +113,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/home/<user>/go/bin/prometheus --config.file=/home/<user>/prometheus.yml
+ExecStart=/home/ubuntu/go/bin/prometheus --config.file=/home/ubuntu/prometheus.yml
 Restart=always
 RestartSec=3
 LimitNOFILE=4096
@@ -119,6 +128,10 @@ $ sudo systemctl daemon-reload
 $ sudo systemctl enable prometheus.service
 $ sudo systemctl start prometheus.service
 ```
+You can view the `prometheus` logs using this:
+```
+journalctl -u prometheus -f
+``` 
 
 ### Install node exporter
 
@@ -127,7 +140,7 @@ $ sudo systemctl start prometheus.service
 $ cd $HOME
 $ curl -LO https://github.com/prometheus/node_exporter/releases/download/v0.18.1/node_exporter-0.18.1.linux-amd64.tar.gz
 $ tar -xvf node_exporter-0.18.1.linux-amd64.tar.gz
-$ sudo cp node_exporter-0.18.1.linux-amd64/node_exporter $GOBIN
+$ cp node_exporter-0.18.1.linux-amd64/node_exporter $GOBIN
 ```
 - Setup Node exporter service
 
@@ -136,7 +149,8 @@ $ sudo cp node_exporter-0.18.1.linux-amd64/node_exporter $GOBIN
  ```
  
  
- Copy-paste the following and replace the <user> variable with your user.
+ Copy-paste the following.
+ **Note :** It is assumed for this setup purposes you are running the services as `ubuntu`. If your `user` is different please make the necessary changes in systemd file.
  
  ```
  [Unit]
@@ -145,7 +159,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/home/<user>/go/bin/node_exporter
+ExecStart=/home/ubuntu/go/bin/node_exporter
 Restart=always
 RestartSec=3
 LimitNOFILE=4096
@@ -159,6 +173,12 @@ $ sudo systemctl daemon-reload
 $ sudo systemctl enable node_exporter.service
 $ sudo systemctl start node_exporter.service
 ```
+
+You can view the `node_exporter` logs using this:
+```
+journalctl -u node_exporter -f
+```
+
 #### Clean-up (Optional)
 
 ```
