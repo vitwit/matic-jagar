@@ -241,12 +241,16 @@ Information on all the dashboards can be found [here](./docs/dashboard-desc.md)
 
 
 ### 3. Import the dashboards
-- To import the json file of the **validator monitoring metrics** click the *plus* button present on left hand side of the dashboard. Click on import and load the validator_monitoring_metrics.json present in the grafana_template folder. 
+- To import the dashboards click the **+** button present on left hand side of the dashboard. Click on import and paste the UID of the dashboards on the text field below **Import via grafana.com** and click on load. 
 
 - Select the datasources and click on import.
 
-- Follow the same steps to import **system_monitoring_metrics.json**, **setup_overview.json**, **bor.json**, **summary.json**. 
+UID of dashboards are as follows:
 
+- **13442**: Bor metrics dashboard
+- **13441**: Validator monitoring dashboard
+- **13443**: Summary dashboard
+- **13444**: Setup overview
 
 - *For more info about grafana dashboard imports you can refer https://grafana.com/docs/grafana/latest/reference/export_import/*
 
