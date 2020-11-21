@@ -103,6 +103,7 @@ Indentations in the `prometheus.yml` file are important. You can find a sample c
  ```
  
  Copy-paste the following.
+ 
  **Note :** It is assumed for this setup purposes you are running the services as `ubuntu`. If your `user` is different please make the necessary changes in systemd file.
  
  
@@ -150,6 +151,7 @@ $ cp node_exporter-0.18.1.linux-amd64/node_exporter $GOBIN
  
  
  Copy-paste the following.
+ 
  **Note :** It is assumed for this setup purposes you are running the services as `ubuntu`. If your `user` is different please make the necessary changes in systemd file.
  
  ```
