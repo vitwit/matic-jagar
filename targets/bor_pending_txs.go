@@ -20,14 +20,17 @@ func BorPendingTransactions(ops types.HTTPOptions, cfg *config.Config, c client.
 
 	txs, err := scraper.BorPendingTransactions(ops)
 	if err != nil {
-		log.Printf("Error in bor pending transactions: %v", err)
+		log.Printf("Error while getting bor pending transactions: %v", err)
 		return
 	}
 
 	if &txs != nil {
 		pendingTxns := len(txs.Result)
 
-		_ = db.WriteToInfluxDb(c, bp, "bor_pending_txns", map[string]string{}, map[string]interface{}{"pending_txns": pendingTxns})
+		err = db.WriteToInfluxDb(c, bp, "bor_pending_txns", map[string]string{}, map[string]interface{}{"pending_txns": pendingTxns})
+		if err != nil {
+			log.Printf("Error while writing bor pending txns into db : %v", err)
+		}
 		log.Printf("Pending Transactions: %d", pendingTxns)
 	} else {
 		log.Println("Got an empty response from bor rpc !")

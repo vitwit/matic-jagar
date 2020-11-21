@@ -13,7 +13,8 @@ import (
 	"github.com/vitwit/matic-jagar/types"
 )
 
-// TelegramAlerting
+// TelegramAlerting will check for the commands from the configured telegram account
+// If any commands are given in the tg account then Alerter will send the response back according to the input
 func TelegramAlerting(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	if strings.ToUpper(strconv.FormatBool(cfg.EnableAlerts.EnableTelegramAlerts)) == "FALSE" {
 		return
@@ -34,7 +35,7 @@ func TelegramAlerting(ops types.HTTPOptions, cfg *config.Config, c client.Client
 	msgToSend := ""
 
 	for update := range updates {
-		if update.Message == nil { // ignore any non-Message Updates
+		if update.Message == nil { // ignore if any non-Message Updates
 			continue
 		}
 

@@ -67,7 +67,10 @@ func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client
 
 		heightDiff := networkHeight - vaidatorBlockHeight
 
-		_ = db.WriteToInfluxDb(c, bp, "bor_height_difference", map[string]string{}, map[string]interface{}{"difference": heightDiff})
+		err = db.WriteToInfluxDb(c, bp, "bor_height_difference", map[string]string{}, map[string]interface{}{"difference": heightDiff})
+		if err != nil {
+			log.Printf("Error writing bor height diff into db : %v", err)
+		}
 		log.Printf("BOR :: Network height: %d and Validator Height: %d", networkHeight, vaidatorBlockHeight)
 
 		// Send alert

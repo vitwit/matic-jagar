@@ -15,6 +15,7 @@ import (
 func BorParams(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
+		log.Printf("Error while creating batch points : %v", err)
 		return
 	}
 

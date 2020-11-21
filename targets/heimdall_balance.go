@@ -20,14 +20,18 @@ import (
 func HeimdallCurrentBal(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
+		log.Printf("Error while creating db batchpoints : %v", err)
 		return
 	}
 
 	accResp, err := scraper.HeimdallCurrentBal(ops)
 	if err != nil {
 		log.Printf("Error in heimdall current balance: %v", err)
-		_ = db.WriteToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": "NA"})
-		return
+		err = db.WriteToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": "NA"})
+		if err != nil {
+			log.Printf("Error while writing heimdall balance into db : %v", err)
+			return
+		}
 	}
 
 	if len(accResp.Result) > 0 {

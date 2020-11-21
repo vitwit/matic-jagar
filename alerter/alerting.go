@@ -13,7 +13,7 @@ import (
 func SendTelegramAlert(msg string, cfg *config.Config) error {
 	if strings.ToUpper(strconv.FormatBool(cfg.EnableAlerts.EnableTelegramAlerts)) == "TRUE" {
 		if err := NewTelegramAlerter().SendTelegramMessage(msg, cfg.Telegram.BotToken, cfg.Telegram.ChatID); err != nil {
-			log.Printf("failed to send tg alert: %v", err)
+			log.Printf("Failed to send tg alert : %v of msg : %s", err, msg)
 			return err
 		}
 	}

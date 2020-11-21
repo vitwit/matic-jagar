@@ -24,7 +24,7 @@ func CreateBatchPoints(db string) (client.BatchPoints, error) {
 		Precision: "s",
 	})
 	if err != nil {
-		log.Printf("err creating batch points: %v", err)
+		log.Printf("Error creating batch points: %v", err)
 		return nil, err
 	}
 	return bp, nil
@@ -33,7 +33,7 @@ func CreateBatchPoints(db string) (client.BatchPoints, error) {
 // WriteBatchPoints is to write data into influx db
 func WriteBatchPoints(c client.Client, bp client.BatchPoints) error {
 	if err := c.Write(bp); err != nil {
-		log.Printf("err writing batch points to client: %v", err)
+		log.Printf("Error writing batch points to client: %v", err)
 		return err
 	}
 	return nil
@@ -44,11 +44,13 @@ func WriteToInfluxDb(c client.Client, bp client.BatchPoints, name string, tags m
 	fields map[string]interface{}) error {
 	p, err := CreateDataPoint(name, tags, fields)
 	if err != nil {
+		log.Printf("Error while creating data points of db : %v of fields : %v", err, fields)
 		return err
 	}
 	bp.AddPoint(p)
 	err = WriteBatchPoints(c, bp)
 	if err != nil {
+		log.Printf("Error while writing into db : %v", err)
 		return err
 	}
 	return nil
