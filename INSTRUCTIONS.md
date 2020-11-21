@@ -252,7 +252,7 @@ UID of dashboards are as follows:
 - **13443**: Summary dashboard
 - **13444**: Setup overview
 
-- *For more info about grafana dashboard imports you can refer https://grafana.com/docs/grafana/latest/reference/export_import/*
+*For more info about grafana dashboard imports you can refer https://grafana.com/docs/grafana/latest/reference/export_import/*
 
 
 
