@@ -258,7 +258,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ExecutionType: "Telegram command",
 			Name:          "command based alerts",
 			Func:          TelegramAlerting,
-			ScraperRate:   "2s",
+			ScraperRate:   cfg.Scraper.CommandsRate,
 		},
 		{
 			ExecutionType: "http",

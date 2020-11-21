@@ -35,6 +35,8 @@ type (
 		ValidatorRate string `mapstructure:"validator_rate"`
 		// ContractRate is to call and fetch the data from smart contract realted targets on that time interval
 		ContractRate string `mapstructure:"contract_rate"`
+		// CommandsRate is to check the for telegram commands from telegram chat and returns the data
+		CommandsRate string `mapstructure:"tg_commnads_rate"`
 	}
 
 	// InfluxDB stores influxDB credntials

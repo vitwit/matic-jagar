@@ -40,6 +40,7 @@ eth_balance_threshold = 0.1
 rate = "6s"
 validator_rate = "60s"
 contract_rate = "300s"
+tg_commnads_rate = "2s"
 
 [telegram]
 tg_chat_id = 228288878 # Replace your chat id here

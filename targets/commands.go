@@ -136,7 +136,7 @@ func GetAccountBal(cfg *config.Config, c client.Client) string {
 	balance := GetAccountBalWithDenomFromdb(cfg, c) // get heimdall account balance
 	balanceMsg = fmt.Sprintf("Heimdall Node : Current balance of your account(%s) is %s \n", cfg.ValDetails.SignerAddress, balance)
 
-	borBalance := GetBorBalanceFromDB(cfg, c) // get bor account balance
+	borBalance := GetBorBalanceFromDB(cfg, c) + "ETH" // get bor account balance
 	balanceMsg = balanceMsg + fmt.Sprintf("\nBor Node : Current balance of your account(%s) is %s \n", cfg.ValDetails.SignerAddress, borBalance)
 
 	return balanceMsg
