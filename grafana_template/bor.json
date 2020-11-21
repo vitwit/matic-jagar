@@ -12,7 +12,7 @@
       }
     ]
   },
-  "description": "InfluxDB dashboards for telegraf metrics",
+  "description": "InfluxDB/grafana dashboards for bor metrics",
   "editable": true,
   "gnetId": 928,
   "graphTooltip": 1,

@@ -12,7 +12,7 @@
       }
     ]
   },
-  "description": "InfluxDB dashboards for telegraf metrics",
+  "description": "InfluxDB/grafana dashboard for validator metrics",
   "editable": true,
   "gnetId": 928,
   "graphTooltip": 1,
