@@ -2,12 +2,36 @@
 
 set -e
 
-prometheus_config="prometheus.yml"
-prometheus_service="/lib/systemd/system/prometheus.service"
-node_exporter_service="/lib/systemd/system/node_exporter.service"
-user=$USER
-
 cd $HOME
+
+echo "------ checking for go if it's not installed then it will be installing here -----"
+
+command_exists () {
+    type "$1" &> /dev/null ;
+}
+
+if command_exists go ; then
+    echo "Golang is already installed"
+else
+  echo "Install dependencies"
+  sudo apt update
+  sudo apt install build-essential jq -y
+
+  wget https://dl.google.com/go/go1.15.2.linux-amd64.tar.gz
+  tar -xvf go1.15.2.linux-amd64.tar.gz
+  sudo mv go /usr/local
+
+  echo "" >> ~/.bashrc
+  echo 'export GOPATH=$HOME/go' >> ~/.bashrc
+  echo 'export GOROOT=/usr/local/go' >> ~/.bashrc
+  echo 'export GOBIN=$GOPATH/bin' >> ~/.bashrc
+  echo 'export PATH=$PATH:/usr/local/go/bin:$GOBIN' >> ~/.bashrc
+
+  #source ~/.bashrc
+  . ~/.bashrc
+
+  go version
+fi
 
 echo "----------- Installing grafana -----------"
 
@@ -62,7 +86,7 @@ echo "scrape_configs:
   - job_name: 'node_exporter'
 
     static_configs:
-    - targets: ['localhost:9100']" >> "${prometheus_config}"
+    - targets: ['localhost:9100']" >> "prometheus.yml"
 
 echo "------- Setup prometheus system service -------"
 
@@ -71,14 +95,14 @@ Description=Prometheus
 After=network-online.target
 
 [Service]
-User=$user
-ExecStart=/home/$user/go/bin/prometheus --config.file=/home/$user/prometheus.yml
+User=$USER
+ExecStart=$HOME/go/bin/prometheus --config.file=$HOME/prometheus.yml
 Restart=always
 RestartSec=3
 LimitNOFILE=4096
 
 [Install]
-WantedBy=multi-user.target" | sudo tee "${prometheus_service}"
+WantedBy=multi-user.target" | sudo tee "/lib/systemd/system/prometheus.service"
 
 echo "------ Start prometheus -----------"
 
@@ -104,14 +128,14 @@ Description=Node_exporter
 After=network-online.target
 
 [Service]
-User=$user
-ExecStart=/home/$user/go/bin/node_exporter
+User=$USER
+ExecStart=$HOME/go/bin/node_exporter
 Restart=always
 RestartSec=3
 LimitNOFILE=4096
 
 [Install]
-WantedBy=multi-user.target" | sudo tee "${node_exporter_service}"
+WantedBy=multi-user.target" | sudo tee "/lib/systemd/system/node_exporter.service"
 
 echo "----------- Start node exporter ------------"
 
@@ -120,6 +144,10 @@ sudo systemctl daemon-reload
 sudo systemctl enable node_exporter.service
 
 sudo systemctl start node_exporter.service
+
+echo "---- Cleaning .dep .tar.gz files of grafana, prometheus, influxdb and node exporter --------"
+
+rm influxdb_1.8.3_amd64.deb grafana_7.3.1_amd64.deb node_exporter-0.18.1.linux-amd64.tar.gz prometheus-2.22.1.linux-amd64.tar.gz
 
 echo "------------Creating databases matic-------------"
 
@@ -140,4 +168,4 @@ cp example.config.toml config.toml
 
 echo "------ Building and running the code --------"
 
-go build -o matic && ./matic
+go build -o matic-jagar && ./matic-jagar
