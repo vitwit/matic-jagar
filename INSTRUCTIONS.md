@@ -172,7 +172,7 @@ Edit the `config.toml` with your changes. Informaion on all the fields in `confi
 ## Build and run the monitoring binary
 
 ```sh
-$ go build -o matic && ./matic
+$ go build -o matic-jagar && ./matic-jagar
 ```
 
 Installation of the tool is completed lets configure the Grafana dashboards.
