@@ -2,6 +2,11 @@
 
 set -e
 
+prometheus_config="prometheus.yml"
+prometheus_service="/lib/systemd/system/prometheus.service"
+node_exporter_service="/lib/systemd/system/node_exporter.service"
+user=$USER
+
 cd $HOME
 
 echo "----------- Installing grafana -----------"
@@ -32,7 +37,7 @@ sudo systemctl start influxdb
 
 cd $HOME
 
-echo "----------- Downloading prometheus -----------"
+echo "----------- Intsalling prometheus -----------"
 
 wget https://github.com/prometheus/prometheus/releases/download/v2.22.1/prometheus-2.22.1.linux-amd64.tar.gz
 $ tar -xvf prometheus-2.22.1.linux-amd64.tar.gz
@@ -43,6 +48,37 @@ sudo cp prometheus-2.22.1.linux-amd64/prometheus $GOBIN
 
 sudo cp prometheus-2.22.1.linux-amd64/prometheus.yml $HOME
 
+
+echo "------- Edit prometheus.yml --------------"
+
+echo "scrape_configs:
+ 
+  - job_name: 'validator'
+
+    static_configs:
+    - targets: ['localhost:26660']
+
+
+  - job_name: 'node_exporter'
+
+    static_configs:
+    - targets: ['localhost:9100']" >> "${prometheus_config}"
+
+echo "------- Setup prometheus system service -------"
+
+echo "[Unit]
+Description=Prometheus
+After=network-online.target
+
+[Service]
+User=$user
+ExecStart=/home/$user/go/bin/prometheus --config.file=/home/$user/prometheus.yml
+Restart=always
+RestartSec=3
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target" | sudo tee "${prometheus_service}"
 
 echo "------ Start prometheus -----------"
 
@@ -60,6 +96,22 @@ curl -LO https://github.com/prometheus/node_exporter/releases/download/v0.18.1/n
 tar -xvf node_exporter-0.18.1.linux-amd64.tar.gz
 
 sudo cp node_exporter-0.18.1.linux-amd64/node_exporter $GOBIN
+
+echo "---------- Setup Node exporter service -----------"
+
+echo "[Unit]
+Description=Node_exporter
+After=network-online.target
+
+[Service]
+User=$user
+ExecStart=/home/$user/go/bin/node_exporter
+Restart=always
+RestartSec=3
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target" | sudo tee "${node_exporter_service}"
 
 echo "----------- Start node exporter ------------"
 
