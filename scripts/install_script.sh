@@ -121,7 +121,7 @@ tar -xvf node_exporter-0.18.1.linux-amd64.tar.gz
 
 sudo cp node_exporter-0.18.1.linux-amd64/node_exporter $GOBIN
 
-echo "---------- Setup Node exporter service -----------"
+echo "---------- Setup Prometheus Node exporter service -----------"
 
 echo "[Unit]
 Description=Node_exporter
@@ -164,8 +164,33 @@ cd matic-jagar
 
 git fetch && git checkout mumbai-testnet
 
-cp example.config.toml config.toml
+cp example.config.toml ~/.matic-jagar/config/config.toml
 
 echo "------ Building and running the code --------"
 
-go build -o matic-jagar && ./matic-jagar
+go build -o matic-jagar
+mv matic-jagar ~/.matic-jagar/
+
+# TODO take rpc, lcd endpoints via flags for the script and update ~/.matic-jagar/config/config.toml using sed command
+
+echo "---------- Setup Matic-Jagar service -----------"
+
+echo "[Unit]
+Description=Matic-Jagar
+After=network-online.target
+
+[Service]
+User=$USER
+ExecStart=$HOME/go/bin/matic-jagar
+Restart=always
+RestartSec=3
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target" | sudo tee "/lib/systemd/system/matic_jagar.service"
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable matic_jagar.service
+
+sudo systemctl start matic_jagar.service
