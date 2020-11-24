@@ -1,6 +1,9 @@
 package config
 
 import (
+	"os/user"
+	"path"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gopkg.in/go-playground/validator.v9"
@@ -132,9 +135,17 @@ type (
 
 // ReadFromFile to read config details using viper
 func ReadFromFile() (*Config, error) {
+	usr, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	configPath := path.Join(usr.HomeDir, `.matic-jagar/config/`)
+	log.Printf("Config Path : %s", configPath)
+
 	v := viper.New()
 	v.AddConfigPath(".")
-	v.AddConfigPath("~/.matic-jagar/config/")
+	v.AddConfigPath(configPath)
 	v.SetConfigName("config")
 	if err := v.ReadInConfig(); err != nil {
 		log.Fatalf("error while reading config.toml: %v", err)

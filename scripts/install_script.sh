@@ -164,12 +164,16 @@ cd matic-jagar
 
 git fetch && git checkout mumbai-testnet
 
+cp example.config.toml config.toml  # copy config into local workspace
+
+mkdir -p  ~/.matic-jagar/config/
+
 cp example.config.toml ~/.matic-jagar/config/config.toml
 
 echo "------ Building and running the code --------"
 
 go build -o matic-jagar
-mv matic-jagar ~/.matic-jagar/
+mv matic-jagar $HOME/go/bin
 
 # TODO take rpc, lcd endpoints via flags for the script and update ~/.matic-jagar/config/config.toml using sed command
 
