@@ -6,7 +6,38 @@
 - **Grafana 6.7+**
 - **InfluxDB 1.7+**
 
+## 1.Installation using script
+### You can run this installation script to setup the monitoring tool
 
+- One click installation to download grafana, prometheus, influxdb and node exporter.
+- It also downloads go if it's not installed.
+- Before running the script make sure to follow below steps to export the config fields.
+- Don't forget to change and export the field values.
+```bash
+cd $HOME
+export ETH_RPC_ENDPOINT="https://goerli.prylabs.net" # Replace with infura endpoint
+export BOR_RPC_ENDPOINT="http://localhost:8545"
+export BOR_EXTERNAL_RPC="http://<sentry-ip>:8545" # Replace the IP address with your sentry IP address
+export HEIMDALL_RPC_ENDPOINT="http://localhost:26657"
+export HEIMDALL_LCD_ENDPOINT="http://localhost:1317"
+export HEIMDALL_EXTERNAL_RPC="http://<sentry-ip>:26657" # Replace the IP address with your sentry IP address
+export VAL_HEX_ADDRESS="E4B8E9225842401AD16D4D826732953DAF07C7E2" # Replace this address with your validator hex address. You can get it by running this cmd on validator- heimdallcli status | jq .validator_info.address
+export SIGNER_ADDRESS="0xE4b8e9222705621aD16d4d826732953DAf07C7E2" # Replace this with your valdiator signer address
+export VALIDATOR_NAME="moniker" # Your validator moniker
+export STAKE_MANAGER_CONTRACT="0x00200eA4Ee292E253E6Ca07dBA5EdC07c8Aa37A3" # Stake manager contract address on Goerli testnet
+export TELEGRAM_CHAT_ID="22828812" # Replace your chat id here
+export TELEGRAM_BOT_TOKEN="1117273891:AAEtr3ZU5x4JRj5YSF5LBeu1fPF0T4xj-UI" # Replace your bot token here
+```
+- After exporting above fields, you can just download the installation script and run it.
+- Here you can find
+[script file](https://github.com/vitwit/matic-jagar/blob/review-changes/scripts/install_script.sh).
+- To run script 
+```bash
+chmod +x install_script.sh
+./install_script.sh
+```
+
+## 2. Install manually
 ### Install Grafana for Ubuntu
 Download the latest .deb file and extract it:
 
