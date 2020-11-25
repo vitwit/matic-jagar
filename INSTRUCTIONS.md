@@ -198,7 +198,16 @@ $ git fetch && git checkout mumbai-testnet
 $ cp example.config.toml config.toml
 ```
 
-Edit the `config.toml` with your changes. Informaion on all the fields in `config.toml` can be found [here](./docs/config-desc.md)
+Please edit the `config.toml` and replace the placeholder values with your values. Fields which have to be edited are as follows:
+ - **eth_rpc_endpoint**
+ - **bor_external_rpc**
+ - **heimdall_external_rpc**
+ - **validator_hex_addr**
+ - **signer_address**
+ - **tg_chat_id** (optional)
+ - **tg_bot_token** (optional)
+ 
+ Information on all the fields in `config.toml` can be found [here](./docs/config-desc.md)
 
 
 ## Build and run the monitoring binary
