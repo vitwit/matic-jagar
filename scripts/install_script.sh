@@ -168,6 +168,8 @@ mkdir -p  ~/.matic-jagar/config/
 
 cp example.config.toml ~/.matic-jagar/config/config.toml
 
+cd $HOME
+
 echo "------ Updatig config fields with exported values -------"
 
 sed -i '/eth_rpc_endpoint =/c\eth_rpc_endpoint = "'"$ETH_RPC_ENDPOINT"'"'  ~/.matic-jagar/config/config.toml
@@ -195,6 +197,8 @@ sed -i '/tg_chat_id =/c\tg_chat_id = "'"$TELEGRAM_CHAT_ID"'"'  ~/.matic-jagar/co
 sed -i '/tg_bot_token =/c\tg_bot_token = "'"$TELEGRAM_BOT_TOKEN"'"'  ~/.matic-jagar/config/config.toml
 
 echo "------ Building and running the code --------"
+
+cd matic-jagar
 
 go build -o matic-jagar
 mv matic-jagar $HOME/go/bin
