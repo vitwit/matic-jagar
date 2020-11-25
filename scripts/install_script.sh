@@ -164,11 +164,35 @@ cd matic-jagar
 
 git fetch && git checkout mumbai-testnet
 
-cp example.config.toml config.toml  # copy config into local workspace
-
 mkdir -p  ~/.matic-jagar/config/
 
 cp example.config.toml ~/.matic-jagar/config/config.toml
+
+echo "------ Updatig config fields with exported values -------"
+
+sed -i '/eth_rpc_endpoint =/c\eth_rpc_endpoint = "'"$ETH_RPC_ENDPOINT"'"'  ~/.matic-jagar/config/config.toml
+
+sed -i '/bor_rpc_end_point =/c\bor_rpc_end_point = "'"$BOR_RPC_ENDPOINT"'"' ~/.matic-jagar/config/config.toml
+
+sed -i '/bor_external_rpc =/c\bor_external_rpc = "'"$BOR_EXTERNAL_RPC"'"'  ~/.matic-jagar/config/config.toml
+
+sed -i '/heimdall_rpc_endpoint =/c\heimdall_rpc_endpoint = "'"$HEIMDALL_RPC_ENDPOINT"'"'  ~/.matic-jagar/config/config.toml
+
+sed -i '/heimdall_lcd_endpoint =/c\heimdall_lcd_endpoint = "'"$HEIMDALL_LCD_ENDPOINT"'"'  ~/.matic-jagar/config/config.toml
+
+sed -i '/heimdall_external_rpc =/c\heimdall_external_rpc = "'"$HEIMDALL_EXTERNAL_RPC"'"'  ~/.matic-jagar/config/config.toml
+
+sed -i '/validator_hex_addr =/c\validator_hex_addr = "'"$VAL_HEX_ADDRESS"'"'  ~/.matic-jagar/config/config.toml
+
+sed -i '/signer_address =/c\signer_address = "'"$SIGNER_ADDRESS"'"'  ~/.matic-jagar/config/config.toml
+
+sed -i '/validator_name =/c\validator_name = "'"$VALIDATOR_NAME"'"'  ~/.matic-jagar/config/config.toml
+
+sed -i '/stake_manager_contract =/c\stake_manager_contract = "'"$STAKE_MANAGER_CONTRACT"'"'  ~/.matic-jagar/config/config.toml
+
+sed -i '/tg_chat_id =/c\tg_chat_id = "'"$TELEGRAM_CHAT_ID"'"'  ~/.matic-jagar/config/config.toml
+
+sed -i '/tg_bot_token =/c\tg_bot_token = "'"$TELEGRAM_BOT_TOKEN"'"'  ~/.matic-jagar/config/config.toml
 
 echo "------ Building and running the code --------"
 
