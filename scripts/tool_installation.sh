@@ -24,6 +24,8 @@ curl "http://localhost:8086/query" --data-urlencode "q=CREATE DATABASE matic"
 
 echo "------ Updatig config fields with exported values -------"
 
+sed -i '/eth_rpc_endpoint =/c\eth_rpc_endpoint = "'"$ETH_RPC_ENDPOINT"'"'  ~/.matic-jagar/config/config.toml
+
 sed -i '/bor_external_rpc =/c\bor_external_rpc = "'"$BOR_EXTERNAL_RPC"'"'  ~/.matic-jagar/config/config.toml
 
 sed -i '/heimdall_external_rpc =/c\heimdall_external_rpc = "'"$HEIMDALL_EXTERNAL_RPC"'"'  ~/.matic-jagar/config/config.toml
