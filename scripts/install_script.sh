@@ -17,8 +17,8 @@ else
   sudo apt update
   sudo apt install build-essential jq -y
 
-  wget https://dl.google.com/go/go1.15.2.linux-amd64.tar.gz
-  tar -xvf go1.15.2.linux-amd64.tar.gz
+  wget https://dl.google.com/go/go1.15.5.linux-amd64.tar.gz
+  tar -xvf go1.15.5.linux-amd64.tar.gz
   sudo mv go /usr/local
 
   echo "" >> ~/.bashrc
@@ -27,7 +27,6 @@ else
   echo 'export GOBIN=$GOPATH/bin' >> ~/.bashrc
   echo 'export PATH=$PATH:/usr/local/go/bin:$GOBIN' >> ~/.bashrc
 
-  #source ~/.bashrc
   . ~/.bashrc
 
   go version
@@ -61,7 +60,7 @@ sudo systemctl start influxdb
 
 cd $HOME
 
-echo "----------- Intsalling prometheus -----------"
+echo "----------- Installing prometheus -----------"
 
 wget https://github.com/prometheus/prometheus/releases/download/v2.22.1/prometheus-2.22.1.linux-amd64.tar.gz
 $ tar -xvf prometheus-2.22.1.linux-amd64.tar.gz
@@ -88,6 +87,28 @@ echo "scrape_configs:
     static_configs:
     - targets: ['localhost:9100']" >> "prometheus.yml"
 
+if [ -z "${SENTRY1}" ];
+then
+   echo "-----Sentry-1 IP is empty, so not writing into prometheus.yml--------"
+else 
+  echo "
+  - job_name: 'sentry-1'
+
+    static_configs:
+    - targets: ['$SENTRY1']" >> "prometheus.yml"
+fi
+
+if [ -z "${SENTRY2}" ];
+then
+  echo "-----Sentry-2 IP is empty, so not writing into prometheus.yml--------"
+else
+  echo "
+  - job_name: 'sentry-2'
+
+    static_configs:
+    - targets: ['$SENTRY2']" >> "prometheus.yml"
+fi
+
 echo "------- Setup prometheus system service -------"
 
 echo "[Unit]
@@ -95,7 +116,7 @@ Description=Prometheus
 After=network-online.target
 
 [Service]
-User=$USER
+Type=simple
 ExecStart=$HOME/go/bin/prometheus --config.file=$HOME/prometheus.yml
 Restart=always
 RestartSec=3
@@ -128,7 +149,7 @@ Description=Node_exporter
 After=network-online.target
 
 [Service]
-User=$USER
+Type=simple
 ExecStart=$HOME/go/bin/node_exporter
 Restart=always
 RestartSec=3
@@ -172,15 +193,7 @@ cd $HOME
 
 echo "------ Updatig config fields with exported values -------"
 
-sed -i '/eth_rpc_endpoint =/c\eth_rpc_endpoint = "'"$ETH_RPC_ENDPOINT"'"'  ~/.matic-jagar/config/config.toml
-
-sed -i '/bor_rpc_end_point =/c\bor_rpc_end_point = "'"$BOR_RPC_ENDPOINT"'"' ~/.matic-jagar/config/config.toml
-
 sed -i '/bor_external_rpc =/c\bor_external_rpc = "'"$BOR_EXTERNAL_RPC"'"'  ~/.matic-jagar/config/config.toml
-
-sed -i '/heimdall_rpc_endpoint =/c\heimdall_rpc_endpoint = "'"$HEIMDALL_RPC_ENDPOINT"'"'  ~/.matic-jagar/config/config.toml
-
-sed -i '/heimdall_lcd_endpoint =/c\heimdall_lcd_endpoint = "'"$HEIMDALL_LCD_ENDPOINT"'"'  ~/.matic-jagar/config/config.toml
 
 sed -i '/heimdall_external_rpc =/c\heimdall_external_rpc = "'"$HEIMDALL_EXTERNAL_RPC"'"'  ~/.matic-jagar/config/config.toml
 
@@ -189,8 +202,6 @@ sed -i '/validator_hex_addr =/c\validator_hex_addr = "'"$VAL_HEX_ADDRESS"'"'  ~/
 sed -i '/signer_address =/c\signer_address = "'"$SIGNER_ADDRESS"'"'  ~/.matic-jagar/config/config.toml
 
 sed -i '/validator_name =/c\validator_name = "'"$VALIDATOR_NAME"'"'  ~/.matic-jagar/config/config.toml
-
-sed -i '/stake_manager_contract =/c\stake_manager_contract = "'"$STAKE_MANAGER_CONTRACT"'"'  ~/.matic-jagar/config/config.toml
 
 sed -i '/tg_chat_id =/c\tg_chat_id = "'"$TELEGRAM_CHAT_ID"'"'  ~/.matic-jagar/config/config.toml
 
@@ -203,8 +214,6 @@ cd matic-jagar
 go build -o matic-jagar
 mv matic-jagar $HOME/go/bin
 
-# TODO take rpc, lcd endpoints via flags for the script and update ~/.matic-jagar/config/config.toml using sed command
-
 echo "---------- Setup Matic-Jagar service -----------"
 
 echo "[Unit]
@@ -212,7 +221,7 @@ Description=Matic-Jagar
 After=network-online.target
 
 [Service]
-User=$USER
+Type=simple
 ExecStart=$HOME/go/bin/matic-jagar
 Restart=always
 RestartSec=3
