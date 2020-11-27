@@ -1,4 +1,60 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDBMATIC",
+      "label": "InfluxDBMatic",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    },
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.3.1"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "singlestat",
+      "name": "Singlestat",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -12,17 +68,17 @@
       }
     ]
   },
-  "description": "InfluxDB dashboards for telegraf metrics",
+  "description": "InfluxDB grafana dashboard displaying a basic summary of validator, bor and system metrics of Validator node on Matic network.",
   "editable": true,
-  "gnetId": 928,
+  "gnetId": 13443,
   "graphTooltip": 1,
-  "id": 14,
-  "iteration": 1605000621009,
+  "id": null,
+  "iteration": 1606471220312,
   "links": [],
   "panels": [
     {
       "collapsed": false,
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -43,7 +99,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -146,7 +202,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -242,7 +298,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -256,7 +312,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -356,7 +412,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -464,7 +520,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -567,7 +623,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -670,7 +726,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -773,7 +829,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -876,7 +932,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -978,7 +1034,7 @@
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": "${DS_INFLUXDBMATIC}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -999,7 +1055,7 @@
         "rgba(237, 129, 40, 0.89)",
         "rgba(50, 172, 45, 0.97)"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 1,
       "editable": true,
       "error": false,
@@ -1083,7 +1139,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "Busy state of all CPU cores together",
       "fieldConfig": {
         "defaults": {
@@ -1160,7 +1216,7 @@
     },
     {
       "cacheTimeout": null,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "Non available RAM memory",
       "fieldConfig": {
         "defaults": {
@@ -1253,7 +1309,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -1446,7 +1502,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 2,
       "description": "",
       "fieldConfig": {
@@ -1635,7 +1691,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -1749,7 +1805,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 3,
       "description": "",
       "fieldConfig": {
@@ -1857,7 +1913,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -2058,7 +2114,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 3,
       "description": "",
       "fieldConfig": {
@@ -2201,7 +2257,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_PROMETHEUS}",
       "decimals": 3,
       "description": "",
       "fieldConfig": {
@@ -2405,13 +2461,8 @@
       },
       {
         "allValue": null,
-        "current": {
-          "isNone": true,
-          "selected": false,
-          "text": "None",
-          "value": ""
-        },
-        "datasource": null,
+        "current": {},
+        "datasource": "${DS_INFLUXDBMATIC}",
         "definition": "",
         "error": null,
         "hide": 0,
@@ -2433,15 +2484,7 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": "$datasource",
         "definition": "",
         "error": null,
@@ -2464,15 +2507,7 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": "$datasource",
         "definition": "",
         "error": null,
@@ -2495,15 +2530,7 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": "$datasource",
         "definition": "",
         "error": null,
@@ -2526,15 +2553,7 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": "$datasource",
         "definition": "",
         "error": null,
@@ -2577,12 +2596,8 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": false,
-          "text": "node_exporter",
-          "value": "node_exporter"
-        },
-        "datasource": "Prometheus",
+        "current": {},
+        "datasource": "${DS_PROMETHEUS}",
         "definition": "label_values(node_uname_info, job)",
         "error": null,
         "hide": 0,
@@ -2604,12 +2619,8 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": false,
-          "text": "localhost:9100",
-          "value": "localhost:9100"
-        },
-        "datasource": "Prometheus",
+        "current": {},
+        "datasource": "${DS_PROMETHEUS}",
         "definition": "label_values(node_uname_info{job=\"$job\"}, instance)",
         "error": null,
         "hide": 0,
@@ -2687,5 +2698,5 @@
   "timezone": "browser",
   "title": "Summary",
   "uid": "AiBR0XhMk",
-  "version": 2
+  "version": 1
 }
