@@ -1,4 +1,52 @@
-{
+={
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDBMATIC",
+      "label": "InfluxDBMatic",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.3.1"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "singlestat",
+      "name": "Singlestat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -16,13 +64,13 @@
   "editable": true,
   "gnetId": 13444,
   "graphTooltip": 0,
-  "id": 40,
-  "iteration": 1606468997647,
+  "id": null,
+  "iteration": 1606468997651,
   "links": [],
   "panels": [
     {
       "collapsed": false,
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -351,7 +399,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -680,7 +728,7 @@
     },
     {
       "collapsed": false,
-      "datasource": "InfluxDBMatic",
+      "datasource": "${DS_INFLUXDBMATIC}",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1038,11 +1086,7 @@
       },
       {
         "allValue": null,
-        "current": {
-          "selected": false,
-          "text": "heimdall-80001",
-          "value": "heimdall-80001"
-        },
+        "current": {},
         "datasource": "$DS",
         "definition": "label_values(tendermint_consensus_height, chain_id)",
         "error": null,
@@ -1065,11 +1109,7 @@
       },
       {
         "allValue": "",
-        "current": {
-          "selected": false,
-          "text": "143.110.177.42:26660",
-          "value": "143.110.177.42:26660"
-        },
+        "current": {},
         "datasource": "$DS",
         "definition": "label_values(tendermint_consensus_height{chain_id=\"$chain_id\"}, instance)",
         "error": null,
