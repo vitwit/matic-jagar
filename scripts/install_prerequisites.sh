@@ -13,13 +13,15 @@ command_exists () {
 if command_exists go ; then
     echo "Golang is already installed"
 else
-  echo "Install dependencies"
+  echo "------- Install dependencies -------"
   sudo apt update
   sudo apt install build-essential jq -y
 
   wget https://dl.google.com/go/go1.15.5.linux-amd64.tar.gz
   tar -xvf go1.15.5.linux-amd64.tar.gz
   sudo mv go /usr/local
+
+  echo "------ Update bashrc ---------------"
 
   echo "" >> ~/.bashrc
   echo 'export GOPATH=$HOME/go' >> ~/.bashrc
@@ -63,7 +65,7 @@ cd $HOME
 echo "----------- Installing prometheus -----------"
 
 wget https://github.com/prometheus/prometheus/releases/download/v2.22.1/prometheus-2.22.1.linux-amd64.tar.gz
-$ tar -xvf prometheus-2.22.1.linux-amd64.tar.gz
+tar -xvf prometheus-2.22.1.linux-amd64.tar.gz
 
 tar -xvf prometheus-2.22.1.linux-amd64.tar.gz
 
