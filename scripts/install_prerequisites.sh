@@ -78,8 +78,7 @@ sudo cp prometheus-2.22.1.linux-amd64/prometheus.yml $HOME
 
 echo "------- Edit prometheus.yml --------------"
 
-echo "scrape_configs:
- 
+echo "
   - job_name: 'validator'
 
     static_configs:
