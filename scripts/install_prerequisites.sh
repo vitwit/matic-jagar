@@ -32,6 +32,8 @@ else
   . ~/.bashrc
 
   go version
+
+  mkdir -p $GOBIN
 fi
 
 echo "----------- Installing grafana -----------"
