@@ -184,6 +184,7 @@ func GetEncodedData(ops types.HTTPOptions, cfg *config.Config, c client.Client, 
 	}
 
 	if hexData.Result == "" {
+		log.Println("Response of web3_sha3 is empty!")
 		return ""
 	}
 

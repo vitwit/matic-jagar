@@ -28,6 +28,11 @@ func ValidatorVotingPower(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 		return
 	}
 
+	if &validatorResp.Result == nil {
+		log.Println("Got an empty response of voting power response!")
+		return
+	}
+
 	vp := validatorResp.Result.Power
 	prevVotingPower := GetVotingPowerFromDb(cfg, c)
 	previousVP, _ := strconv.Atoi(prevVotingPower)

@@ -42,6 +42,10 @@ func LatestCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 	}
 
 	lcp, err := scraper.GetLatestCheckpoints(ops)
+	if err != nil {
+		log.Printf("Error while getting latest checkpoints : %v", err)
+		return
+	}
 
 	startBlock := lcp.Result.StartBlock
 	endBlock := lcp.Result.EndBlock
@@ -60,6 +64,11 @@ func CheckpointsDuration(ops types.HTTPOptions, cfg *config.Config, c client.Cli
 	cpd, err := scraper.GetCheckpointsDuration(ops)
 	if err != nil {
 		log.Printf("Error in get checkpoints duration: %v", err)
+		return
+	}
+
+	if &cpd.Result == nil {
+		log.Println("Got an empty response of checkpoints duration!")
 		return
 	}
 
@@ -104,6 +113,11 @@ func ProposedCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Cli
 	proposedCP, err := scraper.GetProposedCheckpoints(ops)
 	if err != nil {
 		log.Printf("Error in get proposed checkpoints: %v", err)
+		return
+	}
+
+	if &proposedCP.Result == nil {
+		log.Println("Got an empty response of proposed checkpoints!")
 		return
 	}
 

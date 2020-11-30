@@ -32,6 +32,11 @@ func LatestProposedBlockAndTime(ops types.HTTPOptions, cfg *config.Config, c cli
 		return
 	}
 
+	if &blockResp == nil {
+		log.Println("Got an empty response of latest block!")
+		return
+	}
+
 	time := blockResp.Block.Header.Time
 	blockTime := utils.GetUserDateFormat(time) //convert time to user readable format
 	blockHeight := blockResp.Block.Header.Height
@@ -84,6 +89,11 @@ func BlockTimeDifference(ops types.HTTPOptions, cfg *config.Config, c client.Cli
 	currentBlockResp, err := scraper.LatestBlock(ops)
 	if err != nil {
 		log.Printf("Error in block time difference: %v", err)
+		return
+	}
+
+	if &currentBlockResp == nil {
+		log.Println("Got an empty response of currentblock!")
 		return
 	}
 

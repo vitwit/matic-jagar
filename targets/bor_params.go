@@ -25,6 +25,11 @@ func BorParams(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
+	if &params.Result == nil {
+		log.Printf("Got an empty response of bor params : %v", err)
+		return
+	}
+
 	spanDuration := params.Result.SpanDuration
 
 	err = db.WriteToInfluxDb(c, bp, "bor_params", map[string]string{}, map[string]interface{}{"span_duration": spanDuration})

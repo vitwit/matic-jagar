@@ -35,7 +35,7 @@ func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 		validatorDeposited := CheckValidatorDeposited(proposal.ID, cfg, c)
 		err = SendVotingPeriodProposalAlerts(cfg, c)
 		if err != nil {
-			log.Printf("Error while sending voting period alert: %v", err)
+			log.Printf("Error while sending voting period proposal alert: %v", err)
 		}
 
 		tag := map[string]string{"id": proposal.ID}
@@ -126,6 +126,7 @@ func CheckValidatorVoted(proposalID string, cfg *config.Config, c client.Client)
 	voters, err := scraper.GetProposalVoters(ops)
 	if err != nil {
 		log.Printf("Error in proposal voters: %v", err)
+		return ""
 	}
 
 	// Get id using the signer address
@@ -160,6 +161,7 @@ func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
 		voters, err := scraper.GetProposalVoters(ops)
 		if err != nil {
 			log.Printf("Error in proposal voters: %v", err)
+			return err
 		}
 
 		// Get id using the signer address
@@ -199,6 +201,7 @@ func CheckValidatorDeposited(proposalID string, cfg *config.Config, c client.Cli
 	depositors, err := scraper.GetProposalDepositors(ops)
 	if err != nil {
 		log.Printf("Error in proposal depositors: %v", err)
+		return ""
 	}
 
 	// Get id using the signer address

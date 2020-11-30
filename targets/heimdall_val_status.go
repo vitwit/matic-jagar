@@ -28,6 +28,11 @@ func ValidatorStatusAlert(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 		return
 	}
 
+	if &validatorResp.Result == nil {
+		log.Printf("Got an empty response of validator status : %v", err)
+		return
+	}
+
 	now := time.Now().UTC()
 	currentTime := now.Format(time.Kitchen)
 

@@ -60,7 +60,6 @@ func ValidatorCaughtUp(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 		synced = 1
 	}
 
-	// _ = db.WriteToInfluxDb(c, bp, "heimdall_val_caughtup", map[string]string{}, map[string]interface{}{"synced": synced})
 	_ = db.WriteToInfluxDb(c, bp, "heimdall_node_synced", map[string]string{}, map[string]interface{}{"synced": synced})
 	log.Printf("Heimdall Valiator Caught UP: %v", sync.Syncing)
 }
@@ -91,7 +90,10 @@ func Status(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
-	_ = db.WriteToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 1})
+	err = db.WriteToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 1})
+	if err != nil {
+		log.Printf("Error while writing node status into db : %v ", err)
+	}
 
 	var bh int
 	currentBlockHeight := status.Result.SyncInfo.LatestBlockHeight

@@ -28,6 +28,11 @@ func BorLatestSpan(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 		return
 	}
 
+	if &latestSpan.Result == nil {
+		log.Printf("Got an empty respose in BorLatestSpan: %v", err)
+		return
+	}
+
 	spanID := latestSpan.Result.SpanID
 
 	// Get previous span id from db
@@ -125,6 +130,11 @@ func BlockProducer(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	spanProducers, err := scraper.GetSpanProducers(ops)
 	if err != nil {
 		log.Printf("Error: %v", err)
+		return
+	}
+
+	if &spanProducers.Result == nil {
+		log.Printf("Got an empty response of span producers: %v", err)
 		return
 	}
 
