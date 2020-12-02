@@ -98,7 +98,7 @@ else
   - job_name: 'sentry-1'
 
     static_configs:
-    - targets: ['$SENTRY1']" >> "prometheus.yml"
+    - targets: ['$SENTRY1:26660']" >> "prometheus.yml"
 fi
 
 if [ -z "${SENTRY2}" ];
@@ -109,7 +109,7 @@ else
   - job_name: 'sentry-2'
 
     static_configs:
-    - targets: ['$SENTRY2']" >> "prometheus.yml"
+    - targets: ['$SENTRY2:26660']" >> "prometheus.yml"
 fi
 
 echo "------- Setup prometheus system service -------"
