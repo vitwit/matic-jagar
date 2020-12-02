@@ -36,9 +36,16 @@ sed -i '/signer_address =/c\signer_address = "'"$SIGNER_ADDRESS"'"'  ~/.matic-ja
 
 sed -i '/validator_name =/c\validator_name = "'"$VALIDATOR_NAME"'"'  ~/.matic-jagar/config/config.toml
 
-sed -i '/tg_chat_id =/c\tg_chat_id = "'"$TELEGRAM_CHAT_ID"'"'  ~/.matic-jagar/config/config.toml
+if [ ! -z "${TELEGRAM_CHAT_ID}" ] && [ ! -z "${TELEGRAM_BOT_TOKEN}" ];
+then 
+    sed -i '/tg_chat_id =/c\tg_chat_id = '"$TELEGRAM_CHAT_ID"''  ~/.matic-jagar/config/config.toml
 
-sed -i '/tg_bot_token =/c\tg_bot_token = "'"$TELEGRAM_BOT_TOKEN"'"'  ~/.matic-jagar/config/config.toml
+    sed -i '/tg_bot_token =/c\tg_bot_token = "'"$TELEGRAM_BOT_TOKEN"'"'  ~/.matic-jagar/config/config.toml
+
+    sed -i '/enable_telegram_alerts =/c\enable_telegram_alerts = 'true''  ~/.matic-jagar/config/config.toml
+else
+    echo "---- Telgram chat id and/or bot token are empty --------"
+fi
 
 echo "------ Building and running the code --------"
 

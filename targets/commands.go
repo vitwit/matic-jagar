@@ -22,6 +22,7 @@ func TelegramAlerting(ops types.HTTPOptions, cfg *config.Config, c client.Client
 	bot, err := tgbotapi.NewBotAPI(cfg.Telegram.BotToken)
 	if err != nil {
 		log.Fatalf("Please configure telegram bot token %v:", err)
+		return
 	}
 
 	bot.Debug = true
