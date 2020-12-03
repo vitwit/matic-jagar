@@ -34,7 +34,7 @@ else
 
   source ~/.bashrc
 
-  mkdir -p $GOBIN
+  mkdir -p "$GOBIN"
 fi
 
 echo "----------- Installing grafana -----------"
