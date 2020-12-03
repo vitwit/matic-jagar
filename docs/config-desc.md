@@ -46,15 +46,15 @@
 
     - *enable_telegram_alerts*
 
-        Configure **yes** if you wish to get telegram alerts otherwise make it **no** .
+        Configure **true** if you wish to get telegram alerts otherwise make it **false** .
     
     - *enable_email_alerts*
     
-        Configure **yes** if you wish to get email alerts otherwise make it **no** .
+        Configure **true** if you wish to get email alerts otherwise make it **false** .
 
 - **[daily_alert]**
 
-    -   Alert about validator health, i.e. whether it's voting or jailed. You can get alerts twice a day based on the time which can be configured i.e., **alert_time1** and **alert_time2** .
+    -   Array of timestamps for alerting about the validator health, i.e. whether it's voting or jailed. You can get alerts based on the time which can be configured i.e., **alert_time1** and **alert_time2** .
 
 - **[choose_alerts]**
 
