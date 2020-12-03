@@ -1,0 +1,59 @@
+[rpc_and_lcd_endpoints]
+eth_rpc_endpoint = "https://goerli.prylabs.net" # Replace with infura endpoint 
+bor_rpc_end_point = "http://localhost:8545"
+bor_external_rpc = "http://<sentry-ip>:8545" # Replace the IP address with your sentry IP address
+heimdall_rpc_endpoint = "http://localhost:26657"
+heimdall_lcd_endpoint = "http://localhost:1317"
+heimdall_external_rpc = "http://<sentry-ip>:26657" # Replace the IP address with your sentry IP address
+
+[validator_details]
+validator_hex_addr = "E4B8E9225842401AD16D4D826732953DAF07C7E2" # Replace this address with your validator hex address. You can get it by running this cmd on validator- heimdallcli status | jq .validator_info.address
+signer_address = "0xE4b8e9222705621aD16d4d826732953DAf07C7E2" # Replace this with your valdiator signer address
+validator_name = "Matic" # Your validator moniker
+stake_manager_contract = "0x00200eA4Ee292E253E6Ca07dBA5EdC07c8Aa37A3" # Stake manager contract address on Goerli testnet
+
+[enable_alerts]
+enable_telegram_alerts = false
+enable_email_alerts = false
+
+[regular_status_alerts]
+alert_timings = ["02:30PM","12:18PM","12:19PM","02:33PM"]
+
+[alerter_preferences]
+balance_change_alerts = "yes"
+voting_power_alerts = "yes"
+proposal_alerts = "yes"
+block_diff_alerts = "yes"
+missed_block_alerts = "yes"
+num_peers_alerts = "yes"
+node_sync_alert = "yes"
+node_status_alert = "yes"
+eth_low_balance_alert = "yes"
+
+[alerting_threholds]
+num_peers_threshold = 0
+missed_blocks_threshold = 10
+block_diff_threshold = 10
+eth_balance_threshold = 0.1
+
+[scraper]
+rate = "6s"
+validator_rate = "60s"
+contract_rate = "300s"
+tg_commnads_rate = "2s"
+
+[telegram]
+tg_chat_id = 228288878 # Replace your chat id here
+tg_bot_token = "1117273891:AAEtr3ZU5x4JRj5YSF4LBeu1fPF0T4xj-UI" # Replace your bot token here
+
+[sendgrid]
+sendgrid_token = "SG.J4dl16RST9OM9Nc2Tbvh6A.L_FPSzlqvBesPPQP72hATEt5Hs8TUzo9Dl3ohG8Rk"
+receiver_email_address = "xyz@example.com"
+account_email = "xyz@domain.com"
+sendgrid_account_name = "xyz"
+
+[influxdb]
+port = "8086"
+ip = "http://localhost"
+database = "matic"
+username = ""
