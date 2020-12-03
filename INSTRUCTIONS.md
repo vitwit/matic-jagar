@@ -26,6 +26,10 @@ export SENTRY2="<sentry-2-IP>" # ex:- export SENTRY2="143.185.336.95"
 ```bash
 curl -s -L https://raw.githubusercontent.com/vitwit/matic-jagar/main/scripts/install_prerequisites.sh | bash
 ```
+Source your `.bashrc` after executing the script for the env variables to take effect.
+```
+source ~/.bashrc
+```
 
 **Note**: This script installs the prerequistes and enables them to run on their default ports ie. `Grafana` by default runs on port 3000, `InfluxDb` by default runs on port 8086, `Prometheus` by default runs on port 9090 and `Node Exporter` by default runs on port 9100. If you want to change the default ports please follow these [instructions](./docs/custom-port.md).
 
