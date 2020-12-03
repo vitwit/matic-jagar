@@ -109,7 +109,7 @@ else
   - job_name: 'sentry-2'
 
     static_configs:
-    - targets: ['$SENTRY2:26660']" >> "prometheus.yml"
+    - targets: ['$SENTRY2:26660']" >> "$HOME/prometheus.yml"
 fi
 
 echo "------- Setup prometheus system service -------"
