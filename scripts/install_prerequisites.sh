@@ -88,7 +88,7 @@ echo "
   - job_name: 'node_exporter'
 
     static_configs:
-    - targets: ['localhost:9100']" >> "prometheus.yml"
+    - targets: ['localhost:9100']" >> "$HOME/prometheus.yml"
 
 if [ -z "${SENTRY1}" ];
 then
@@ -98,7 +98,7 @@ else
   - job_name: 'sentry-1'
 
     static_configs:
-    - targets: ['$SENTRY1:26660']" >> "prometheus.yml"
+    - targets: ['$SENTRY1:26660']" >> "$HOME/prometheus.yml"
 fi
 
 if [ -z "${SENTRY2}" ];
