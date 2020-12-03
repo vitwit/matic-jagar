@@ -59,7 +59,7 @@ Description=Matic-Jagar
 After=network-online.target
 
 [Service]
-Type=simple
+User=$USER
 ExecStart=$HOME/go/bin/matic-jagar
 Restart=always
 RestartSec=3
