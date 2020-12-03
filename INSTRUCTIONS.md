@@ -49,7 +49,7 @@ To manually install the prerequistes please follow this [guide](./docs/prereq-ma
 - Please export the following env variables first as they will be used to initialize the `config.toml` file for the tool.
 ```bash
 cd $HOME
-export ETH_RPC_ENDPOINT="<infura-endpoint>" # Ex- export ETH_RPC_ENDPOINT= "https://goerli.prylabs.net"
+export ETH_RPC_ENDPOINT="<infura-endpoint>" # Ex- export ETH_RPC_ENDPOINT="https://goerli.prylabs.net"
 export BOR_EXTERNAL_RPC="http://<sentry-ip>:8545" # Ex - export BOR_EXTERNAL_RPC="http://156.23.25.21:8545"
 export HEIMDALL_EXTERNAL_RPC="http://<sentry-ip>:26657" # Ex - export HEIMDALL_EXTERNAL_RPC="http://156.23.25.21:26657"
 export VAL_HEX_ADDRESS="<hex-address>" # Ex - export VAL_HEX_ADDRESS="E4B8E9225842401AD16D4D826732953DAF07C7E2". You can get it by running this cmd on validator- heimdallcli status | jq .validator_info.address
