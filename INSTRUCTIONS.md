@@ -24,7 +24,7 @@ export SENTRY2="<sentry-2-IP>" # ex:- export SENTRY2="143.185.336.95"
 - You can find the script [here](./scripts/install_prerequisites.sh)
 - Execute the script using the following command:
 ```bash
-curl -s -L https://raw.githubusercontent.com/vitwit/matic-jagar/review-changes/scripts/install_prerequisites.sh | bash
+curl -s -L https://raw.githubusercontent.com/vitwit/matic-jagar/main/scripts/install_prerequisites.sh | bash
 ```
 
 **Note**: This script installs the prerequistes and enables them to run on their default ports ie. `Grafana` by default runs on port 3000, `InfluxDb` by default runs on port 8086, `Prometheus` by default runs on port 9090 and `Node Exporter` by default runs on port 9100. If you want to change the default ports please follow these [instructions](./docs/custom-port.md).
@@ -58,7 +58,7 @@ export TELEGRAM_BOT_TOKEN="<token>" # Ex - TELEGRAM_BOT_TOKEN="1117273891:AAEtr3
 - You can find the tool installation script [here](./scripts/tool_installation.sh).
 - Run the script using the following command 
 ```bash
-curl -s -L https://raw.githubusercontent.com/vitwit/matic-jagar/review-changes/scripts/tool_installation.sh | bash
+curl -s -L https://raw.githubusercontent.com/vitwit/matic-jagar/main/scripts/tool_installation.sh | bash
 ```
 
 ### 2) Manual installation of tool
@@ -68,7 +68,7 @@ git clone https://github.com/vitwit/matic-jagar.git
 
 cd matic-jagar
 
-git fetch && git checkout review-changes
+git pull origin master 
 
 mkdir -p  ~/.matic-jagar/config/
 
