@@ -71,9 +71,9 @@ tar -xvf prometheus-2.22.1.linux-amd64.tar.gz
 
 tar -xvf prometheus-2.22.1.linux-amd64.tar.gz
 
-sudo cp prometheus-2.22.1.linux-amd64/prometheus $GOBIN
+cp prometheus-2.22.1.linux-amd64/prometheus $GOBIN
 
-sudo cp prometheus-2.22.1.linux-amd64/prometheus.yml $HOME
+cp prometheus-2.22.1.linux-amd64/prometheus.yml $HOME
 
 
 echo "------- Edit prometheus.yml --------------"
@@ -143,7 +143,7 @@ curl -LO https://github.com/prometheus/node_exporter/releases/download/v0.18.1/n
 
 tar -xvf node_exporter-0.18.1.linux-amd64.tar.gz
 
-sudo cp node_exporter-0.18.1.linux-amd64/node_exporter $GOBIN
+cp node_exporter-0.18.1.linux-amd64/node_exporter $GOBIN
 
 echo "---------- Setup Prometheus Node exporter service -----------"
 
