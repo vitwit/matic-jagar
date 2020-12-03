@@ -38,17 +38,17 @@ fi
 
 echo "----------- Installing grafana -----------"
 
-sudo -S apt-get install -y adduser libfontconfig1
+sudo apt-get install -y libfontconfig1
 
 wget https://dl.grafana.com/oss/release/grafana_7.3.1_amd64.deb
 
-sudo -S dpkg -i grafana_7.3.1_amd64.deb
+sudo dpkg -i grafana_7.3.1_amd64.deb
 
 echo "------ Starting grafana server using systemd --------"
 
-sudo -S systemctl daemon-reload
+sudo systemctl daemon-reload
 
-sudo -S systemctl start grafana-server
+sudo systemctl start grafana-server
 
 cd $HOME
 
