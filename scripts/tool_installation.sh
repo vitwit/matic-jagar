@@ -10,8 +10,6 @@ git clone https://github.com/vitwit/matic-jagar.git
 
 cd matic-jagar
 
-git pull origin main
-
 mkdir -p  ~/.matic-jagar/config/
 
 cp example.config.toml ~/.matic-jagar/config/config.toml
