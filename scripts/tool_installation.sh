@@ -10,7 +10,7 @@ git clone https://github.com/vitwit/matic-jagar.git
 
 cd matic-jagar
 
-git pull origin master
+git pull origin main
 
 mkdir -p  ~/.matic-jagar/config/
 
