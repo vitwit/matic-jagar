@@ -1,220 +1,84 @@
 # Matic-Jagar setup
 
 
-## Install Prerequisites
+## Prerequisites
 - **Go 13.x+**
 - **Grafana 6.7+**
 - **InfluxDB 1.7+**
+- **Prometheus 2.x+**
 
-## 1.Installation using script
-### You can run below installation scripts to install prerequisites and to setup the monitoring tool
+### Prerequisite installation using script
+#### 1) You can run the installation script to install prerequisites
 
-#### Script which downloads and runs the prerequisites
-- One click installation to download grafana, prometheus, influxdb and node exporter.
-- It also downloads go if it's not installed.
-- Before running the script, you have to export `sentry-1` and/or `sentry-2` IPs if you have any.
-- Follow the below steps to export those IPs just by replacig the values
+- Script downloads and installs grafana, prometheus, influxdb and node exporter.
+- It also downloads go if it's not already installed.
+- This script takes `sentry-1` and/or `sentry-2` env variables and writes them to `prometheus.yml` file for gathering prometheus metrics emitted from the respective nodes. 
+- Export the env variables using the following commands:
 ```bash
 cd $HOME
-export SENTRY1="http://localhost:8000" # Replace with your sentry-1 IP
-export SENTRY2="http://localhost:8000" # Replace with your sentry-2 IP
+export SENTRY1="<sentry-1-IP>" # ex:- export SENTRY1="143.125.36.5" 
+export SENTRY2="<sentry-2-IP>" # ex:- export SENTRY2="143.185.336.95"
 ```
-- Then download the [prerequisites script](https://github.com/vitwit/matic-jagar/blob/review-changes/scripts/install_prerequisites.sh) and run.
-- To run
+- If you don't have any sentries or have one, you can skip this or export only one IP address.
+- **Note**: By default prometheus metrics are enabled on your nodes on port 26660. If you have changed the prometheus port on your node please edit the `~/prometheus.yml` and enter your custom port. 
+- You can find the script [here](./scripts/install_prerequisites.sh)
+- Execute the script using the following command:
 ```bash
-chmod +x install_prerequisites.sh
-./install_prerequisites.sh
+curl -s -L https://raw.githubusercontent.com/vitwit/matic-jagar/review-changes/scripts/install_prerequisites.sh | bash
 ```
 
-#### Script which downloads and run matic-jagar
-
-- It clones and setup the matic-jagar monitoring tool as a system service.
-- Before running the script make sure to follow below steps to export the config fields. The exported values will be refelected in config.toml of matic-jagar.
-- Don't forget to change and export the field values.
-```bash
-cd $HOME
-export ETH_RPC_ENDPOINT="https://goerli.prylabs.net" # Replace with infura endpoint
-export BOR_EXTERNAL_RPC="http://<sentry-ip>:8545" # Replace the IP address with your sentry IP address
-export HEIMDALL_EXTERNAL_RPC="http://<sentry-ip>:26657" # Replace the IP address with your sentry IP address
-export VAL_HEX_ADDRESS="E4B8E9225842401AD16D4D826732953DAF07C7E2" # Replace this address with your validator hex address. You can get it by running this cmd on validator- heimdallcli status | jq .validator_info.address
-export SIGNER_ADDRESS="0xE4b8e9222705621aD16d4d826732953DAf07C7E2" # Replace this with your valdiator signer address
-export VALIDATOR_NAME="moniker" # Your validator moniker
-export TELEGRAM_CHAT_ID=22828812 # Replace your chat id here
-export TELEGRAM_BOT_TOKEN="1117273891:AAEtr3ZU5x4JRj5YSF5LBeu1fPF0T4xj-UI" # Replace your bot token here
-```
-- After exporting above fields, you can just download the installation script and run it.
-- Here you can find matic-jagar
-[installation script](https://github.com/vitwit/matic-jagar/blob/review-changes/scripts/tool_installation.sh)
-- To run script 
-```bash
-chmod +x tool_installation.sh
-./tool_installation.sh
-```
-
-## 2. Install manually
-### Install Grafana for Ubuntu
-Download the latest .deb file and extract it:
-
-```sh
-$ cd $HOME
-$ sudo -S apt-get install -y libfontconfig1
-$ wget https://dl.grafana.com/oss/release/grafana_7.3.1_amd64.deb
-$ sudo -S dpkg -i grafana_7.3.1_amd64.deb
-```
-
-Start the grafana server
-```
-$ sudo -S systemctl daemon-reload
-
-$ sudo -S systemctl start grafana-server
-
-The default port that Grafana runs on is 3000. 
-```
-
-### Install InfluxDB
-
-```sh
-$ wget https://dl.influxdata.com/influxdb/releases/influxdb_1.8.3_amd64.deb
-$ sudo dpkg -i influxdb_1.8.3_amd64.deb
-```
-
-Start influxDB
-
-```sh
-$ sudo systemctl start influxdb 
-
-The default port that runs the InfluxDB HTTP service is 8086
-```
-
-Create an influxDB database:
-
-```sh
-$   cd $HOME
-$   influx
->   CREATE DATABASE matic  
-$   exit
-```
-
-**Note :** If you want to cusomize the configuration, edit `influxdb.conf` at `/etc/influxdb/influxdb.conf` and restart the server after the changes. You can find a sample 'influxdb.conf' [file here](https://github.com/jheyman/influxdb/blob/master/influxdb.conf).
+**Note**: This script installs the prerequistes and enables them to run on their default ports ie. `Grafana` by default runs on port 3000, `InfluxDb` by default runs on port 8086, `Prometheus` by default runs on port 9090 and `Node Exporter` by default runs on port 9100. If you want to change the default ports please follow these [instructions](./docs/custom-port.md).
 
 
-### Install Prometheus 
 
-```sh
-$ cd $HOME
-$ wget https://github.com/prometheus/prometheus/releases/download/v2.22.1/prometheus-2.22.1.linux-amd64.tar.gz
-$ tar -xvf prometheus-2.22.1.linux-amd64.tar.gz
-$ sudo cp prometheus-2.22.1.linux-amd64/prometheus $GOBIN
-$ sudo cp prometheus-2.22.1.linux-amd64/prometheus.yml $HOME
-```
+### 2) Manual installation of prerequisites
 
-- Add the following in prometheus.yml using your editor of choice
-
-```sh
- scrape_configs:
- 
-  - job_name: 'validator'
-
-    static_configs:
-    - targets: ['localhost:26660']
+To manually install the prerequistes please follow this [guide](./docs/prereq-manual.md).
 
 
-  - job_name: 'node_exporter'
-
-    static_configs:
-    - targets: ['localhost:9100']
-```
-
-- Setup Prometheus System service
- ```
- sudo nano /lib/systemd/system/prometheus.service
- ```
- 
- Copy-paste the following and replace the <user> variable with your user.
- 
- ```
- [Unit]
-Description=Prometheus
-After=network-online.target
-
-[Service]
-User=<user>
-ExecStart=/home/<user>/go/bin/prometheus --config.file=/home/<user>/prometheus.yml
-Restart=always
-RestartSec=3
-LimitNOFILE=4096
-
-[Install]
-WantedBy=multi-user.target
- ```
-
-
-```sh
-$ sudo systemctl daemon-reload
-$ sudo systemctl enable prometheus.service
-$ sudo systemctl start prometheus.service
-```
-
-### Install node exporter
-
-
-```sh
-$ cd $HOME
-$ curl -LO https://github.com/prometheus/node_exporter/releases/download/v0.18.1/node_exporter-0.18.1.linux-amd64.tar.gz
-$ tar -xvf node_exporter-0.18.1.linux-amd64.tar.gz
-$ sudo cp node_exporter-0.18.1.linux-amd64/node_exporter $GOBIN
-```
-- Setup Node exporter service
-
-```
- sudo nano /lib/systemd/system/node_exporter.service
- ```
- 
- 
- Copy-paste the following and replace the <user> variable with your user.
- 
- ```
- [Unit]
-Description=Node_exporter
-After=network-online.target
-
-[Service]
-User=<user>
-ExecStart=/home/<user>/go/bin/node_exporter
-Restart=always
-RestartSec=3
-LimitNOFILE=4096
-
-[Install]
-WantedBy=multi-user.target
- ```
-
-```sh
-$ sudo systemctl daemon-reload
-$ sudo systemctl enable node_exporter.service
-$ sudo systemctl start node_exporter.service
-```
-#### Clean-up (Optional)
-
-```
-$ rm influxdb_1.8.3_amd64.deb grafana_7.3.1_amd64.deb node_exporter-0.18.1.linux-amd64.tar.gz prometheus-2.22.1.linux-amd64.tar.gz
-```
 
 ## Install and configure the tool
 
-### Get the code
+### 1) You can run the tool installation script to build and deploy
 
+- It clones and sets up the monitoring tool as a system service.
+- Please export the following env variables first as they will be used to initialize the `config.toml` file for the tool.
 ```bash
-$ git clone https://github.com/vitwit/matic-jagar.git
-$ cd matic-jagar
-$ git fetch && git checkout mumbai-testnet
-$ cp example.config.toml config.toml
+cd $HOME
+export ETH_RPC_ENDPOINT="<infura-endpoint>" # Ex- export ETH_RPC_ENDPOINT= "https://goerli.prylabs.net"
+export BOR_EXTERNAL_RPC="http://<sentry-ip>:8545" # Ex - export BOR_EXTERNAL_RPC="http://156.23.25.21:8545"
+export HEIMDALL_EXTERNAL_RPC="http://<sentry-ip>:26657" # Ex - export HEIMDALL_EXTERNAL_RPC="http://156.23.25.21:26657"
+export VAL_HEX_ADDRESS="<hex-address>" # Ex - export VAL_HEX_ADDRESS="E4B8E9225842401AD16D4D826732953DAF07C7E2". You can get it by running this cmd on validator- heimdallcli status | jq .validator_info.address
+export SIGNER_ADDRESS="0xE4b8e9222705621aD16d4d826732953DAf07C7E2" # Ex- export SIGNER_ADDRESS="0xE4b8e9222705621aD16d4d826732953DAf07C7E2"
+export VALIDATOR_NAME="moniker" # Your validator moniker
+export TELEGRAM_CHAT_ID=<id> # Ex - export TELEGRAM_CHAT_ID=22828812
+export TELEGRAM_BOT_TOKEN="<token>" # Ex - TELEGRAM_BOT_TOKEN="1117273891:AAEtr3ZU5x4JRj5YSF5LBeu1fPF0T4xj-UI"
+```
+- **Note**: If you don't want telegram notifications you can skip exporting `TELEGRAM_CHAT_ID` and `TELEGRAM_BOT_TOKEN` but the rest are mandatory.
+- You can find the tool installation script [here](./scripts/tool_installation.sh).
+- Run the script using the following command 
+```bash
+curl -s -L https://raw.githubusercontent.com/vitwit/matic-jagar/review-changes/scripts/tool_installation.sh | bash
 ```
 
-Edit the `config.toml` with your changes. Informaion on all the fields in `config.toml` can be found [here](./docs/config-desc.md)
+### 2) Manual installation of tool
+
+```bash
+git clone https://github.com/vitwit/matic-jagar.git
+
+cd matic-jagar
+
+git fetch && git checkout review-changes
+
+mkdir -p  ~/.matic-jagar/config/
+
+cp example.config.toml ~/.matic-jagar/config/config.toml
+```
+
+Edit the `config.toml` with your changes. Information on all the fields in `config.toml` can be found [here](./docs/config-desc.md)
 
 
-## Build and run the monitoring binary
+-  Build and run the monitoring binary
 
 ```sh
 $ go build -o matic-jagar && ./matic-jagar
@@ -226,26 +90,26 @@ Installation of the tool is completed lets configure the Grafana dashboards.
 
 The repo provides five dashboards
 
-1. Validator Monitoring Metrics - These are the validator metrics which are calculated and stored in influxdb.
-2. Bor - These are the bor metrics which are calculated and stored in influxdb.
-3. System Metrics - These are the metrics related to your validator server on which this tool is hosted on.
-4. Summary -  gives quick overview of heimall, bor and system metrics.
-5. Heimdall network metrics - These are tendermint prometheus metrics emmitted by the node.
+1. Validator Monitoring Metrics - Displays the validator metrics which are calculated and stored in influxdb.
+2. Bor - Displays the bor metrics of validator which are calculated and stored in influxdb.
+3. System Metrics - Displays the metrics related to your validator server on which this tool is hosted on.
+4. Summary - Displays a quick overview of heimdall, bor and system metrics.
+5. Setup Overview - Displays current block height, block time, number of connected peers and number of unconfirmed transactions of validator and two sentries.
 
-Information on all the dashboards can be found [here](./docs/dashboard-desc.md)
+Information on all the dashboards can be found [here](./docs/dashboard-desc.md).
 
 
 ## Importing dashboards
 
 ### 1. Login to your Grafana dashboard
-- Open your web browser and go to http://<your_ip>:3000/. `3000` is the default HTTP port that Grafana listens to if you haven’t configured a different port.
+- Open your web browser and go to http://<your_validator_ip>:3000/. `3000` is the default HTTP port that Grafana runs on if you haven’t configured a different port. Please make sure your firewall allows it to be accesed from the browser.
 - If you are a first time user type `admin` for the username and password in the login page.
 - You can change the password after login.
 
 ### 2. Create Datasources
 
 - Before importing the dashboards you have to create a datasource of **InfluxDBMatic**.
-- To create datasoruces go to configuration and select Data Sources.
+- To create datasources go to configuration and select Data Sources.
 - Click on `Add data source` and select InfluxDB from Time series databases section.
 - Name the datasource as`InfluxDBMatic`. Replace the URL with `http://localhost:8086`. In InfluxDB Details section replace Database name as `matic`.
 - Click on **Save & Test** . Now you have a working Datasource of InfluxDBMatic.
@@ -254,14 +118,20 @@ Information on all the dashboards can be found [here](./docs/dashboard-desc.md)
 
 
 ### 3. Import the dashboards
-- To import the json file of the **validator monitoring metrics** click the *plus* button present on left hand side of the dashboard. Click on import and load the validator_monitoring_metrics.json present in the grafana_template folder. 
+- To import the dashboards click the **+** button present on left hand side of the dashboard. Click on import and paste the UID of the dashboards on the text field below **Import via grafana.com** and click on load. 
 
 - Select the datasources and click on import.
 
-- Follow the same steps to import **system_monitoring_metrics.json**, **heimdall_network_metrics.json**, **bor.json**, **summary.json**. 
+UID of dashboards are as follows:
 
+- **13441**: Validator monitoring dashboard
+- **13442**: Bor metrics dashboard
+- **13443**: Summary dashboard
+- **13444**: Setup overview dashboard
+- **13445**: System monitoring metrics dashboard
 
-- *For more info about grafana dashboard imports you can refer https://grafana.com/docs/grafana/latest/reference/export_import/*
+*For more info about grafana dashboard imports you can refer https://grafana.com/docs/grafana/latest/reference/export_import/*
+
 
 
 
