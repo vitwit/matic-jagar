@@ -31,8 +31,6 @@ else
 
   source ~/.bashrc
 
-  go version
-
   mkdir -p $GOBIN
 fi
 
