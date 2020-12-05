@@ -326,9 +326,8 @@ type (
 
 	// EthResult is a struct which holds the paramters of eth bal response
 	EthResult struct {
-		Result string      `json:"result"`
-		ID     int         `json:"id"`
-		Error  interface{} `json:"error"`
+		Result string `json:"result"`
+		ID     int    `json:"id"`
 	}
 
 	// BorSignersRes which holds the parameters of signers response
