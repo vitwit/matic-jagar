@@ -13,6 +13,8 @@ Please note we have a [Code of Conduct](#code-of-conduct), please follow it in a
 4. Handle any feedback before the request is merged.
 5. Accept our sincere Thank You!
 
+To get more idea about pull request process, [check these steps](https://github.com/vitwit/matic-jagar/blob/add-license/contributing/PULL-REQUESTS.md).
+
 # Code of Conduct
 
 ## Our Pledge
