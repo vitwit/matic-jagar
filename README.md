@@ -1,4 +1,7 @@
 # Matic-jagar
+
+![](https://github.com/vitwit/matic-jagar/blob/main/docs/logo.jpg)
+
 **Matic-jagar** is a monitoring and alerting tool for validators operating on Matic Network. It provides separate grafana dashboards to better monitor the health of the validator and server. It has integration with Telegram and Sendgrid which enables it to provide updates via notifications or email. 
 
 The alerting part of the tool has a modular approach which enables the user to decide on which metrics the alerts should be sent. Any and all notifications can be modified by a user to fit ones preference. By default a basic level of notifications is enabled for inexperienced users which can be modified by editing the config file.
