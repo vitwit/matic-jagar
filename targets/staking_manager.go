@@ -186,7 +186,7 @@ func GetEncodedData(ops types.HTTPOptions, cfg *config.Config, c client.Client, 
 		return ""
 	}
 
-	log.Printf("hex data : %s of signature : %s", hexData, signature)
+	log.Printf("hex data : %v of signature : %s", hexData, signature)
 
 	if hexData.Result == "" {
 		log.Println("Response of web3_sha3 is empty!")
