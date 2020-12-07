@@ -26,12 +26,16 @@ func ContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 		return
 	}
 	valID := GetValID(cfg, c)
+
+	ID, _ := strconv.ParseInt(valID, 10, 64)
+	hexNum := strconv.FormatInt(ID, 16)
+	log.Printf("hex number of validator ID", hexNum)
 	// n := len(subStr) + len(valID)
-	for i := 0; i < 64-len(valID); i++ {
+	for i := 0; i < 64-len(hexNum); i++ {
 		subStr = subStr + "0"
 	}
 
-	dataHash := subStr + valID
+	dataHash := subStr + hexNum
 
 	if dataHash != "" {
 		data := types.Payload{
@@ -53,7 +57,6 @@ func ContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 			log.Printf("Error in contract address: %v", err)
 			return
 		}
-		log.Println("hex data of eth_call error if any..", hexData.Error)
 
 		if hexData.Result != "" {
 
@@ -182,6 +185,8 @@ func GetEncodedData(ops types.HTTPOptions, cfg *config.Config, c client.Client, 
 		log.Printf("Error in get encoded data: %v", err)
 		return ""
 	}
+
+	log.Printf("hex data : %s of signature : %s", hexData, signature)
 
 	if hexData.Result == "" {
 		log.Println("Response of web3_sha3 is empty!")
