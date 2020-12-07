@@ -10,7 +10,7 @@ The alerting part of the tool has a modular approach which enables the user to d
 
 - [Click here](./docs/dashboard-desc.md) to read about the different dashboards which are provided and a short description about them.
 
-- [Click here](./docs/metric-calc.md) to read about how the metrics are calculated and desplayed on the dashboards.
+- [Click here](./docs/metric-calc.md) to read about how the metrics are calculated and displayed on the dashboards.
 
 ## Installation
 
