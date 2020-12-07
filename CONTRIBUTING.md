@@ -1,6 +1,6 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via issue,
+When contributing to this repository, please first discuss the change you wish to make via [issue](https://github.com/vitwit/matic-jagar/blob/add-license/contributing/issues.md),
 email, or any other method with the owners of this repository before making a change. 
 
 Please note we have a [Code of Conduct](#code-of-conduct), please follow it in all your interactions with the project and its community.
