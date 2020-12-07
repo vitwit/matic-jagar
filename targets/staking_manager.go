@@ -66,7 +66,8 @@ func ContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 			if !er {
 				return
 			}
-			amount := utils.ConvertWeiToEth(stakeAmount) + utils.MaticDenom
+
+			amount := utils.FixSelfStakeDecimals(stakeAmount) + utils.MaticDenom
 
 			_ = db.WriteToInfluxDb(c, bp, "heimdall_contract_details", map[string]string{}, map[string]interface{}{"self_stake": amount, "contract_address": contractAddress})
 			log.Printf("Contract Address: %s and Self Stake Amount : %s", contractAddress, amount)

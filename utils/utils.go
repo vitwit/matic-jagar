@@ -126,3 +126,14 @@ var (
 	// Denom of matic
 	MaticDenom = "MATIC"
 )
+
+// ConvertWeiToEth converts wei into eth value
+func FixSelfStakeDecimals(num *big.Int) string {
+	wei := num.String()
+
+	f, _ := strconv.ParseFloat(wei, 64)
+	eth := f * math.Pow(10, -18)
+	stake := fmt.Sprintf("%.2f", eth)
+
+	return stake
+}
