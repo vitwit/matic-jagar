@@ -33,6 +33,17 @@ source ~/.bashrc
 
 **Note**: This script installs the prerequistes and enables them to run on their default ports ie. `Grafana` by default runs on port 3000, `InfluxDb` by default runs on port 8086, `Prometheus` by default runs on port 9090 and `Node Exporter` by default runs on port 9100. If you want to change the default ports please follow these [instructions](./docs/custom-port.md).
 
+You can view the logs by executing the following commands:
+```
+journalctl -u grafana-server -f
+
+journalctl -u influxdb -f
+
+journalctl -u prometheus.service -f
+
+journalctl -u node_exporter.service -f
+```
+
 
 
 ### 2) Manual installation of prerequisites
