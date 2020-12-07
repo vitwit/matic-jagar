@@ -264,6 +264,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ExecutionType: "http",
 			Name:          "Get and Store Validator Share Contract Address",
 			HTTPOptions: types.HTTPOptions{
+				Method:   http.MethodPost,
 				Endpoint: cfg.Endpoints.EthRPCEndpoint,
 			},
 			Func:        ContractAddress,
@@ -273,6 +274,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ExecutionType: "http",
 			Name:          "Get Commission Rate",
 			HTTPOptions: types.HTTPOptions{
+				Method:   http.MethodPost,
 				Endpoint: cfg.Endpoints.EthRPCEndpoint,
 			},
 			Func:        GetCommissionRate,
@@ -282,6 +284,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ExecutionType: "http",
 			Name:          "Get Validator Rewards",
 			HTTPOptions: types.HTTPOptions{
+				Method:   http.MethodPost,
 				Endpoint: cfg.Endpoints.EthRPCEndpoint,
 			},
 			Func:        GetValidatorRewards,
