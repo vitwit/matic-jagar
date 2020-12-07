@@ -45,4 +45,4 @@ For the changes to take effect reload the file and restart the process.
 sudo systemctl daemon-reload
 sudo systemctl restart node_exporter.service
 ```
-
+**Note**: Please make sure to edit the `prometheus.yml` with your custom port for `node_exporter` scrape job.
