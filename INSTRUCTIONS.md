@@ -16,7 +16,7 @@ There are two ways of installing the prerequisits:-
 
 Either of the two methods can be used to install the required prerequisites. It is not necessary to do both.
 
-#### 1) You can run the installation script to install prerequisites
+#### 1) Installation script 
 
 - Script downloads and installs grafana, prometheus, influxdb and node exporter.
 - It also downloads go if it's not already installed.
@@ -54,7 +54,7 @@ journalctl -u node_exporter.service -f
 
 
 
-### 2) Manual installation of prerequisites
+### 2) Manual installation 
 
 To manually install the prerequistes please follow this [guide](./docs/prereq-manual.md).
 
@@ -62,7 +62,14 @@ To manually install the prerequistes please follow this [guide](./docs/prereq-ma
 
 ## Install and configure the tool
 
-### 1) You can run the tool installation script to build and deploy
+There are two ways of installing the tool:-
+
+1) Installation script
+2) Manual installation
+
+Either of the two methods can be used to install the tool. It is not necessary to do both.
+
+### 1) Installation script
 
 - It clones and sets up the monitoring tool as a system service.
 - Please export the following env variables first as they will be used to initialize the `config.toml` file for the tool.
@@ -84,7 +91,7 @@ export TELEGRAM_BOT_TOKEN="<token>" # Ex - TELEGRAM_BOT_TOKEN="1117273891:AAEtr3
 curl -s -L https://raw.githubusercontent.com/vitwit/matic-jagar/main/scripts/tool_installation.sh | bash
 ```
 
-### 2) Manual installation of tool
+### 2) Manual installation 
 
 ```bash
 git clone https://github.com/vitwit/matic-jagar.git
