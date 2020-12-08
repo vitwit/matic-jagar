@@ -7,7 +7,15 @@
 - **InfluxDB 1.7+**
 - **Prometheus 2.x+**
 
-### Prerequisite installation using script
+### Prerequisite installation 
+
+There are two ways of installing the prerequisits:-
+
+1) Installation script
+2) Manual installation
+
+Either of the two methods can be used to install the required prerequisites. It is not necessary to do both.
+
 #### 1) You can run the installation script to install prerequisites
 
 - Script downloads and installs grafana, prometheus, influxdb and node exporter.
