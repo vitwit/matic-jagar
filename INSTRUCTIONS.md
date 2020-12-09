@@ -91,6 +91,8 @@ export TELEGRAM_BOT_TOKEN="<token>" # Ex - TELEGRAM_BOT_TOKEN="1117273891:AAEtr3
 curl -s -L https://raw.githubusercontent.com/vitwit/matic-jagar/main/scripts/tool_installation.sh | bash
 ```
 
+**Note**: Please note that it is assumed that the tool is being installed on the validator node itself. If you are deploying this tool on a separate server please edit the `config.toml` file present in `~/.matic-jagar/config/` with your validator IP address in place of `localhost`. Ensure the server has the right firewall rules to facilitate communication between validator and monitoring server.
+
 ### 2) Manual installation 
 
 ```bash
