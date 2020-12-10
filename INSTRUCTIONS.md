@@ -54,7 +54,7 @@ journalctl -u node_exporter.service -f
 
 
 
-### 2) Manual installation 
+#### 2) Manual installation 
 
 To manually install the prerequistes please follow this [guide](./docs/prereq-manual.md).
 
