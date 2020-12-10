@@ -28,7 +28,7 @@ export SENTRY1="<sentry-1-IP>" # ex:- export SENTRY1="143.125.36.5"
 export SENTRY2="<sentry-2-IP>" # ex:- export SENTRY2="143.185.336.95"
 ```
 - If you don't have any sentries or have one, you can skip this or export only one IP address.
-- **Note**: By default prometheus metrics are enabled on your nodes on port 26660. If you have changed the prometheus port on your node please edit the `~/prometheus.yml` and enter your custom port. 
+- **Note**: By default prometheus metrics are enabled on your nodes on port 26660. If you have changed the prometheus port on your node please edit the `~/prometheus.yml` and enter your custom port. Please ensure your firewall on sentries enables you to access port `26660`.
 - You can find the script [here](./scripts/install_prerequisites.sh)
 - Execute the script using the following command:
 ```bash
@@ -147,7 +147,7 @@ Information on all the dashboards can be found [here](./docs/dashboard-desc.md).
 - Name the datasource as`InfluxDBMatic`. Replace the URL with `http://localhost:8086`. In InfluxDB Details section replace Database name as `matic`.
 - Click on **Save & Test** . Now you have a working Datasource of InfluxDBMatic.
 
-- For a **Prometheus** data source, click on `Add data source` and select `Prometheus`. Replace the URL with `http//localhost:9090`. Click on **Save & Test** . Now you have a working Datasource of Prometheus.
+- For a **Prometheus** data source, click on `Add data source` and select `Prometheus`. Replace the URL with `http://localhost:9090`. Click on **Save & Test** . Now you have a working Datasource of Prometheus.
 
 
 ### 3. Import the dashboards
