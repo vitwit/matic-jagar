@@ -134,7 +134,8 @@ Information on all the dashboards can be found [here](./docs/dashboard-desc.md).
 ## Importing dashboards
 
 ### 1. Login to your Grafana dashboard
-- Open your web browser and go to http://<your_validator_ip>:3000/. `3000` is the default HTTP port that Grafana runs on if you haven’t configured a different port. Please make sure your firewall allows it to be accesed from the browser.
+- **Note**: Please make sure your firewall allows port `3000` to be accesed from the browser.
+- Open your web browser and go to http://<your_validator_ip>:3000/.  
 - If you are a first time user type `admin` for the username and password in the login page.
 - You can change the password after login.
 
