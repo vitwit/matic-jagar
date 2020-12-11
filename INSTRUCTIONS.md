@@ -93,6 +93,11 @@ curl -s -L https://raw.githubusercontent.com/vitwit/matic-jagar/main/scripts/too
 
 **Note**: Please note that it is assumed that the tool is being installed on the validator node itself. If you are deploying this tool on a separate server please edit the `config.toml` file present in `~/.matic-jagar/config/` with your validator IP address in place of `localhost`. Ensure the server has the right firewall rules to facilitate communication between validator and monitoring server.
 
+You can check the logs of tool using:
+```
+journalctl -u matic_jagar.service -f
+```
+
 ### 2) Manual installation 
 
 ```bash
