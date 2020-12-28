@@ -108,7 +108,7 @@ func GetCommissionRate(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 			if err != nil {
 				fee = 0
 			} else {
-				fee = f * 100
+				fee = f
 			}
 
 			_ = db.WriteToInfluxDb(c, bp, "heimdall_commission_rate", map[string]string{}, map[string]interface{}{"commission_rate": fee})
