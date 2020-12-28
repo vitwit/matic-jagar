@@ -103,14 +103,12 @@ func GetCommissionRate(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 				return
 			}
 
-			rate := utils.ConvertWeiToEth(commissionRate)
-
 			var fee float64
-			f, err := strconv.ParseFloat(rate, 64)
+			f, err := strconv.ParseFloat(commissionRate.String(), 64)
 			if err != nil {
 				fee = 0
 			} else {
-				fee = f * 100
+				fee = f
 			}
 
 			_ = db.WriteToInfluxDb(c, bp, "heimdall_commission_rate", map[string]string{}, map[string]interface{}{"commission_rate": fee})
@@ -203,6 +201,7 @@ func GetEncodedData(ops types.HTTPOptions, cfg *config.Config, c client.Client, 
 // EthCall will returns the validator share contract method response
 func EthCall(ops types.HTTPOptions, cfg *config.Config, c client.Client, dataHash string) (eth types.EthResult) {
 	contractAddress := GetValContractAddress(cfg, c)
+
 	data := types.Payload{
 		Jsonrpc: "2.0",
 		Method:  "eth_call",
