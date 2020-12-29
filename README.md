@@ -16,5 +16,6 @@ The alerting part of the tool has a modular approach which enables the user to d
 
 - [Click here](./INSTRUCTIONS.md) to find the installation instructions.
 
+- [Click here](./docs/upgrade.md) to find upgrade instructions for the tool.
 
 If you would like to see any modifications or additional features to this tool, please feel free to open an issue and we will consider adding it to a future release.
