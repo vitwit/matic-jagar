@@ -120,13 +120,10 @@ func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 
 // CheckValidatorVoted is to check validator voted for the proposal or not and returns the status
 func CheckValidatorVoted(proposalID string, cfg *config.Config, c client.Client) string {
-	var ops types.HTTPOptions
-	ops.Endpoint = cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposalID + "/votes"
-	ops.Method = http.MethodGet
 
-	voters, err := scraper.GetProposalVoters(ops)
+	voters, err := GetProposalsVotes(proposalID, cfg)
 	if err != nil {
-		log.Printf("Error in proposal voters: %v", err)
+		log.Printf("Error while getting proposal votes : %v", err)
 		return ""
 	}
 
@@ -160,13 +157,10 @@ func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
 	}
 
 	for _, proposal := range p.Result {
-		proposalVotesURL := cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposal.ID + "/votes"
-		ops.Endpoint = proposalVotesURL
-		ops.Method = http.MethodGet
-
-		voters, err := scraper.GetProposalVoters(ops)
+		// Calling function to get proposal votes
+		voters, err := GetProposalsVotes(proposal.ID, cfg)
 		if err != nil {
-			log.Printf("Error in proposal voters: %v", err)
+			log.Printf("Error while getting proposal votes : %v", err)
 			return err
 		}
 
@@ -219,6 +213,20 @@ func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
 		}
 	}
 	return nil
+}
+
+// GetProposalsVotes which returns votes of a proposal
+func GetProposalsVotes(proposalID string, cfg *config.Config) (types.ProposalVoters, error) {
+	var ops types.HTTPOptions
+	ops.Endpoint = cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposalID + "/votes"
+	ops.Method = http.MethodGet
+
+	voters, err := scraper.GetProposalVoters(ops)
+	if err != nil {
+		log.Printf("Error in proposal voters: %v", err)
+		return voters, err
+	}
+	return voters, nil
 }
 
 // CheckValidatorDeposited is to check validator deposited for the proposal or not and returns the status
