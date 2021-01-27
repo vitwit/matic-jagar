@@ -29,7 +29,7 @@ func ContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 
 	ID, _ := strconv.ParseInt(valID, 10, 64)
 	hexNum := strconv.FormatInt(ID, 16)
-	log.Printf("hex number of validator ID", hexNum)
+	log.Printf("hex number of validator ID : %s", hexNum)
 	// n := len(subStr) + len(valID)
 	for i := 0; i < 64-len(hexNum); i++ {
 		subStr = subStr + "0"
@@ -38,25 +38,8 @@ func ContractAddress(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 	dataHash := subStr + hexNum
 
 	if dataHash != "" {
-		data := types.Payload{
-			Jsonrpc: "2.0",
-			Method:  "eth_call",
-			Params: []interface{}{
-				types.Params{
-					To:   cfg.ValDetails.StakeManagerContract,
-					Data: dataHash,
-				},
-				"latest",
-			},
-			ID: 1,
-		}
 
-		ops.Body = data
-		hexData, err := scraper.GetHexData(ops)
-		if err != nil {
-			log.Printf("Error in contract address: %v", err)
-			return
-		}
+		hexData := EthCall(ops, cfg, c, dataHash, cfg.ValDetails.StakeManagerContract)
 
 		if hexData.Result != "" {
 
@@ -96,7 +79,8 @@ func GetCommissionRate(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 	}
 	dataHash := subStr
 	if dataHash != "" {
-		result := EthCall(ops, cfg, c, dataHash)
+		contractAddress := GetValContractAddress(cfg, c)
+		result := EthCall(ops, cfg, c, dataHash, contractAddress)
 		if result.Result != "" {
 			commissionRate, er := utils.HexToBigInt(result.Result[2:])
 			if !er {
@@ -135,7 +119,8 @@ func GetValidatorRewards(ops types.HTTPOptions, cfg *config.Config, c client.Cli
 	}
 	dataHash := subStr
 	if dataHash != "" {
-		result := EthCall(ops, cfg, c, dataHash)
+		contractAddress := GetValContractAddress(cfg, c)
+		result := EthCall(ops, cfg, c, dataHash, contractAddress)
 		if result.Result != "" {
 			rewards, er := utils.HexToBigInt(result.Result[2:])
 			if !er {
@@ -199,8 +184,7 @@ func GetEncodedData(ops types.HTTPOptions, cfg *config.Config, c client.Client, 
 }
 
 // EthCall will returns the validator share contract method response
-func EthCall(ops types.HTTPOptions, cfg *config.Config, c client.Client, dataHash string) (eth types.EthResult) {
-	contractAddress := GetValContractAddress(cfg, c)
+func EthCall(ops types.HTTPOptions, cfg *config.Config, c client.Client, dataHash string, contractAddress string) (eth types.EthResult) {
 
 	data := types.Payload{
 		Jsonrpc: "2.0",
