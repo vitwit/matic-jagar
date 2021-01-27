@@ -37,6 +37,7 @@ func NetworkLatestBlock(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 		networkBlockHeight, err := strconv.Atoi(networkBlock.Result.SyncInfo.LatestBlockHeight)
 		if err != nil {
 			log.Println("Error while converting network height from string to int ", err)
+			return
 		}
 		_ = db.WriteToInfluxDb(c, bp, "heimdall_network_latest_block", map[string]string{}, map[string]interface{}{"block_height": networkBlockHeight})
 		log.Printf("Network height: %d", networkBlockHeight)

@@ -29,6 +29,9 @@ func NodeVersion(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	appVersion := applicationInfo.ApplicationVersion.Version
+	if appVersion == "" {
+		return
+	}
 
 	_ = db.WriteToInfluxDb(c, bp, "heimdall_version", map[string]string{}, map[string]interface{}{"v": appVersion})
 	log.Printf("Version: %s", appVersion)
