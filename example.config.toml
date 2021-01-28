@@ -11,6 +11,7 @@ validator_hex_addr = "E4B8E9225842401AD16D4D826732953DAF07C7E2" # Replace this a
 signer_address = "0xE4b8e9222705621aD16d4d826732953DAf07C7E2" # Replace this with your valdiator signer address
 validator_name = "Matic" # Your validator moniker
 stake_manager_contract = "0x5e3Ef299fDDf15eAa0432E6e66473ace8c13D908" # Stake manager contract address on Ethereum mainnet
+matic_contract_address = "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0" # Matic contract address
 
 [enable_alerts]
 enable_telegram_alerts = false
