@@ -54,8 +54,8 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ExecutionType: "http",
 			Name:          "Get Heimdall Current Balanace",
 			HTTPOptions: types.HTTPOptions{
-				Endpoint: cfg.Endpoints.HeimdallLCDEndpoint + "/bank/balances/" + cfg.ValDetails.SignerAddress,
-				Method:   http.MethodGet,
+				Method:   http.MethodPost,
+				Endpoint: cfg.Endpoints.EthRPCEndpoint,
 			},
 			Func:        HeimdallCurrentBal,
 			ScraperRate: cfg.Scraper.Rate,

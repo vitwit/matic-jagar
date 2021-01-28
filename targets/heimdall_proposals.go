@@ -120,7 +120,7 @@ func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 
 // CheckValidatorVoted is to check validator voted for the proposal or not and returns the status
 func CheckValidatorVoted(proposalID string, cfg *config.Config, c client.Client) string {
-	
+
 	voters, err := GetProposalsVotes(proposalID, cfg)
 	if err != nil {
 		log.Printf("Error while getting proposal votes : %v", err)
@@ -157,7 +157,7 @@ func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
 	}
 
 	for _, proposal := range p.Result {
-		
+
 		voters, err := GetProposalsVotes(proposal.ID, cfg)
 		if err != nil {
 			log.Printf("Error while getting proposal votes : %v", err)

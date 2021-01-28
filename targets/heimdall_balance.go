@@ -10,7 +10,6 @@ import (
 	"github.com/vitwit/matic-jagar/alerter"
 	"github.com/vitwit/matic-jagar/config"
 	db "github.com/vitwit/matic-jagar/influxdb"
-	"github.com/vitwit/matic-jagar/scraper"
 	"github.com/vitwit/matic-jagar/types"
 	"github.com/vitwit/matic-jagar/utils"
 )
@@ -24,35 +23,44 @@ func HeimdallCurrentBal(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 		return
 	}
 
-	accResp, err := scraper.HeimdallCurrentBal(ops)
-	if err != nil {
-		log.Printf("Error in heimdall current balance: %v", err)
-		err = db.WriteToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": "NA"})
-		if err != nil {
-			log.Printf("Error while writing heimdall balance into db : %v", err)
-			return
-		}
+	subStr := GetEncodedData(ops, cfg, c, "balanceOf(address)")
+	if subStr == "" {
+		return
 	}
+	n := len(cfg.ValDetails.SignerAddress[2:])
+	for i := 0; i < 64-n; i++ {
+		subStr = subStr + "0"
+	}
+	dataHash := subStr + cfg.ValDetails.SignerAddress[2:]
 
-	if len(accResp.Result) > 0 {
-		amount := utils.ConvertToMatic(accResp.Result[0].Amount) // curent amount
-		prevAmount := GetAccountBalFromDb(cfg, c)                // amount from db
+	if dataHash != "" {
+		contractAddress := cfg.ValDetails.MaticContractAddress
+		result := EthCall(ops, cfg, c, dataHash, contractAddress)
 
-		if prevAmount == "" {
-			prevAmount = "0"
-		}
-
-		if prevAmount != amount {
-			denom := utils.MaticDenom
-			if strings.ToUpper(cfg.AlerterPreferences.BalanceChangeAlerts) == "YES" {
-				_ = alerter.SendTelegramAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+denom, amount+denom), cfg)
-				_ = alerter.SendEmailAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+denom, amount+denom), cfg)
+		if result.Result != "" {
+			balance, er := utils.HexToBigInt(result.Result[2:])
+			if !er {
+				return
 			}
-		}
+			amount := utils.ConvertWeiToEth(balance)  // curent amount
+			prevAmount := GetAccountBalFromDb(cfg, c) // amount from db
 
-		addressBalance := utils.ConvertToCommaSeparated(amount) + strings.ToUpper(accResp.Result[0].Denom)
-		_ = db.WriteToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": addressBalance, "balance": amount})
-		log.Printf("Address Balance: %s", addressBalance)
+			if prevAmount == "" {
+				prevAmount = "0"
+			}
+
+			if prevAmount != amount {
+				denom := utils.MaticDenom
+				if strings.ToUpper(cfg.AlerterPreferences.BalanceChangeAlerts) == "YES" {
+					_ = alerter.SendTelegramAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+denom, amount+denom), cfg)
+					_ = alerter.SendEmailAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+denom, amount+denom), cfg)
+				}
+			}
+			addressBalance := utils.ConvertToCommaSeparated(amount) + utils.MaticDenom
+
+			_ = db.WriteToInfluxDb(c, bp, "heimdall_current_balance", map[string]string{}, map[string]interface{}{"current_balance": addressBalance, "balance": amount})
+			log.Printf("Heimdall Current Balance: %s", addressBalance)
+		}
 	}
 }
 
