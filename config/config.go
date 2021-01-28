@@ -76,8 +76,6 @@ type (
 		ValidatorName string `mapstructure:"validator_name"`
 		// StakeManagerContract is the address of stake manager contract which will be used to get vaidator share contract etc
 		StakeManagerContract string `mapstructure:"stake_manager_contract"`
-		// StakeManagerContract is the address of matic contract which will be used to get heimdall account balance
-		MaticContractAddress string `mapstructure:"matic_contract_address"`
 	}
 
 	// EnableAlerts struct which holds options to enalbe/disable alerts

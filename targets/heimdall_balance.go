@@ -34,7 +34,7 @@ func HeimdallCurrentBal(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 	dataHash := subStr + cfg.ValDetails.SignerAddress[2:]
 
 	if dataHash != "" {
-		contractAddress := cfg.ValDetails.MaticContractAddress
+		contractAddress := "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"
 		result := EthCall(ops, cfg, c, dataHash, contractAddress)
 
 		if result.Result != "" {
