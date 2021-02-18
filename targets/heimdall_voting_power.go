@@ -38,8 +38,8 @@ func ValidatorVotingPower(ops types.HTTPOptions, cfg *config.Config, c client.Cl
 	previousVP, _ := strconv.Atoi(prevVotingPower)
 
 	if previousVP != vp {
-		_ = alerter.SendTelegramAlert(fmt.Sprintf("Voting Power Alert : Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
-		_ = alerter.SendEmailAlert(fmt.Sprintf("Voting Power Alert : Your validator voting power has changed from %d to %d", previousVP, vp), cfg)
+		_ = alerter.SendTelegramAlert(fmt.Sprintf("ℹ️ Voting Power Alert : Your heimdall validator voting power has changed from %d to %d", previousVP, vp), cfg)
+		_ = alerter.SendEmailAlert(fmt.Sprintf("ℹ️ Voting Power Alert : Your heimdall validator voting power has changed from %d to %d", previousVP, vp), cfg)
 	}
 
 	_ = db.WriteToInfluxDb(c, bp, "heimdall_voting_power", map[string]string{}, map[string]interface{}{"power": vp})

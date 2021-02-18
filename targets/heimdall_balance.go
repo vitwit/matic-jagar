@@ -52,8 +52,8 @@ func HeimdallCurrentBal(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 			if prevAmount != amount {
 				denom := utils.MaticDenom
 				if strings.ToUpper(cfg.AlerterPreferences.BalanceChangeAlerts) == "YES" {
-					_ = alerter.SendTelegramAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+denom, amount+denom), cfg)
-					_ = alerter.SendEmailAlert(fmt.Sprintf("Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+denom, amount+denom), cfg)
+					_ = alerter.SendTelegramAlert(fmt.Sprintf("ℹ️ Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+denom, amount+denom), cfg)
+					_ = alerter.SendEmailAlert(fmt.Sprintf("ℹ️ Heimdall Balance Change Alert : Your account balance has changed from  %s to %s", prevAmount+denom, amount+denom), cfg)
 				}
 			}
 			addressBalance := utils.ConvertToCommaSeparated(amount) + utils.MaticDenom

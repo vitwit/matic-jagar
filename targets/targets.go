@@ -51,7 +51,7 @@ func InitTargets(cfg *config.Config) *types.Targets {
 			ScraperRate: cfg.Scraper.Rate,
 		},
 		{
-			ExecutionType: "http",
+			ExecutionType: "Query Matic Contract",
 			Name:          "Get Heimdall Current Balanace",
 			HTTPOptions: types.HTTPOptions{
 				Method:   http.MethodPost,
