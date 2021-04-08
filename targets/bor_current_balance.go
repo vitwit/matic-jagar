@@ -30,7 +30,11 @@ func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 		return
 	}
 
-	if &balance != nil {
+	if balance.Result != "" {
+		if len(balance.Result) < 2 {
+			log.Printf("Got empty result of bor current balance : %v", balance.Result)
+			return
+		}
 
 		bal, er := utils.HexToBigInt(balance.Result[2:])
 		if !er {
@@ -63,7 +67,7 @@ func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 		_ = db.WriteToInfluxDb(c, bp, "bor_eth_balance", map[string]string{}, map[string]interface{}{"balance": balWithDenom, "amount": ethBalance})
 		log.Printf("Eth Current Balance: %s", ethBalance)
 	} else {
-		log.Println("Got an empty response from eth rpc endpoint !")
+		log.Println("Got an empty nalance response from bor eth rpc endpoint !")
 		return
 	}
 }
