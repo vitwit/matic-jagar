@@ -126,7 +126,11 @@ func ProposedCheckpoints(ops types.HTTPOptions, cfg *config.Config, c client.Cli
 
 	if strings.EqualFold(proposedCP.Result.Proposer, cfg.ValDetails.SignerAddress) {
 		num := GetProposedCount(cfg, c) // get checkpoints proposed count from db
-		count, _ := strconv.Atoi(num)   // convert string to int
+		count, err := strconv.Atoi(num) // convert string to int
+		if err != nil {
+			log.Printf("Error while converting proposed checkpoints count to int : %v", err)
+			return
+		}
 		if latestCP != lastProposedCheckpoint {
 			count++
 		}

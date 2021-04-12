@@ -47,6 +47,10 @@ func BorCurrentProposer(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 	if strings.EqualFold(proposer, cfg.ValDetails.SignerAddress) {
 		count = count + 1
 	}
+	if proposer == "" {
+		log.Printf("Got an empty proposer : %v", proposer)
+		return
+	}
 
 	_ = db.WriteToInfluxDb(c, bp, "bor_current_proposer", map[string]string{}, map[string]interface{}{"blocks_produced": count, "current_proposer": proposer, "proposer": proposer[2:]})
 	log.Printf("No of Blocks Proposed: %d and currnt Proposer : %s", count, proposer)

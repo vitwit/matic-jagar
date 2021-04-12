@@ -29,6 +29,9 @@ func NodeVersion(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	}
 
 	appVersion := applicationInfo.ApplicationVersion.Version
+	if appVersion == "" {
+		return
+	}
 
 	_ = db.WriteToInfluxDb(c, bp, "heimdall_version", map[string]string{}, map[string]interface{}{"v": appVersion})
 	log.Printf("Version: %s", appVersion)
@@ -52,8 +55,8 @@ func ValidatorCaughtUp(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 	caughtUp := !sync.Syncing
 	if !caughtUp {
 		if strings.ToUpper(cfg.AlerterPreferences.NodeSyncAlert) == "YES" {
-			_ = alerter.SendTelegramAlert("Your validator node is not synced!", cfg)
-			_ = alerter.SendEmailAlert("Your validator node is not synced!", cfg)
+			_ = alerter.SendTelegramAlert("⚠️ Your heimdall validator node is not synced!", cfg)
+			_ = alerter.SendEmailAlert("⚠️ Your heimdall validator node is not synced!", cfg)
 		}
 		synced = 0
 	} else {
@@ -83,8 +86,8 @@ func Status(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 
 	if &status.Result == nil {
 		if strings.ToUpper(cfg.AlerterPreferences.NodeStatusAlert) == "YES" {
-			_ = alerter.SendTelegramAlert("Your validator instance is not running", cfg)
-			_ = alerter.SendEmailAlert("Your validator instance is not running", cfg)
+			_ = alerter.SendTelegramAlert("⚠️ Your heimdall validator instance is not running", cfg)
+			_ = alerter.SendEmailAlert("⚠️ Your heimdall validator instance is not running", cfg)
 		}
 		_ = db.WriteToInfluxDb(c, bp, "heimdall_node_status", map[string]string{}, map[string]interface{}{"status": 0})
 		return

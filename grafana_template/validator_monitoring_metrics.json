@@ -77,7 +77,7 @@
   "gnetId": 13441,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1606470769908,
+  "iteration": 1611746406826,
   "links": [],
   "panels": [
     {
@@ -4419,6 +4419,18 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Completed Proposals",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ],
       "type": "table"
     }
   ],
@@ -4668,5 +4680,5 @@
   "timezone": "browser",
   "title": "Validator Monitoring Metrics",
   "uid": "yfE8ErtGz",
-  "version": 4
+  "version": 7
 }

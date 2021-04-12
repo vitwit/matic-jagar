@@ -86,7 +86,7 @@ func GetPeersCountMsg(cfg *config.Config, c client.Client) string {
 	var msg string
 
 	count := GetPeersCount(cfg, c) // Get Heimdall No. Of peers
-	msg = fmt.Sprintf("No of connected peers on your Heimdall Node is :  %s \n", count)
+	msg = fmt.Sprintf("- No of connected peers on your Heimdall Node is :  %s \n", count)
 
 	return msg
 }
@@ -96,7 +96,7 @@ func NodeStatus(cfg *config.Config, c client.Client) string {
 	var status string
 
 	nodeSync := GetNodeSync(cfg, c) // Getheimdall node sync status
-	status = fmt.Sprintf("Your Heimdall validator node is %s \n", nodeSync)
+	status = fmt.Sprintf("- Your Heimdall validator node is %s \n", nodeSync)
 
 	return status
 }
@@ -111,22 +111,22 @@ func GetStatus(cfg *config.Config, c client.Client) string {
 	} else {
 		valStatus = "jailed"
 	}
-	status = fmt.Sprintf("Heimdall Node Status:\nYour validator is currently  %s \n", valStatus)
+	status = fmt.Sprintf("Heimdall Node Status:\n- Your validator is currently  %s \n", valStatus)
 
 	valHeight := GetValidatorBlock(cfg, c) // get heimdall validator block height
-	status = status + fmt.Sprintf("Validator current block height %s \n", valHeight)
+	status = status + fmt.Sprintf("- Validator current block height %s \n", valHeight)
 
 	networkHeight := GetNetworkBlock(cfg, c) // get heimdall network block height
-	status = status + fmt.Sprintf("Network current block height %s \n", networkHeight)
+	status = status + fmt.Sprintf("- Network current block height %s \n", networkHeight)
 
 	votingPower := GetVotingPowerFromDb(cfg, c) // get heimdall validator voting power
-	status = status + fmt.Sprintf("Voting power of your validator is %s \n", votingPower)
+	status = status + fmt.Sprintf("- Voting power of your validator is %s \n", votingPower)
 
 	borHeight := GetBorCurrentBlokHeight(cfg, c) // get bor validator block height
-	status = status + fmt.Sprintf("\nBor Node :\nValidator current block height %s \n", borHeight)
+	status = status + fmt.Sprintf("\nBor Node :\n- Validator current block height %s \n", borHeight)
 
 	spanID := GetBorSpanIDFromDb(cfg, c) // get bor latest span ID
-	status = status + fmt.Sprintf("Current span id is %s \n", spanID)
+	status = status + fmt.Sprintf("- Current span id is %s \n", spanID)
 
 	return status
 }
@@ -136,10 +136,10 @@ func GetAccountBal(cfg *config.Config, c client.Client) string {
 	var balanceMsg string
 
 	balance := GetAccountBalWithDenomFromdb(cfg, c) // get heimdall account balance
-	balanceMsg = fmt.Sprintf("Heimdall Node : Current balance of your account(%s) is %s \n", cfg.ValDetails.SignerAddress, balance)
+	balanceMsg = fmt.Sprintf("Heimdall Node : \n- Current balance of your account(%s) is %s \n", cfg.ValDetails.SignerAddress, balance)
 
 	borBalance := GetBorBalanceFromDB(cfg, c) + "ETH" // get bor account balance
-	balanceMsg = balanceMsg + fmt.Sprintf("\nBor Node : Current balance of your account(%s) is %s \n", cfg.ValDetails.SignerAddress, borBalance)
+	balanceMsg = balanceMsg + fmt.Sprintf("\nBor Node : \n- Current balance of your account(%s) is %s \n", cfg.ValDetails.SignerAddress, borBalance)
 
 	return balanceMsg
 }

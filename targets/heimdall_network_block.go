@@ -37,6 +37,7 @@ func NetworkLatestBlock(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 		networkBlockHeight, err := strconv.Atoi(networkBlock.Result.SyncInfo.LatestBlockHeight)
 		if err != nil {
 			log.Println("Error while converting network height from string to int ", err)
+			return
 		}
 		_ = db.WriteToInfluxDb(c, bp, "heimdall_network_latest_block", map[string]string{}, map[string]interface{}{"block_height": networkBlockHeight})
 		log.Printf("Network height: %d", networkBlockHeight)
@@ -66,8 +67,8 @@ func NetworkLatestBlock(ops types.HTTPOptions, cfg *config.Config, c client.Clie
 
 		// Send alert
 		if int64(heightDiff) >= cfg.AlertingThresholds.BlockDiffThreshold && strings.ToUpper(cfg.AlerterPreferences.BlockDiffAlerts) == "YES" {
-			_ = alerter.SendTelegramAlert(fmt.Sprintf("Heimdall Block Difference Alert: Block Difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
-			_ = alerter.SendEmailAlert(fmt.Sprintf("Heimdall Block Difference Alert : Block difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
+			_ = alerter.SendTelegramAlert(fmt.Sprintf("⚠️ Heimdall Block Difference Alert: Block Difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
+			_ = alerter.SendEmailAlert(fmt.Sprintf("⚠️ Heimdall Block Difference Alert : Block difference between network and validator has exceeded %d", cfg.AlertingThresholds.BlockDiffThreshold), cfg)
 			log.Println("Sent alert of block height difference")
 		}
 	} else {

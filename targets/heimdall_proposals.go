@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	client "github.com/influxdata/influxdb1-client/v2"
@@ -77,14 +78,14 @@ func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 				_ = db.WriteToInfluxDb(c, bp, "heimdall_proposals", tag, fields)
 
 				if proposal.ProposalStatus == "Rejected" || proposal.ProposalStatus == "Passed" {
-					_ = alerter.SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been %s", proposal.ID, proposal.ProposalStatus), cfg)
-					_ = alerter.SendEmailAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been = %s", proposal.ID, proposal.ProposalStatus), cfg)
+					_ = alerter.SendTelegramAlert(fmt.Sprintf("ℹ️ Heimdall Proposal Alert: Proposal "+proposal.Content.Type+" with proposal id = %s has been %s", proposal.ID, proposal.ProposalStatus), cfg)
+					_ = alerter.SendEmailAlert(fmt.Sprintf("ℹ️ Heimdall Proposal Alert: Proposal "+proposal.Content.Type+" with proposal id = %s has been = %s", proposal.ID, proposal.ProposalStatus), cfg)
 				} else if proposal.ProposalStatus == "VotingPeriod" {
-					_ = alerter.SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
-					_ = alerter.SendEmailAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
+					_ = alerter.SendTelegramAlert(fmt.Sprintf("ℹ️ Heimdall Proposal Alert: Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
+					_ = alerter.SendEmailAlert(fmt.Sprintf("ℹ️ Heimdall Proposal Alert: Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
 				} else {
-					_ = alerter.SendTelegramAlert(fmt.Sprintf("A new proposal "+proposal.Content.Type+" has been added to "+proposal.ProposalStatus+" with proposal id = %s", proposal.ID), cfg)
-					_ = alerter.SendEmailAlert(fmt.Sprintf("A new proposal "+proposal.Content.Type+" has been added to "+proposal.ProposalStatus+" with proposal id = %s", proposal.ID), cfg)
+					_ = alerter.SendTelegramAlert(fmt.Sprintf("ℹ️ Heimdall Proposal Alert: A new proposal "+proposal.Content.Type+" has been added to "+proposal.ProposalStatus+" with proposal id = %s", proposal.ID), cfg)
+					_ = alerter.SendEmailAlert(fmt.Sprintf("ℹ️ Heimdall Proposal Alert: A new proposal "+proposal.Content.Type+" has been added to "+proposal.ProposalStatus+" with proposal id = %s", proposal.ID), cfg)
 				}
 			} else {
 				q := client.NewQuery(fmt.Sprintf("DELETE FROM heimdall_proposals WHERE id = '%s'", proposal.ID), cfg.InfluxDB.Database, "")
@@ -98,8 +99,8 @@ func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 				_ = db.WriteToInfluxDb(c, bp, "heimdall_proposals", tag, fields)
 				if proposal.ProposalStatus != proposalStatus {
 					if proposal.ProposalStatus == "Rejected" || proposal.ProposalStatus == "Passed" {
-						_ = alerter.SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been %s", proposal.ID, proposal.ProposalStatus), cfg)
-						_ = alerter.SendEmailAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been = %s", proposal.ID, proposal.ProposalStatus), cfg)
+						_ = alerter.SendTelegramAlert(fmt.Sprintf("ℹ️ Heimdall Proposal Alert: Proposal "+proposal.Content.Type+" with proposal id = %s has been %s", proposal.ID, proposal.ProposalStatus), cfg)
+						_ = alerter.SendEmailAlert(fmt.Sprintf("ℹ️ Heimdall Proposal Alert: Proposal "+proposal.Content.Type+" with proposal id = %s has been = %s", proposal.ID, proposal.ProposalStatus), cfg)
 					} else {
 						_ = alerter.SendTelegramAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
 						_ = alerter.SendEmailAlert(fmt.Sprintf("Proposal "+proposal.Content.Type+" with proposal id = %s has been moved to %s", proposal.ID, proposal.ProposalStatus), cfg)
@@ -119,13 +120,10 @@ func Proposals(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 
 // CheckValidatorVoted is to check validator voted for the proposal or not and returns the status
 func CheckValidatorVoted(proposalID string, cfg *config.Config, c client.Client) string {
-	var ops types.HTTPOptions
-	ops.Endpoint = cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposalID + "/votes"
-	ops.Method = http.MethodGet
 
-	voters, err := scraper.GetProposalVoters(ops)
+	voters, err := GetProposalsVotes(proposalID, cfg)
 	if err != nil {
-		log.Printf("Error in proposal voters: %v", err)
+		log.Printf("Error while getting proposal votes : %v", err)
 		return ""
 	}
 
@@ -143,6 +141,11 @@ func CheckValidatorVoted(proposalID string, cfg *config.Config, c client.Client)
 
 // SendVotingPeriodProposalAlerts which send alerts of voting period proposals
 func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
+	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
+	if err != nil {
+		return err
+	}
+
 	var ops types.HTTPOptions
 	ops.Endpoint = cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals?status=voting_period"
 	ops.Method = http.MethodGet
@@ -154,13 +157,10 @@ func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
 	}
 
 	for _, proposal := range p.Result {
-		proposalVotesURL := cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposal.ID + "/votes"
-		ops.Endpoint = proposalVotesURL
-		ops.Method = http.MethodGet
 
-		voters, err := scraper.GetProposalVoters(ops)
+		voters, err := GetProposalsVotes(proposal.ID, cfg)
 		if err != nil {
-			log.Printf("Error in proposal voters: %v", err)
+			log.Printf("Error while getting proposal votes : %v", err)
 			return err
 		}
 
@@ -180,15 +180,53 @@ func SendVotingPeriodProposalAlerts(cfg *config.Config, c client.Client) error {
 			timeDiff := now.Sub(votingEndTime)
 			log.Println("timeDiff...", timeDiff.Hours())
 
-			if timeDiff.Hours() <= 24 {
-				_ = alerter.SendTelegramAlert(fmt.Sprintf("%s validator has not voted on proposal = %s", cfg.ValDetails.ValidatorName, proposal.ID), cfg)
-				_ = alerter.SendEmailAlert(fmt.Sprintf("%s validator has not voted on proposal = %s", cfg.ValDetails.ValidatorName, proposal.ID), cfg)
+			var proposalAlertCount = 1
+			count := GetVotesProposalAlertsCount(cfg, c, proposal.ID)
+			if count != "" {
+				pac, err := strconv.Atoi(count)
+				if err != nil {
+					log.Printf("Error while converting proposal alerts count : %v", err)
+					return err
+				}
+				proposalAlertCount = pac
+			}
+
+			if timeDiff.Hours() == 24 && proposalAlertCount <= 1 {
+				_ = alerter.SendTelegramAlert(fmt.Sprintf("ℹ️ Heimdall Proposal Alert: %s validator has not voted on proposal = %s, No.of hours left to vote is : %f h", cfg.ValDetails.ValidatorName, proposal.ID, timeDiff.Hours()), cfg)
+				_ = alerter.SendEmailAlert(fmt.Sprintf("ℹ️ Heimdall Proposal Alert: %s validator has not voted on proposal = %s, No.of hours left to vote is : %f h", cfg.ValDetails.ValidatorName, proposal.ID, timeDiff.Hours()), cfg)
+
+				proposalAlertCount = proposalAlertCount + 1
+				_ = db.WriteToInfluxDb(c, bp, "heimdall_votes_proposal_alert_count", map[string]string{}, map[string]interface{}{"count": proposalAlertCount, "proposal_id": proposal.ID})
+
+				log.Println("Sent alert of voting period proposals")
+			}
+
+			if timeDiff.Hours() == 12 && proposalAlertCount <= 2 {
+				_ = alerter.SendTelegramAlert(fmt.Sprintf("⚠️ Heimdall Proposal Alert: %s validator has not voted on proposal = %s, No.of hours left to vote is : %f h", cfg.ValDetails.ValidatorName, proposal.ID, timeDiff.Hours()), cfg)
+				_ = alerter.SendEmailAlert(fmt.Sprintf("⚠️ Heimdall Proposal Alert: %s validator has not voted on proposal = %s, No.of hours left to vote is : %f h", cfg.ValDetails.ValidatorName, proposal.ID, timeDiff.Hours()), cfg)
+
+				proposalAlertCount = proposalAlertCount + 1
+				_ = db.WriteToInfluxDb(c, bp, "heimdall_votes_proposal_alert_count", map[string]string{}, map[string]interface{}{"count": proposalAlertCount, "proposal_id": proposal.ID})
 
 				log.Println("Sent alert of voting period proposals")
 			}
 		}
 	}
 	return nil
+}
+
+// GetProposalsVotes which returns votes of a proposal
+func GetProposalsVotes(proposalID string, cfg *config.Config) (types.ProposalVoters, error) {
+	var ops types.HTTPOptions
+	ops.Endpoint = cfg.Endpoints.HeimdallLCDEndpoint + "/gov/proposals/" + proposalID + "/votes"
+	ops.Method = http.MethodGet
+
+	voters, err := scraper.GetProposalVoters(ops)
+	if err != nil {
+		log.Printf("Error in proposal voters: %v", err)
+		return voters, err
+	}
+	return voters, nil
 }
 
 // CheckValidatorDeposited is to check validator deposited for the proposal or not and returns the status
@@ -250,4 +288,25 @@ func DeleteDepoitEndProposals(cfg *config.Config, c client.Client, p types.Propo
 		}
 	}
 	return nil
+}
+
+// GetVotesProposalAlertsCount returns the count of voting period alerts for particular proposal
+func GetVotesProposalAlertsCount(cfg *config.Config, c client.Client, proposalID string) string {
+	var count string
+	q := client.NewQuery(fmt.Sprintf("SELECT last(count) FROM heimdall_votes_proposal_alert_count WHERE proposal_id = '%s'", proposalID), cfg.InfluxDB.Database, "")
+	if response, err := c.Query(q); err == nil && response.Error() == nil {
+		for _, r := range response.Results {
+			if len(r.Series) != 0 {
+				for idx, col := range r.Series[0].Columns {
+					if col == "last" {
+						pc := r.Series[0].Values[0][idx]
+						count = fmt.Sprintf("%v", pc)
+						break
+					}
+				}
+			}
+		}
+	}
+
+	return count
 }

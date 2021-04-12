@@ -30,7 +30,11 @@ func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 		return
 	}
 
-	if &balance != nil {
+	if balance.Result != "" {
+		if len(balance.Result) < 2 {
+			log.Printf("Got empty result of bor current balance : %v", balance.Result)
+			return
+		}
 
 		bal, er := utils.HexToBigInt(balance.Result[2:])
 		if !er {
@@ -45,8 +49,8 @@ func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 		}
 		if prevBal != ethBalance {
 			if strings.ToUpper(cfg.AlerterPreferences.BalanceChangeAlerts) == "YES" {
-				_ = alerter.SendTelegramAlert(fmt.Sprintf("Bor Balance Change Alert : Your account balance has changed from  %s to %s", prevBal+"ETH", ethBalance+"ETH"), cfg)
-				_ = alerter.SendEmailAlert(fmt.Sprintf("Bor Balance Change Alert : Your Bor account balance has changed from  %s to %s", prevBal+"ETH", ethBalance+"ETH"), cfg)
+				_ = alerter.SendTelegramAlert(fmt.Sprintf("ℹ️ Bor Balance Change Alert : Your account balance has changed from  %s to %s", prevBal+"ETH", ethBalance+"ETH"), cfg)
+				_ = alerter.SendEmailAlert(fmt.Sprintf("ℹ️ Bor Balance Change Alert : Your Bor account balance has changed from  %s to %s", prevBal+"ETH", ethBalance+"ETH"), cfg)
 			}
 		}
 
@@ -54,8 +58,8 @@ func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 
 		if ethBalance <= balThreshold {
 			if strings.ToUpper(cfg.AlerterPreferences.EthLowBalanceAlert) == "YES" {
-				_ = alerter.SendTelegramAlert(fmt.Sprintf("Eth Low Balance Alert : Your account balance has reached to your configured thershold %s", ethBalance+"ETH"), cfg)
-				_ = alerter.SendEmailAlert(fmt.Sprintf("Eth Low Balance Alert : Your Bor account balance has  reached to your configured thershold %s", ethBalance+"ETH"), cfg)
+				_ = alerter.SendTelegramAlert(fmt.Sprintf("⚠️ Eth Low Balance Alert : Your account balance has reached to your configured thershold %s", ethBalance+"ETH"), cfg)
+				_ = alerter.SendEmailAlert(fmt.Sprintf("⚠️ Eth Low Balance Alert : Your Bor account balance has  reached to your configured thershold %s", ethBalance+"ETH"), cfg)
 			}
 		}
 
@@ -63,7 +67,7 @@ func CurrentEthBalance(ops types.HTTPOptions, cfg *config.Config, c client.Clien
 		_ = db.WriteToInfluxDb(c, bp, "bor_eth_balance", map[string]string{}, map[string]interface{}{"balance": balWithDenom, "amount": ethBalance})
 		log.Printf("Eth Current Balance: %s", ethBalance)
 	} else {
-		log.Println("Got an empty response from eth rpc endpoint !")
+		log.Println("Got an empty nalance response from bor eth rpc endpoint !")
 		return
 	}
 }

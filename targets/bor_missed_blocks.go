@@ -25,12 +25,12 @@ func SendBorSingleMissedBlockAlert(ops types.HTTPOptions, cfg *config.Config, c 
 
 	if cfg.AlertingThresholds.MissedBlocksThreshold == 1 {
 		if strings.ToUpper(cfg.AlerterPreferences.MissedBlockAlerts) == "YES" {
-			err = alerter.SendTelegramAlert(fmt.Sprintf("%s validator on bor node missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
+			err = alerter.SendTelegramAlert(fmt.Sprintf("⚠️ Bor Missed Block Alert: %s validator on bor node missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
 			if err != nil {
 				log.Printf("Error while sending missed blocks telegram alert : %v", err)
 				return err
 			}
-			err = alerter.SendEmailAlert(fmt.Sprintf("%s validator on bor node missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
+			err = alerter.SendEmailAlert(fmt.Sprintf("⚠️ Bor Missed Block Alert: %s validator on bor node missed a block at block height %s", cfg.ValDetails.ValidatorName, cbh), cfg)
 			if err != nil {
 				log.Printf("Error while sending missed blocks email alert : %v", err)
 				return err
@@ -123,8 +123,8 @@ func BorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 			if cfg.AlertingThresholds.MissedBlocksThreshold > 1 && strings.ToUpper(cfg.AlerterPreferences.MissedBlockAlerts) == "YES" {
 				if int64(len(blocksArray))-1 >= cfg.AlertingThresholds.MissedBlocksThreshold {
 					missedBlocks := strings.Split(blocks, ",")
-					_ = alerter.SendTelegramAlert(fmt.Sprintf("%s validator on bor node missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
-					_ = alerter.SendEmailAlert(fmt.Sprintf("%s validator on bor node missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
+					_ = alerter.SendTelegramAlert(fmt.Sprintf("⚠️ Bor Missed Blocks Alert: %s validator on bor node missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
+					_ = alerter.SendEmailAlert(fmt.Sprintf("⚠️ Bor Missed Blocks Alert: %s validator on bor node missed blocks from height %s to %s", cfg.ValDetails.ValidatorName, missedBlocks[0], missedBlocks[len(missedBlocks)-2]), cfg)
 					_ = db.WriteToInfluxDb(c, bp, "bor_continuous_missed_blocks", map[string]string{}, map[string]interface{}{"missed_blocks": blocks, "range": missedBlocks[0] + " - " + missedBlocks[len(missedBlocks)-2]})
 					_ = db.WriteToInfluxDb(c, bp, "matic_bor_missed_blocks", map[string]string{}, map[string]interface{}{"block_height": "", "current_height": cbh})
 					return
