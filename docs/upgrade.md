@@ -8,7 +8,7 @@ Checkout to that release and build the binary.
 ```
 cd matic-jagar
 git fetch
-git checkout <version-tag>
+git pull origin main
 go build -o matic-jagar
 ```
 
