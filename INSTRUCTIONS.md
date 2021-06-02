@@ -123,6 +123,21 @@ $ go build -o matic-jagar && ./matic-jagar
 
 Installation of the tool is completed lets configure the Grafana dashboards.
 
+ - ### Create retention policy for Influxdb 
+
+```
+$ influx ##enter influx shell
+$ use database matic 
+$ CREATE RETENTION POLICY "seven_days_only" ON matic DURATION 7d REPLICATION 1 DEFAULT; ##Verify retention policy was created successfully.
+$ show retention policies ##You should see an output like this:
+
+name            duration shardGroupDuration replicaN default
+----            -------- ------------------ -------- -------
+autogen         0s       168h0m0s           1        false
+seven_days_only 168h0m0s 24h0m0s            1        true
+
+```
+
 ## Grafana Dashboards
 
 The repo provides five dashboards
