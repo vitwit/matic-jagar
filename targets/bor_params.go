@@ -21,7 +21,7 @@ func BorParams(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 
 	params, err := scraper.BorParams(ops)
 	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error while getting bor params: %v", err)
 		return
 	}
 

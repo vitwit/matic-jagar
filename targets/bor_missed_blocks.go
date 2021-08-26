@@ -91,6 +91,11 @@ func BorMissedBlocks(ops types.HTTPOptions, cfg *config.Config, c client.Client)
 		return
 	}
 
+	if borHeight[2:] == "" {
+		log.Printf("Got an empty bor height : %v", borHeight)
+		return
+	}
+
 	height, err := utils.HexToIntConversion(borHeight)
 	if err != nil {
 		log.Printf("Error while converting bor height from hex to int : %v", err)
