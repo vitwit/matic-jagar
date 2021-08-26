@@ -31,6 +31,10 @@ func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client
 	}
 
 	if &cbh != nil {
+		if cbh.Result[2:] == "" {
+			log.Printf("Empty block height of bor : %v", cbh.Result)
+			return
+		}
 
 		networkHeight, err := utils.HexToIntConversion(cbh.Result)
 		if err != nil {
@@ -54,8 +58,8 @@ func BorNetworkHeight(ops types.HTTPOptions, cfg *config.Config, c client.Client
 			return
 		}
 
-		if &cbh == nil || cbh.Result == "" {
-			log.Println("Got an empty response from bor rpc !")
+		if &cbh == nil || cbh.Result[2:] == "" {
+			log.Printf("Got an empty response from bor rpc : %v", cbh.Result)
 			return
 		}
 

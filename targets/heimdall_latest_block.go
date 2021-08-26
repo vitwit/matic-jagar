@@ -22,7 +22,7 @@ import (
 func LatestProposedBlockAndTime(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error while creating batch points: %v", err)
 		return
 	}
 
@@ -82,7 +82,7 @@ func GetPrevBlockTime(cfg *config.Config, c client.Client, height string) string
 func BlockTimeDifference(ops types.HTTPOptions, cfg *config.Config, c client.Client) {
 	bp, err := db.CreateBatchPoints(cfg.InfluxDB.Database)
 	if err != nil {
-		log.Printf("Error: %v", err)
+		log.Printf("Error while creating batch points: %v", err)
 		return
 	}
 
